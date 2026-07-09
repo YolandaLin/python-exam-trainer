@@ -1,0 +1,416 @@
+[
+  {
+    "id": "q-01-01-001",
+    "source_file": "01-01-programming-language-intro.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["programming-language", "machine-language"],
+    "stem": "電腦硬體底層最直接能理解的是哪一種資料形式？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "自然語言"},
+      {"id": "B", "text": "由 0 和 1 組成的機器語言"},
+      {"id": "C", "text": "Python 原始碼"},
+      {"id": "D", "text": "中文句子"}
+    ],
+    "answer": ["B"],
+    "explanation": "電腦底層是電壓高低等訊號，抽象成資料時就是 0 和 1。Python 這類高階語言需要被處理後，電腦才能執行。",
+    "common_mistake": "把 Python 或中文這種人類容易讀懂的形式誤認成硬體能直接理解的形式。"
+  },
+  {
+    "id": "q-01-01-002",
+    "source_file": "01-01-programming-language-intro.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["compiler-interpreter"],
+    "stem": "Python 通常被歸類為哪一類語言代表？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "直譯語言"},
+      {"id": "B", "text": "組合語言"},
+      {"id": "C", "text": "機器語言"},
+      {"id": "D", "text": "純自然語言"}
+    ],
+    "answer": ["A"],
+    "explanation": "影片把 Python、PHP 列為直譯語言代表；C、C++ 則列為編譯語言代表。",
+    "common_mistake": "看到 Python 程式最後也會被電腦執行，就把它誤認成機器語言。"
+  },
+  {
+    "id": "q-01-02-001",
+    "source_file": "01-02-python-intro.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["python-history"],
+    "stem": "Python 這個名稱主要來自哪裡？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "蟒蛇這種動物"},
+      {"id": "B", "text": "BBC 喜劇 Monty Python's Flying Circus"},
+      {"id": "C", "text": "NASA 的計畫名稱"},
+      {"id": "D", "text": "Google 的搜尋系統"}
+    ],
+    "answer": ["B"],
+    "explanation": "Python 的名稱來自 BBC 喜劇 Monty Python's Flying Circus，不是因為作者想用蟒蛇命名。",
+    "common_mistake": "看到 Python 的英文意思是蟒蛇，就直接選動物。"
+  },
+  {
+    "id": "q-01-03-001",
+    "source_file": "01-03-install-python-runtime.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["python-install", "path"],
+    "stem": "Windows 安裝 Python 時，哪個選項會讓命令列比較容易直接找到 python 指令？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "Disable path length limit"},
+      {"id": "B", "text": "Add python.exe to PATH"},
+      {"id": "C", "text": "Install launcher for all users"},
+      {"id": "D", "text": "Customize installation"}
+    ],
+    "answer": ["B"],
+    "explanation": "Add python.exe to PATH 會把 Python 執行程式加入系統搜尋路徑，之後在命令列輸入 python 才比較容易找到。",
+    "common_mistake": "把解除路徑長度限制和命令列找得到 Python 混成同一件事。"
+  },
+  {
+    "id": "q-01-04-001",
+    "source_file": "01-04-python-shell.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["python-shell"],
+    "stem": "看到 Python 畫面出現 >>>，通常代表什麼？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "正在編輯 Word 文件"},
+      {"id": "B", "text": "已經進入 Python 互動模式"},
+      {"id": "C", "text": "程式發生語法錯誤"},
+      {"id": "D", "text": "Python 尚未安裝完成"}
+    ],
+    "answer": ["B"],
+    "explanation": ">>> 是 Python 互動模式的提示符號，可以在後面輸入 Python 指令或運算式。",
+    "common_mistake": "把 >>> 當成要複製進 .py 檔案的程式碼。"
+  },
+  {
+    "id": "q-01-05-001",
+    "source_file": "01-05-functions-intro.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["builtin-functions", "round"],
+    "stem": "依影片範例，round(3.141596, 3) 的結果是什麼？",
+    "code": "print(round(3.141596, 3))",
+    "options": [
+      {"id": "A", "text": "3"},
+      {"id": "B", "text": "3.141"},
+      {"id": "C", "text": "3.142"},
+      {"id": "D", "text": "3.150"}
+    ],
+    "answer": ["C"],
+    "explanation": "第二個參數 3 代表取到小數點後 3 位；第 4 位是 5，所以影片範例得到 3.142。",
+    "common_mistake": "把第二個參數看成總共保留 3 位數，或忘記要看下一位。"
+  },
+  {
+    "id": "q-02-01-001",
+    "source_file": "02-01-basic-data-types.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["data-types", "string"],
+    "stem": "下列哪一個資料在 Python 中是字串？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "123"},
+      {"id": "B", "text": "123.0"},
+      {"id": "C", "text": "\"123\""},
+      {"id": "D", "text": "True"}
+    ],
+    "answer": ["C"],
+    "explanation": "被引號包起來的內容是字串，所以 \"123\" 是 str，不是數字。",
+    "common_mistake": "只看內容長得像數字，就以為它是 int。"
+  },
+  {
+    "id": "q-02-01-002",
+    "source_file": "02-01-basic-data-types.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["type-conversion", "bool"],
+    "stem": "下列哪一個 bool() 轉換結果是 True？",
+    "code": "print(bool(-1))",
+    "options": [
+      {"id": "A", "text": "bool(0)"},
+      {"id": "B", "text": "bool(\"\")"},
+      {"id": "C", "text": "bool(-1)"},
+      {"id": "D", "text": "bool(False)"}
+    ],
+    "answer": ["C"],
+    "explanation": "數字 0 會轉成 False，非零數字包含 -1 會轉成 True；空字串也是 False。",
+    "common_mistake": "以為負數代表 False。Python 判斷數字時重點是是不是 0。"
+  },
+  {
+    "id": "q-02-02-001",
+    "source_file": "02-02-operators.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["operators", "floor-division"],
+    "stem": "在 Python 中，10 // 3 的結果是什麼？",
+    "code": "print(10 // 3)",
+    "options": [
+      {"id": "A", "text": "3"},
+      {"id": "B", "text": "3.3333333333333335"},
+      {"id": "C", "text": "1"},
+      {"id": "D", "text": "30"}
+    ],
+    "answer": ["A"],
+    "explanation": "// 是整除運算；在這個正數例子中，10 除以 3 的整數商是 3。",
+    "common_mistake": "把 /、//、% 三種除法相關運算混在一起。"
+  },
+  {
+    "id": "q-02-02-002",
+    "source_file": "02-02-operators.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["operators", "string-repeat"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "print(\"ha\" * 3)",
+    "options": [
+      {"id": "A", "text": "hahaha"},
+      {"id": "B", "text": "ha3"},
+      {"id": "C", "text": "TypeError"},
+      {"id": "D", "text": "9"}
+    ],
+    "answer": ["A"],
+    "explanation": "字串乘上整數代表重複字串，所以 \"ha\" * 3 會得到 \"hahaha\"。",
+    "common_mistake": "只把 * 想成數字乘法，不知道它也能用於字串重複。"
+  },
+  {
+    "id": "q-03-01-001",
+    "source_file": "03-01-print.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["print", "sep"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "print(\"A\", \"B\", sep=\"!!\")",
+    "options": [
+      {"id": "A", "text": "A B"},
+      {"id": "B", "text": "A!!B"},
+      {"id": "C", "text": "A!! B"},
+      {"id": "D", "text": "AB!!"}
+    ],
+    "answer": ["B"],
+    "explanation": "sep 控制多個輸出物件中間的分隔字串。指定 sep=\"!!\" 後，A 和 B 中間會放 !!。",
+    "common_mistake": "忘記 print() 預設 sep 是空白，也忘記 sep 只放在物件之間。"
+  },
+  {
+    "id": "q-03-02-001",
+    "source_file": "03-02-input.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["input", "string"],
+    "stem": "使用者輸入 2，執行 num = input() 後，num 的型態是什麼？",
+    "code": "num = input()",
+    "options": [
+      {"id": "A", "text": "int"},
+      {"id": "B", "text": "float"},
+      {"id": "C", "text": "str"},
+      {"id": "D", "text": "bool"}
+    ],
+    "answer": ["C"],
+    "explanation": "input() 讀到的內容一律先是字串，所以輸入 2 會得到 \"2\"。",
+    "common_mistake": "看到 2 就以為它一定是整數。"
+  },
+  {
+    "id": "q-03-02-002",
+    "source_file": "03-02-input.md",
+    "type": "single_choice",
+    "difficulty": 3,
+    "concepts": ["input", "type-conversion", "operators"],
+    "stem": "如果 num 是字串 \"2\"，100 * num 的結果比較接近哪一個？",
+    "code": "num = \"2\"\nprint(100 * num)",
+    "options": [
+      {"id": "A", "text": "200"},
+      {"id": "B", "text": "字串 \"2\" 重複 100 次"},
+      {"id": "C", "text": "102"},
+      {"id": "D", "text": "一定會語法錯誤"}
+    ],
+    "answer": ["B"],
+    "explanation": "num 是字串時，100 * num 會走字串重複規則，不是數學乘法。若要算票價，要先 int(num)。",
+    "common_mistake": "忘記 input() 的回傳值是字串，直接拿來做數學運算。"
+  },
+  {
+    "id": "q-03-03-001",
+    "source_file": "03-03-ascii-escape.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["ascii", "ord-chr"],
+    "stem": "ord(\"A\") 的結果是多少？",
+    "code": "print(ord(\"A\"))",
+    "options": [
+      {"id": "A", "text": "48"},
+      {"id": "B", "text": "65"},
+      {"id": "C", "text": "97"},
+      {"id": "D", "text": "A"}
+    ],
+    "answer": ["B"],
+    "explanation": "ASCII/Unicode 中，大寫 A 的碼位是 65。",
+    "common_mistake": "把 chr() 和 ord() 的方向搞反。"
+  },
+  {
+    "id": "q-03-05-001",
+    "source_file": "03-05-string-basic-ops.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["string", "slice"],
+    "stem": "\"Python\"[1:4] 的結果是什麼？",
+    "code": "print(\"Python\"[1:4])",
+    "options": [
+      {"id": "A", "text": "Pyt"},
+      {"id": "B", "text": "yth"},
+      {"id": "C", "text": "ytho"},
+      {"id": "D", "text": "tho"}
+    ],
+    "answer": ["B"],
+    "explanation": "切片包含開始索引 1，不包含結束索引 4，所以取到 y、t、h。",
+    "common_mistake": "以為右界 4 也會被包含。"
+  },
+  {
+    "id": "q-03-07-001",
+    "source_file": "03-07-string-search.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["string", "find-index"],
+    "stem": "字串的 find() 方法找不到子字串時會回傳什麼？",
+    "code": "print(\"Python\".find(\"x\"))",
+    "options": [
+      {"id": "A", "text": "0"},
+      {"id": "B", "text": "-1"},
+      {"id": "C", "text": "False"},
+      {"id": "D", "text": "ValueError"}
+    ],
+    "answer": ["B"],
+    "explanation": "find() 找不到會回傳 -1；index() 找不到才會丟出 ValueError。",
+    "common_mistake": "把 find() 和 index() 找不到時的行為混在一起。"
+  },
+  {
+    "id": "q-04-01-001",
+    "source_file": "04-01-containers-overview.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["containers", "dict", "set"],
+    "stem": "在 Python 中，{} 代表什麼空容器？",
+    "code": "print(type({}))",
+    "options": [
+      {"id": "A", "text": "空 list"},
+      {"id": "B", "text": "空 tuple"},
+      {"id": "C", "text": "空 set"},
+      {"id": "D", "text": "空 dict"}
+    ],
+    "answer": ["D"],
+    "explanation": "{} 是空字典。空集合要用 set() 建立。",
+    "common_mistake": "看到 set 也使用大括號，就以為 {} 是空集合。"
+  },
+  {
+    "id": "q-04-02-001",
+    "source_file": "04-02-list-ops-1.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["list", "index"],
+    "stem": "L = [10, 20, 30]，L[-1] 的結果是什麼？",
+    "code": "L = [10, 20, 30]\nprint(L[-1])",
+    "options": [
+      {"id": "A", "text": "10"},
+      {"id": "B", "text": "20"},
+      {"id": "C", "text": "30"},
+      {"id": "D", "text": "IndexError"}
+    ],
+    "answer": ["C"],
+    "explanation": "負索引 -1 代表最後一個元素，所以 L[-1] 是 30。",
+    "common_mistake": "以為索引只能從 0 開始往右數。"
+  },
+  {
+    "id": "q-04-03-001",
+    "source_file": "04-03-list-add-update-delete.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["list", "append-extend"],
+    "stem": "append() 和 extend() 最大的差異是什麼？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "append() 只能刪除元素"},
+      {"id": "B", "text": "append() 把傳入值當成一個元素，extend() 會把可迭代資料逐一加入"},
+      {"id": "C", "text": "extend() 只能用在 tuple"},
+      {"id": "D", "text": "兩者完全一樣"}
+    ],
+    "answer": ["B"],
+    "explanation": "append([\"e\", \"f\"]) 會把整個列表當成一個元素；extend([\"e\", \"f\"]) 會分別加入 \"e\" 和 \"f\"。",
+    "common_mistake": "看到兩者都能新增資料，就忽略新增粒度不同。"
+  },
+  {
+    "id": "q-04-04-001",
+    "source_file": "04-04-list-sort.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["list", "sort-sorted"],
+    "stem": "關於 L.sort() 和 sorted(L)，下列哪一個正確？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "L.sort() 會回傳新的排序列表，原列表不變"},
+      {"id": "B", "text": "sorted(L) 會修改原列表，且不回傳值"},
+      {"id": "C", "text": "L.sort() 會修改原列表；sorted(L) 會回傳新列表"},
+      {"id": "D", "text": "兩者都只能降冪排序"}
+    ],
+    "answer": ["C"],
+    "explanation": "sort() 是 list 方法，原地修改列表；sorted() 是內建函式，回傳排序後的新列表。",
+    "common_mistake": "寫成 new_L = L.sort()，結果 new_L 會是 None。"
+  },
+  {
+    "id": "q-04-07-001",
+    "source_file": "04-07-tuple.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["tuple"],
+    "stem": "在 Python 中，(4,) 的型態是什麼？",
+    "code": "print(type((4,)))",
+    "options": [
+      {"id": "A", "text": "int"},
+      {"id": "B", "text": "tuple"},
+      {"id": "C", "text": "list"},
+      {"id": "D", "text": "dict"}
+    ],
+    "answer": ["B"],
+    "explanation": "單一元素 tuple 必須有逗號，(4,) 才是 tuple；(4) 只是整數 4 外面加括號。",
+    "common_mistake": "只看小括號，忘記單一元素 tuple 的逗號才是關鍵。"
+  },
+  {
+    "id": "q-04-09-001",
+    "source_file": "04-09-dict.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["dict", "key-value"],
+    "stem": "在字典 D 中，\"蘋果\" in D 檢查的是什麼？",
+    "code": "D = {\"蘋果\": 30, \"香蕉\": 20}\nprint(\"蘋果\" in D)",
+    "options": [
+      {"id": "A", "text": "是否存在 key"},
+      {"id": "B", "text": "是否存在 value"},
+      {"id": "C", "text": "是否存在索引位置"},
+      {"id": "D", "text": "是否所有 value 都相同"}
+    ],
+    "answer": ["A"],
+    "explanation": "對字典使用 in 時，檢查的是 key 是否存在，不是 value。",
+    "common_mistake": "把 list 的元素存在判斷套用到 dict，忘記 dict 是用 key 找 value。"
+  },
+  {
+    "id": "q-04-10-001",
+    "source_file": "04-10-set.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["set"],
+    "stem": "集合 set 的哪一個特性是正確的？",
+    "code": "S = {\"a\", \"b\", \"c\", \"c\"}\nprint(S)",
+    "options": [
+      {"id": "A", "text": "可以用索引 S[0] 穩定取第一個元素"},
+      {"id": "B", "text": "會保留所有重複元素"},
+      {"id": "C", "text": "無序且不重複"},
+      {"id": "D", "text": "空集合要用 {} 建立"}
+    ],
+    "answer": ["C"],
+    "explanation": "集合是無序且不重複的資料容器。重複元素只會保留一份，空集合要寫 set()。",
+    "common_mistake": "把 set 和 list 混淆，以為能用索引或保留重複資料。"
+  }
+]

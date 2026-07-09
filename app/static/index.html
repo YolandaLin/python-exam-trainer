@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>python-exam-trainer</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script defer src="/static/app.js"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <section id="login-view" class="auth-panel">
+        <div class="brand">
+          <span class="eyebrow">雄女電資班</span>
+          <h1>Python 練習題</h1>
+          <p>一次一題，答完看解析，系統會追蹤薄弱觀念。</p>
+        </div>
+        <form id="login-form" class="login-form">
+          <label>
+            帳號
+            <input id="username" name="username" autocomplete="username" required />
+          </label>
+          <label>
+            密碼
+            <input id="password" name="password" type="password" autocomplete="current-password" required />
+          </label>
+          <button type="submit">登入</button>
+          <p id="login-error" class="error-text" role="alert"></p>
+        </form>
+      </section>
+
+      <section id="app-view" class="app-view hidden">
+        <header class="topbar">
+          <div>
+            <span class="eyebrow">python-exam-trainer</span>
+            <h1>今日練習</h1>
+          </div>
+          <div class="user-box">
+            <span id="user-name"></span>
+            <button id="logout-button" type="button">登出</button>
+          </div>
+        </header>
+
+        <section class="layout">
+          <article class="question-panel">
+            <div class="question-meta">
+              <span id="question-source"></span>
+              <span id="question-difficulty"></span>
+            </div>
+            <h2 id="question-stem"></h2>
+            <pre id="question-code" class="code-block hidden"></pre>
+            <form id="answer-form" class="options"></form>
+            <div class="actions">
+              <button id="submit-answer" type="button">送出答案</button>
+              <button id="next-question" type="button" class="secondary">下一題</button>
+            </div>
+            <section id="feedback" class="feedback hidden"></section>
+          </article>
+
+          <aside class="side-panel">
+            <section class="stat-row">
+              <div>
+                <span class="stat-label">答題數</span>
+                <strong id="total-attempts">0</strong>
+              </div>
+              <div>
+                <span class="stat-label">正確率</span>
+                <strong id="accuracy">0%</strong>
+              </div>
+            </section>
+            <section>
+              <h2>薄弱觀念</h2>
+              <ul id="weak-concepts" class="weak-list"></ul>
+            </section>
+            <section id="admin-panel" class="hidden">
+              <h2>學生總覽</h2>
+              <ul id="students" class="weak-list"></ul>
+            </section>
+          </aside>
+        </section>
+
+        <section class="runner-panel">
+          <div class="runner-header">
+            <div>
+              <span class="eyebrow">Python 執行區</span>
+              <h2>試跑程式碼</h2>
+            </div>
+            <button id="run-code" type="button" class="secondary">執行</button>
+          </div>
+          <textarea id="code-input" spellcheck="false">print("Hello Python")</textarea>
+          <pre id="code-output" class="output-block">尚未執行</pre>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>
