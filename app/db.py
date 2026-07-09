@@ -349,7 +349,7 @@ def seed_user_configs() -> list[dict[str, str]]:
             "password_key": "STUDENT1_PASSWORD",
             "default_password": "student123",
             "role": "student",
-            "display_name": "學生一",
+            "display_name": "柚子",
         },
         {
             "username": os.environ.get("STUDENT2_USERNAME", "student2"),
@@ -357,7 +357,7 @@ def seed_user_configs() -> list[dict[str, str]]:
             "password_key": "STUDENT2_PASSWORD",
             "default_password": "student123",
             "role": "student",
-            "display_name": "學生二",
+            "display_name": "嫺嫺",
         },
     ]
 
@@ -370,7 +370,11 @@ def seed_users() -> None:
                 continue
             exists = db.execute("SELECT * FROM users WHERE username = ?", (config["username"],)).fetchone()
             if exists:
-                if config["password_key"] in os.environ and not verify_password(config["password"], exists["password_hash"]):
+                password_changed = config["password_key"] in os.environ and not verify_password(
+                    config["password"], exists["password_hash"]
+                )
+                profile_changed = exists["role"] != config["role"] or exists["display_name"] != config["display_name"]
+                if password_changed or profile_changed:
                     db.execute(
                         """
                         UPDATE users
@@ -378,7 +382,7 @@ def seed_users() -> None:
                         WHERE username = ?
                         """,
                         (
-                            hash_password(config["password"]),
+                            hash_password(config["password"]) if password_changed else exists["password_hash"],
                             config["role"],
                             config["display_name"],
                             config["username"],
