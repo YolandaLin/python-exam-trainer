@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT))
 
 def main() -> None:
     with tempfile.TemporaryDirectory() as temp_dir:
+        os.environ.pop("DATABASE_URL", None)
         os.environ["DB_PATH"] = str(Path(temp_dir) / "test.db")
 
         from fastapi.testclient import TestClient

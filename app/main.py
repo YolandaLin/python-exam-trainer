@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from .db import get_db, init_db, session_expiry, utcnow
+from .db import get_db, init_db, session_expiry, string_agg_expr, utcnow
 from .security import new_token, verify_password
 
 
@@ -41,6 +41,22 @@ class LessonCompleteRequest(BaseModel):
 
 def parse_json(value: str) -> Any:
     return json.loads(value)
+
+
+QUESTION_GROUP_BY = """
+    q.id, q.source_file, q.type, q.difficulty, q.stem, q.code,
+    q.options_json, q.answer_json, q.explanation, q.common_mistake, q.is_active
+"""
+
+LESSON_GROUP_BY = """
+    l.id, l.source_file, l.unit, l.title, l.order_index, l.content_json,
+    l.goals_json, l.common_mistakes_json, l.checkpoint_question_ids_json, l.is_active
+"""
+
+LESSON_PROGRESS_GROUP_BY = """
+    lp.status, lp.last_viewed_at, lp.completed_at,
+    lp.checkpoint_correct_count, lp.checkpoint_total_count
+"""
 
 
 def public_question(row: Any, include_answer: bool = False) -> dict[str, Any]:
@@ -91,11 +107,11 @@ def checkpoint_questions(db: Any, lesson: dict[str, Any]) -> list[dict[str, Any]
     rows = db.execute(
         f"""
         SELECT q.*,
-               GROUP_CONCAT(qc.concept_id) AS concepts
+               {string_agg_expr("qc.concept_id")} AS concepts
         FROM questions q
         LEFT JOIN question_concepts qc ON qc.question_id = q.id
         WHERE q.id IN ({placeholders}) AND q.is_active = 1
-        GROUP BY q.id
+        GROUP BY {QUESTION_GROUP_BY}
         """,
         tuple(question_ids),
     ).fetchall()
@@ -130,9 +146,9 @@ def require_admin(user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
 
 def lesson_row(db: Any, user_id: int, lesson_id: str) -> Any:
     row = db.execute(
-        """
+        f"""
         SELECT l.*,
-               GROUP_CONCAT(lc.concept_id) AS concepts,
+               {string_agg_expr("lc.concept_id")} AS concepts,
                COALESCE(lp.status, 'not_started') AS status,
                lp.last_viewed_at,
                lp.completed_at,
@@ -142,7 +158,7 @@ def lesson_row(db: Any, user_id: int, lesson_id: str) -> Any:
         LEFT JOIN lesson_concepts lc ON lc.lesson_id = l.id
         LEFT JOIN lesson_progress lp ON lp.lesson_id = l.id AND lp.user_id = ?
         WHERE l.id = ? AND l.is_active = 1
-        GROUP BY l.id
+        GROUP BY {LESSON_GROUP_BY}, {LESSON_PROGRESS_GROUP_BY}
         """,
         (user_id, lesson_id),
     ).fetchone()
@@ -263,9 +279,9 @@ def me(user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
 def lessons(user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
     with get_db() as db:
         rows = db.execute(
-            """
+            f"""
             SELECT l.*,
-                   GROUP_CONCAT(lc.concept_id) AS concepts,
+                   {string_agg_expr("lc.concept_id")} AS concepts,
                    COALESCE(lp.status, 'not_started') AS status,
                    lp.last_viewed_at,
                    lp.completed_at,
@@ -275,7 +291,7 @@ def lessons(user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
             LEFT JOIN lesson_concepts lc ON lc.lesson_id = l.id
             LEFT JOIN lesson_progress lp ON lp.lesson_id = l.id AND lp.user_id = ?
             WHERE l.is_active = 1
-            GROUP BY l.id
+            GROUP BY {LESSON_GROUP_BY}, {LESSON_PROGRESS_GROUP_BY}
             ORDER BY l.order_index
             """,
             (user["id"],),
@@ -353,13 +369,13 @@ def complete_lesson(
 
 def question_rows(db: Any) -> list[Any]:
     return db.execute(
-        """
+        f"""
         SELECT q.*,
-               GROUP_CONCAT(qc.concept_id) AS concepts
+               {string_agg_expr("qc.concept_id")} AS concepts
         FROM questions q
         LEFT JOIN question_concepts qc ON qc.question_id = q.id
         WHERE q.is_active = 1
-        GROUP BY q.id
+        GROUP BY {QUESTION_GROUP_BY}
         ORDER BY q.id
         """
     ).fetchall()

@@ -4,13 +4,14 @@
 
 這裡是 Python 複習題網站專案，和課程教材、考題整理分開維護。
 
-計畫書見 [PLAN.md](PLAN.md)，計畫進度見 [PROGRESS.md](PROGRESS.md)。
+計畫書見 [PLAN.md](PLAN.md)，計畫進度見 [PROGRESS.md](PROGRESS.md)，部署說明見 [DEPLOYMENT.md](DEPLOYMENT.md)。
 
 ## 目錄
 
 - `app/`：網頁程式碼。
 - `content/`：題目、解析與可匯入資料。
 - `scripts/`：資料轉換、檢查與產生工具。
+- `render.yaml`：Render Blueprint 部署設定。
 
 ## 資料來源
 
@@ -45,6 +46,10 @@ http://127.0.0.1:8000
 | 學生 | `student2` | `student123` |
 
 正式部署前必須用環境變數覆蓋密碼，參考 [.env.example](.env.example)。
+
+## 部署
+
+目前以 Render Blueprint 部署，會建立 FastAPI Web Service 與 PostgreSQL。詳見 [DEPLOYMENT.md](DEPLOYMENT.md)。
 
 ## 第一版功能
 

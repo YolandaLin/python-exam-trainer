@@ -19,14 +19,15 @@
 | 題目資料 | `content/questions.json` | 進行中 | 已建立第 1 到第 4 講第一批 23 題。 |
 | 檢查工具 | `scripts/check_questions.py` / `scripts/check_lessons.py` / `scripts/check_app_flow.py` | 已建立 | 可檢查題目、課程資料與 API 主流程。 |
 | 本機資料庫 | `data/app.db` | 開發用 | 啟動時自動建立，已由 `.gitignore` 排除。 |
+| 部署設定 | `render.yaml` / [DEPLOYMENT.md](DEPLOYMENT.md) | 已建立 | Render Blueprint：FastAPI Web Service + PostgreSQL。 |
 
 ## 下一步
 
 1. 擴充第 1 到第 4 講題庫，讓每個主要觀念至少有 3 題，並補齊目前沒有小檢查題的課程。
 2. 補更完整的管理者弱點檢視，加入課程完成率與最近課程進度。
-3. 將本機 SQLite 抽象化，為部署 PostgreSQL 做準備。
-4. 補登入密碼初始化/重設流程，避免正式環境使用開發密碼。
-5. 部署採 PaaS + PostgreSQL，優先 Render 或 Railway，不先自架 VPS。
+3. 補更完整的密碼初始化/重設流程，避免正式環境帳號建立後只能靠資料庫處理。
+4. 實際建立 Render Blueprint，取得公開網址。
+5. 部署後測試登入、課程、作答、Python 執行區與弱點追蹤。
 
 ## 已驗證
 
@@ -35,3 +36,7 @@
 - `python scripts/check_app_flow.py`：通過，登入、課程列表、課程進度、依課程取下一題、送出正解、dashboard 查詢皆正常。
 - `node --check app/static/app.js`：通過。
 - `python -m compileall app scripts`：通過。
+
+## 上線前置
+
+- 已登記上線前置 3 項到 `D:/AI/handoffs/pending/deploy-prerequisites.md`：`ADMIN_PASSWORD`、`STUDENT1_PASSWORD`、`STUDENT2_PASSWORD`。

@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: python-exam-trainer
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: python-exam-trainer-db
+          property: connectionString
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: STUDENT1_USERNAME
+        value: student1
+      - key: STUDENT1_PASSWORD
+        sync: false
+      - key: STUDENT2_USERNAME
+        value: student2
+      - key: STUDENT2_PASSWORD
+        sync: false
+
+databases:
+  - name: python-exam-trainer-db
+    plan: free
+    region: singapore
+    databaseName: python_exam_trainer
