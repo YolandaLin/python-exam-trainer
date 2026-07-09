@@ -33,7 +33,7 @@
         <header class="topbar">
           <div>
             <span class="eyebrow">python-exam-trainer</span>
-            <h1>今日練習</h1>
+            <h1>今日課程</h1>
           </div>
           <div class="user-box">
             <span id="user-name"></span>
@@ -42,22 +42,57 @@
         </header>
 
         <section class="layout">
-          <article class="question-panel">
-            <div class="question-meta">
-              <span id="question-source"></span>
-              <span id="question-difficulty"></span>
-            </div>
-            <h2 id="question-stem"></h2>
-            <pre id="question-code" class="code-block hidden"></pre>
-            <form id="answer-form" class="options"></form>
-            <div class="actions">
-              <button id="submit-answer" type="button">送出答案</button>
-              <button id="next-question" type="button" class="secondary">下一題</button>
-            </div>
-            <section id="feedback" class="feedback hidden"></section>
-          </article>
+          <div class="main-column">
+            <article id="lesson-panel" class="lesson-panel">
+              <div class="question-meta">
+                <span id="lesson-unit"></span>
+                <span id="lesson-source"></span>
+                <span id="lesson-status"></span>
+              </div>
+              <h2 id="lesson-title"></h2>
+              <section>
+                <h3>學習目標</h3>
+                <ul id="lesson-goals" class="content-list"></ul>
+              </section>
+              <section id="lesson-body" class="lesson-body"></section>
+              <section>
+                <h3>常見誤解</h3>
+                <ul id="lesson-mistakes" class="content-list"></ul>
+              </section>
+              <section id="checkpoint-panel" class="checkpoint-panel hidden">
+                <h3>課後小檢查</h3>
+                <div id="checkpoint-questions"></div>
+                <p id="checkpoint-result" class="muted-text"></p>
+              </section>
+              <div class="actions">
+                <button id="complete-lesson" type="button">完成課程</button>
+                <button id="practice-lesson" type="button" class="secondary">開始本節練習</button>
+              </div>
+            </article>
+
+            <article id="question-panel" class="question-panel hidden">
+              <div class="question-meta">
+                <span id="question-source"></span>
+                <span id="question-difficulty"></span>
+                <span id="question-lesson"></span>
+              </div>
+              <h2 id="question-stem"></h2>
+              <pre id="question-code" class="code-block hidden"></pre>
+              <form id="answer-form" class="options"></form>
+              <div class="actions">
+                <button id="submit-answer" type="button">送出答案</button>
+                <button id="next-question" type="button" class="secondary">下一題</button>
+              </div>
+              <section id="feedback" class="feedback hidden"></section>
+            </article>
+          </div>
 
           <aside class="side-panel">
+            <section>
+              <h2>課程進度</h2>
+              <p id="lesson-progress" class="muted-text">載入中</p>
+              <ul id="lesson-list" class="lesson-list"></ul>
+            </section>
             <section class="stat-row">
               <div>
                 <span class="stat-label">答題數</span>

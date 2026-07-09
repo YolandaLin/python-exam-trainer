@@ -101,6 +101,7 @@ button.secondary:hover {
 }
 
 .login-form,
+.lesson-panel,
 .question-panel,
 .side-panel,
 .runner-panel {
@@ -165,10 +166,17 @@ textarea {
   gap: 18px;
 }
 
+.lesson-panel,
 .question-panel,
 .side-panel,
 .runner-panel {
   padding: 20px;
+}
+
+.main-column {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
 }
 
 .question-meta {
@@ -180,9 +188,41 @@ textarea {
   font-weight: 700;
 }
 
+#lesson-title,
 #question-stem {
   font-size: 24px;
   line-height: 1.45;
+}
+
+.lesson-panel h3 {
+  font-size: 17px;
+  margin: 18px 0 8px;
+}
+
+.lesson-body {
+  display: grid;
+  gap: 12px;
+}
+
+.lesson-body p {
+  line-height: 1.7;
+  margin: 0;
+}
+
+.content-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 22px;
+}
+
+.lesson-code {
+  display: grid;
+  gap: 8px;
+}
+
+.lesson-code button {
+  justify-self: start;
 }
 
 .code-block,
@@ -200,6 +240,10 @@ textarea {
   display: grid;
   gap: 10px;
   margin: 18px 0;
+}
+
+.options.compact {
+  margin: 10px 0 0;
 }
 
 .option {
@@ -239,6 +283,31 @@ textarea {
   border-left-color: var(--danger);
 }
 
+.checkpoint-panel {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 2px;
+}
+
+.checkpoint-question {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin-top: 12px;
+  padding: 12px;
+}
+
+.checkpoint-question h4 {
+  font-size: 16px;
+  line-height: 1.45;
+  margin: 0 0 10px;
+}
+
+.muted-text {
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 8px 0 0;
+}
+
 .stat-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -266,8 +335,74 @@ textarea {
 }
 
 .weak-list li {
+  display: grid;
+  gap: 6px;
   border-bottom: 1px solid var(--line);
   padding: 8px 0;
+}
+
+.lesson-list {
+  display: grid;
+  gap: 6px;
+  list-style: none;
+  margin: 12px 0 20px;
+  max-height: 420px;
+  overflow: auto;
+  padding: 0;
+}
+
+.lesson-link {
+  display: grid;
+  gap: 2px;
+  min-height: 0;
+  padding: 9px 10px;
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--text);
+  text-align: left;
+}
+
+.lesson-link:hover,
+.lesson-link.current {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.lesson-link.completed {
+  border-color: #a9cec8;
+}
+
+.lesson-link span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.lesson-link strong {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.inline-link {
+  background: transparent;
+  color: var(--accent-strong);
+  display: inline;
+  font-weight: 800;
+  min-height: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.inline-link:hover {
+  background: transparent;
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.review-lessons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .runner-panel {

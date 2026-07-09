@@ -30,7 +30,25 @@ def main() -> None:
             assert login.status_code == 200, login.text
 
             headers = {"Authorization": f"Bearer {login.json()['token']}"}
-            next_question = client.get("/api/next-question", headers=headers)
+
+            lessons = client.get("/api/lessons", headers=headers)
+            assert lessons.status_code == 200, lessons.text
+            assert lessons.json()["lessons"], lessons.text
+            lesson_id = lessons.json()["next_lesson"]["id"]
+
+            started = client.post(f"/api/lessons/{lesson_id}/start", headers=headers)
+            assert started.status_code == 200, started.text
+            assert started.json()["lesson"]["status"] == "in_progress", started.text
+
+            completed = client.post(
+                f"/api/lessons/{lesson_id}/complete",
+                headers=headers,
+                json={"checkpoint_correct_count": 1, "checkpoint_total_count": 1},
+            )
+            assert completed.status_code == 200, completed.text
+            assert completed.json()["lesson"]["status"] == "completed", completed.text
+
+            next_question = client.get(f"/api/next-question?lesson_id={lesson_id}", headers=headers)
             assert next_question.status_code == 200, next_question.text
 
             question = next_question.json()["question"]
@@ -54,7 +72,7 @@ def main() -> None:
             assert dashboard.status_code == 200, dashboard.text
             assert dashboard.json()["total_attempts"] == 1, dashboard.text
 
-    print("OK: login, next question, attempt, dashboard")
+    print("OK: login, lessons, lesson progress, next question, attempt, dashboard")
 
 
 if __name__ == "__main__":

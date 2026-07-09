@@ -14,6 +14,7 @@ from .security import hash_password
 ROOT = Path(__file__).resolve().parents[1]
 DB_PATH = Path(os.environ.get("DB_PATH", ROOT / "data" / "app.db"))
 QUESTIONS_PATH = ROOT / "content" / "questions.json"
+LESSONS_PATH = ROOT / "content" / "lessons.json"
 
 
 def utcnow() -> str:
@@ -79,11 +80,42 @@ def init_db() -> None:
                 description TEXT NOT NULL DEFAULT ''
             );
 
+            CREATE TABLE IF NOT EXISTS lessons (
+                id TEXT PRIMARY KEY,
+                source_file TEXT NOT NULL,
+                unit TEXT NOT NULL,
+                title TEXT NOT NULL,
+                order_index INTEGER NOT NULL,
+                content_json TEXT NOT NULL,
+                goals_json TEXT NOT NULL,
+                common_mistakes_json TEXT NOT NULL,
+                checkpoint_question_ids_json TEXT NOT NULL,
+                is_active INTEGER NOT NULL DEFAULT 1
+            );
+
             CREATE TABLE IF NOT EXISTS question_concepts (
                 question_id TEXT NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
                 concept_id TEXT NOT NULL REFERENCES concepts(id) ON DELETE CASCADE,
                 weight REAL NOT NULL DEFAULT 1.0,
                 PRIMARY KEY (question_id, concept_id)
+            );
+
+            CREATE TABLE IF NOT EXISTS lesson_concepts (
+                lesson_id TEXT NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
+                concept_id TEXT NOT NULL REFERENCES concepts(id) ON DELETE CASCADE,
+                PRIMARY KEY (lesson_id, concept_id)
+            );
+
+            CREATE TABLE IF NOT EXISTS lesson_progress (
+                user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                lesson_id TEXT NOT NULL REFERENCES lessons(id) ON DELETE CASCADE,
+                status TEXT NOT NULL DEFAULT 'not_started'
+                    CHECK(status IN ('not_started', 'in_progress', 'completed')),
+                last_viewed_at TEXT,
+                completed_at TEXT,
+                checkpoint_correct_count INTEGER NOT NULL DEFAULT 0,
+                checkpoint_total_count INTEGER NOT NULL DEFAULT 0,
+                PRIMARY KEY (user_id, lesson_id)
             );
 
             CREATE TABLE IF NOT EXISTS attempts (
@@ -111,6 +143,7 @@ def init_db() -> None:
         )
 
     seed_questions()
+    seed_lessons()
     seed_users()
 
 
@@ -181,6 +214,58 @@ def seed_questions() -> None:
                 db.execute(
                     "INSERT INTO question_concepts (question_id, concept_id, weight) VALUES (?, ?, 1.0)",
                     (question["id"], concept_id),
+                )
+
+
+def seed_lessons() -> None:
+    lessons = json.loads(LESSONS_PATH.read_text(encoding="utf-8"))
+    with get_db() as db:
+        for lesson in lessons:
+            db.execute(
+                """
+                INSERT INTO lessons (
+                    id, source_file, unit, title, order_index, content_json,
+                    goals_json, common_mistakes_json, checkpoint_question_ids_json, is_active
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+                ON CONFLICT(id) DO UPDATE SET
+                    source_file=excluded.source_file,
+                    unit=excluded.unit,
+                    title=excluded.title,
+                    order_index=excluded.order_index,
+                    content_json=excluded.content_json,
+                    goals_json=excluded.goals_json,
+                    common_mistakes_json=excluded.common_mistakes_json,
+                    checkpoint_question_ids_json=excluded.checkpoint_question_ids_json,
+                    is_active=1
+                """,
+                (
+                    lesson["id"],
+                    lesson["source_file"],
+                    lesson["unit"],
+                    lesson["title"],
+                    lesson["order"],
+                    json.dumps(lesson["body"], ensure_ascii=False),
+                    json.dumps(lesson["goals"], ensure_ascii=False),
+                    json.dumps(lesson["common_mistakes"], ensure_ascii=False),
+                    json.dumps(lesson["checkpoint_question_ids"], ensure_ascii=False),
+                ),
+            )
+            db.execute("DELETE FROM lesson_concepts WHERE lesson_id = ?", (lesson["id"],))
+            for concept_id in lesson["concepts"]:
+                db.execute(
+                    """
+                    INSERT INTO concepts (id, name, unit, description)
+                    VALUES (?, ?, ?, '')
+                    ON CONFLICT(id) DO UPDATE SET
+                        name=excluded.name,
+                        unit=CASE WHEN concepts.unit = '' THEN excluded.unit ELSE concepts.unit END
+                    """,
+                    (concept_id, concept_name(concept_id), lesson["unit"]),
+                )
+                db.execute(
+                    "INSERT INTO lesson_concepts (lesson_id, concept_id) VALUES (?, ?)",
+                    (lesson["id"], concept_id),
                 )
 
 
