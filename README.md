@@ -1,6 +1,8 @@
-# Python 複習題網站
+# python-exam-trainer
 
-這裡預留給之後的網頁複習題目專案，和課程教材、考題整理分開維護。
+暫時 FOR 雄女電資班考題練習。
+
+這裡是 Python 複習題網站專案，和課程教材、考題整理分開維護。
 
 計畫書見 [PLAN.md](PLAN.md)，計畫進度見 [PROGRESS.md](PROGRESS.md)。
 
