@@ -50,7 +50,7 @@
 
 ## 今日交接重點
 
-- 最新 Git commit：`2056cd6 Update project handoff progress`。
+- Git 狀態：03 專案進度已推上 `main`，下一次接手以 `git log -1` 為準。
 - 正式網址：`https://python-exam-trainer.onrender.com/`。
 - 已完成：課程優先流程、26 節初學者版課程、23 題第一批題庫、Render 部署、PostgreSQL 支援、production 預設密碼阻擋、README 移除密碼欄。
 - 下次接手先做：用正式帳號驗證完整學生流程；確認沒有問題後，開始補第 1 到第 4 講題庫密度。
