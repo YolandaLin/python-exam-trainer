@@ -1,0 +1,992 @@
+[
+  {
+    "id": "q-01-01-003",
+    "source_file": "01-01-programming-language-intro.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["programming-language", "compiler-interpreter"],
+    "stem": "為什麼人類通常不直接用機器語言寫程式？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "因為機器語言太接近 0 和 1，人類閱讀與維護很困難"},
+      {"id": "B", "text": "因為機器語言不能被電腦執行"},
+      {"id": "C", "text": "因為 Python 不需要被處理就能直接被硬體理解"},
+      {"id": "D", "text": "因為高階語言一定比機器語言執行更快"}
+    ],
+    "answer": ["A"],
+    "explanation": "機器語言接近硬體表示，對人類很不友善；高階語言讓人比較容易描述想法，再由工具轉成電腦能處理的形式。",
+    "common_mistake": "把「電腦能執行」和「人類容易撰寫」混成同一件事。"
+  },
+  {
+    "id": "q-01-02-002",
+    "source_file": "01-02-python-intro.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["python-history"],
+    "stem": "下列哪一項最符合 Python 適合初學者入門的原因？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "語法相對清楚，很多基本寫法接近英文閱讀習慣"},
+      {"id": "B", "text": "Python 完全不需要遵守大小寫"},
+      {"id": "C", "text": "Python 只能用來畫圖，不能處理資料"},
+      {"id": "D", "text": "Python 程式不用經過任何工具就能被硬體直接理解"}
+    ],
+    "answer": ["A"],
+    "explanation": "Python 語法相對清楚，常用於入門教學，但仍然必須遵守括號、引號、大小寫等規則。",
+    "common_mistake": "把「相對容易讀」誤解成「可以隨便寫」。"
+  },
+  {
+    "id": "q-01-02-003",
+    "source_file": "01-02-python-intro.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["python-history", "print"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "print(\"Python\")",
+    "options": [
+      {"id": "A", "text": "Python"},
+      {"id": "B", "text": "\"Python\""},
+      {"id": "C", "text": "python"},
+      {"id": "D", "text": "Monty Python"}
+    ],
+    "answer": ["A"],
+    "explanation": "print() 會輸出字串內容，引號是程式碼用來表示字串的符號，不會一起印出。",
+    "common_mistake": "把程式碼中的引號誤以為也會出現在輸出畫面。"
+  },
+  {
+    "id": "q-01-03-002",
+    "source_file": "01-03-install-python-runtime.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["python-install", "path"],
+    "stem": "在命令列輸入 python 卻顯示找不到指令，最可能先檢查哪一件事？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "Python 是否安裝，或 python.exe 是否加入 PATH"},
+      {"id": "B", "text": "print() 的括號是否少打一個"},
+      {"id": "C", "text": "list 是否能用 index"},
+      {"id": "D", "text": "字串是否能用 split()"}
+    ],
+    "answer": ["A"],
+    "explanation": "連 python 指令都找不到時，通常是安裝或 PATH 問題，不是某一行 Python 程式碼的語法問題。",
+    "common_mistake": "看到命令列錯誤就一直改 .py 檔內容，沒有先檢查環境。"
+  },
+  {
+    "id": "q-01-03-003",
+    "source_file": "01-03-install-python-runtime.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["python-install", "path"],
+    "stem": "PATH 在命令列執行 python 時的作用比較像什麼？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "命令列尋找執行檔的資料夾清單"},
+      {"id": "B", "text": "Python 程式的輸出內容"},
+      {"id": "C", "text": "所有變數名稱的集合"},
+      {"id": "D", "text": "用來排序 list 的方法"}
+    ],
+    "answer": ["A"],
+    "explanation": "PATH 是系統搜尋執行檔的位置清單；命令列會根據 PATH 找 python.exe。",
+    "common_mistake": "把 PATH 當成 Python 語法的一部分。"
+  },
+  {
+    "id": "q-01-04-002",
+    "source_file": "01-04-python-shell.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["python-shell"],
+    "stem": "下列哪一項最適合用 Python 互動模式測試？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "快速試算 1 + 2 的結果"},
+      {"id": "B", "text": "把整個大型網站正式部署上線"},
+      {"id": "C", "text": "設定 Render 的資料庫密碼"},
+      {"id": "D", "text": "編輯一整本教材講義"}
+    ],
+    "answer": ["A"],
+    "explanation": "互動模式適合快速測試一小段程式或運算，不適合保存完整專案流程。",
+    "common_mistake": "把互動模式當成所有程式都應該使用的正式開發方式。"
+  },
+  {
+    "id": "q-01-04-003",
+    "source_file": "01-04-python-shell.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["python-shell"],
+    "stem": "在 Python 教學畫面看到 >>> 時，寫到 .py 檔案時應該怎麼處理？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "不要把 >>> 複製進 .py 檔案，它只是提示符號"},
+      {"id": "B", "text": "每一行程式前面都必須加 >>>"},
+      {"id": "C", "text": "只有 print() 前面要加 >>>"},
+      {"id": "D", "text": ">>> 代表程式已經自動完成"}
+    ],
+    "answer": ["A"],
+    "explanation": ">>> 是互動模式提示符號，不是 Python 程式碼的一部分。",
+    "common_mistake": "照抄教學畫面時，把提示符號也一起複製。"
+  },
+  {
+    "id": "q-01-05-002",
+    "source_file": "01-05-functions-intro.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["builtin-functions"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "print(len(\"Python\"))",
+    "options": [
+      {"id": "A", "text": "5"},
+      {"id": "B", "text": "6"},
+      {"id": "C", "text": "Python"},
+      {"id": "D", "text": "len"}
+    ],
+    "answer": ["B"],
+    "explanation": "\"Python\" 有 6 個字元，所以 len(\"Python\") 的結果是 6。",
+    "common_mistake": "只看單字大概長度，沒有逐字數 P-y-t-h-o-n。"
+  },
+  {
+    "id": "q-01-05-003",
+    "source_file": "01-05-functions-intro.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["round"],
+    "stem": "round(12.3456, 2) 的第二個參數 2 代表什麼？",
+    "code": "print(round(12.3456, 2))",
+    "options": [
+      {"id": "A", "text": "保留到小數點後 2 位"},
+      {"id": "B", "text": "總共只保留 2 位數"},
+      {"id": "C", "text": "把數字乘以 2"},
+      {"id": "D", "text": "只保留整數 2"}
+    ],
+    "answer": ["A"],
+    "explanation": "round(number, ndigits) 的 ndigits 表示小數點後保留幾位。",
+    "common_mistake": "把小數點後位數誤認成整個數字的總位數。"
+  },
+  {
+    "id": "q-01-06-001",
+    "source_file": "01-06-object-oriented-intro.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["object-oriented", "object"],
+    "stem": "初學物件導向時，可以先把「物件」想成什麼？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "帶有資料，也可能有功能的東西"},
+      {"id": "B", "text": "只能存放 0 和 1 的硬體"},
+      {"id": "C", "text": "只能被 print() 輸出的中文字"},
+      {"id": "D", "text": "一定不能呼叫方法的資料"}
+    ],
+    "answer": ["A"],
+    "explanation": "物件可以先用直覺理解成有狀態與功能的資料，例如字串有內容，也有 lower()、upper() 等方法。",
+    "common_mistake": "一開始就背抽象定義，反而不知道物件在程式裡長什麼樣子。"
+  },
+  {
+    "id": "q-01-06-002",
+    "source_file": "01-06-object-oriented-intro.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["method", "string"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "name = \"Python\"\nprint(name.lower())",
+    "options": [
+      {"id": "A", "text": "Python"},
+      {"id": "B", "text": "python"},
+      {"id": "C", "text": "PYTHON"},
+      {"id": "D", "text": "lower"}
+    ],
+    "answer": ["B"],
+    "explanation": "lower() 是字串方法，會回傳小寫版本。",
+    "common_mistake": "看到 name 是 \"Python\" 就忽略後面的 .lower()。"
+  },
+  {
+    "id": "q-01-06-003",
+    "source_file": "01-06-object-oriented-intro.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["method", "builtin-functions"],
+    "stem": "下列哪一個比較像「方法呼叫」？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "len(name)"},
+      {"id": "B", "text": "name.upper()"},
+      {"id": "C", "text": "print(name)"},
+      {"id": "D", "text": "round(3.14, 1)"}
+    ],
+    "answer": ["B"],
+    "explanation": "方法通常寫在物件後面，以點號連接，例如 name.upper()。",
+    "common_mistake": "只要看到括號就都當成同一種函式呼叫。"
+  },
+  {
+    "id": "q-02-01-003",
+    "source_file": "02-01-basic-data-types.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["data-types", "string"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "print(type(\"123\"))",
+    "options": [
+      {"id": "A", "text": "<class 'int'>"},
+      {"id": "B", "text": "<class 'float'>"},
+      {"id": "C", "text": "<class 'str'>"},
+      {"id": "D", "text": "<class 'bool'>"}
+    ],
+    "answer": ["C"],
+    "explanation": "\"123\" 有引號，所以是字串 str，不是整數 int。",
+    "common_mistake": "看到內容像數字就忽略引號。"
+  },
+  {
+    "id": "q-02-02-003",
+    "source_file": "02-02-operators.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["operators", "floor-division"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "print(7 // 2)\nprint(7 % 2)",
+    "options": [
+      {"id": "A", "text": "3\n1"},
+      {"id": "B", "text": "3.5\n1"},
+      {"id": "C", "text": "4\n-1"},
+      {"id": "D", "text": "1\n3"}
+    ],
+    "answer": ["A"],
+    "explanation": "7 // 2 是整除得到 3，7 % 2 是餘數得到 1。",
+    "common_mistake": "把 // 當成一般除法 /。"
+  },
+  {
+    "id": "q-03-01-002",
+    "source_file": "03-01-print.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["print", "sep"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "print(\"A\", \"B\", sep=\"-\")",
+    "options": [
+      {"id": "A", "text": "A B"},
+      {"id": "B", "text": "A-B"},
+      {"id": "C", "text": "AB"},
+      {"id": "D", "text": "A, B"}
+    ],
+    "answer": ["B"],
+    "explanation": "sep=\"-\" 會把多個輸出物件中間的分隔字串改成 -。",
+    "common_mistake": "忘記 sep 只控制物件之間的分隔，不是輸出結尾。"
+  },
+  {
+    "id": "q-03-01-003",
+    "source_file": "03-01-print.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["print"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "print(\"A\", end=\"\")\nprint(\"B\")",
+    "options": [
+      {"id": "A", "text": "A\nB"},
+      {"id": "B", "text": "AB"},
+      {"id": "C", "text": "A B"},
+      {"id": "D", "text": "AendB"}
+    ],
+    "answer": ["B"],
+    "explanation": "第一個 print 的 end=\"\" 表示輸出後不換行，第二個 print 會接在同一行。",
+    "common_mistake": "忘記 print() 預設會換行，但 end 可以改變結尾。"
+  },
+  {
+    "id": "q-03-02-003",
+    "source_file": "03-02-input.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["input", "type-conversion"],
+    "stem": "若使用者輸入 5，想讓 num + 1 得到數字 6，哪一行較適合？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "num = input()"},
+      {"id": "B", "text": "num = int(input())"},
+      {"id": "C", "text": "num = str(input())"},
+      {"id": "D", "text": "num = print(input())"}
+    ],
+    "answer": ["B"],
+    "explanation": "input() 回傳字串，要做整數加法需先用 int() 轉型。",
+    "common_mistake": "以為輸入看起來是 5，型態就自動是 int。"
+  },
+  {
+    "id": "q-03-03-002",
+    "source_file": "03-03-ascii-escape.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["ascii", "ord-chr"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "print(ord(\"A\"))",
+    "options": [
+      {"id": "A", "text": "A"},
+      {"id": "B", "text": "65"},
+      {"id": "C", "text": "97"},
+      {"id": "D", "text": "ord"}
+    ],
+    "answer": ["B"],
+    "explanation": "ord(\"A\") 會得到字元 A 對應的編碼數字 65。",
+    "common_mistake": "把 ord() 和 chr() 的方向搞反。"
+  },
+  {
+    "id": "q-03-03-003",
+    "source_file": "03-03-ascii-escape.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["ascii"],
+    "stem": "執行下列程式時，畫面效果最接近哪一個？",
+    "code": "print(\"A\\nB\")",
+    "options": [
+      {"id": "A", "text": "A\\nB"},
+      {"id": "B", "text": "A\nB"},
+      {"id": "C", "text": "AB"},
+      {"id": "D", "text": "A B"}
+    ],
+    "answer": ["B"],
+    "explanation": "\\n 是換行字元，所以 B 會出現在下一行。",
+    "common_mistake": "把 \\n 當成普通的反斜線和字母 n。"
+  },
+  {
+    "id": "q-03-04-001",
+    "source_file": "03-04-unicode.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["unicode", "string"],
+    "stem": "Unicode 主要解決了什麼問題？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "讓更多語言文字和符號能被一致表示"},
+      {"id": "B", "text": "讓 list 自動排序"},
+      {"id": "C", "text": "讓 input() 自動回傳 int"},
+      {"id": "D", "text": "讓 set 可以用索引取值"}
+    ],
+    "answer": ["A"],
+    "explanation": "Unicode 讓不同語言的文字都有可表示的位置，範圍比 ASCII 大很多。",
+    "common_mistake": "以為所有文字都只能靠 ASCII 表示。"
+  },
+  {
+    "id": "q-03-04-002",
+    "source_file": "03-04-unicode.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["unicode"],
+    "stem": "下列程式的輸出重點是什麼？",
+    "code": "print(\"高雄女中\")",
+    "options": [
+      {"id": "A", "text": "Python 3 字串可以直接包含中文"},
+      {"id": "B", "text": "中文一定會造成語法錯誤"},
+      {"id": "C", "text": "print() 只能輸出英文"},
+      {"id": "D", "text": "Unicode 只能表示數字"}
+    ],
+    "answer": ["A"],
+    "explanation": "Python 3 字串可以包含中文，print() 可以輸出字串內容。",
+    "common_mistake": "把編碼問題和 Python 語法限制混在一起。"
+  },
+  {
+    "id": "q-03-04-003",
+    "source_file": "03-04-unicode.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["unicode", "ord-chr"],
+    "stem": "chr(ord(\"高\")) 的結果最接近哪一個？",
+    "code": "print(chr(ord(\"高\")))",
+    "options": [
+      {"id": "A", "text": "高"},
+      {"id": "B", "text": "ord"},
+      {"id": "C", "text": "chr"},
+      {"id": "D", "text": "Unicode"}
+    ],
+    "answer": ["A"],
+    "explanation": "ord(\"高\") 先取得字元編碼，chr() 再把編碼轉回原字元。",
+    "common_mistake": "不理解 ord() 和 chr() 是相反方向的轉換。"
+  },
+  {
+    "id": "q-03-05-002",
+    "source_file": "03-05-string-basic-ops.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["string", "index"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "s = \"Python\"\nprint(s[0])\nprint(s[-1])",
+    "options": [
+      {"id": "A", "text": "P\nn"},
+      {"id": "B", "text": "y\nP"},
+      {"id": "C", "text": "P\no"},
+      {"id": "D", "text": "Python\nPython"}
+    ],
+    "answer": ["A"],
+    "explanation": "s[0] 是第一個字元 P，s[-1] 是最後一個字元 n。",
+    "common_mistake": "把索引 0 當成沒有位置，或不熟悉負數索引。"
+  },
+  {
+    "id": "q-03-05-003",
+    "source_file": "03-05-string-basic-ops.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["slice", "string"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "s = \"Python\"\nprint(s[1:4])",
+    "options": [
+      {"id": "A", "text": "Pyt"},
+      {"id": "B", "text": "yth"},
+      {"id": "C", "text": "ytho"},
+      {"id": "D", "text": "thon"}
+    ],
+    "answer": ["B"],
+    "explanation": "s[1:4] 取索引 1、2、3，不包含 4，所以是 yth。",
+    "common_mistake": "把切片 stop 的位置也包含進去。"
+  },
+  {
+    "id": "q-03-06-001",
+    "source_file": "03-06-string-formatting.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["string", "formatting"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "name = \"Amy\"\nscore = 90\nprint(f\"{name}:{score}\")",
+    "options": [
+      {"id": "A", "text": "Amy:90"},
+      {"id": "B", "text": "{name}:{score}"},
+      {"id": "C", "text": "name:score"},
+      {"id": "D", "text": "Amy score"}
+    ],
+    "answer": ["A"],
+    "explanation": "f-string 會把 {name} 和 {score} 換成變數值。",
+    "common_mistake": "忘記字串前面的 f，或把大括號當成普通文字。"
+  },
+  {
+    "id": "q-03-06-002",
+    "source_file": "03-06-string-formatting.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["formatting"],
+    "stem": "f-string 中，變數通常放在哪裡？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "放在 { } 裡"},
+      {"id": "B", "text": "放在 [ ] 裡"},
+      {"id": "C", "text": "放在 # 後面"},
+      {"id": "D", "text": "放在 import 後面"}
+    ],
+    "answer": ["A"],
+    "explanation": "f-string 用大括號放入變數或簡單運算式。",
+    "common_mistake": "只記得字串前面有 f，忘記變數要放在大括號裡。"
+  },
+  {
+    "id": "q-03-06-003",
+    "source_file": "03-06-string-formatting.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["formatting", "operators"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "price = 35\ncount = 3\nprint(f\"total={price * count}\")",
+    "options": [
+      {"id": "A", "text": "total=105"},
+      {"id": "B", "text": "total=35 * 3"},
+      {"id": "C", "text": "{price * count}"},
+      {"id": "D", "text": "total=38"}
+    ],
+    "answer": ["A"],
+    "explanation": "f-string 的大括號內可以放簡單運算，price * count 先算成 105。",
+    "common_mistake": "以為大括號中的算式會原樣輸出。"
+  },
+  {
+    "id": "q-03-07-002",
+    "source_file": "03-07-string-search.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["find-index"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "s = \"banana\"\nprint(s.find(\"na\"))",
+    "options": [
+      {"id": "A", "text": "1"},
+      {"id": "B", "text": "2"},
+      {"id": "C", "text": "3"},
+      {"id": "D", "text": "-1"}
+    ],
+    "answer": ["B"],
+    "explanation": "\"na\" 第一次出現在 banana 的索引 2。",
+    "common_mistake": "忘記索引從 0 開始，或去找最後一次出現的位置。"
+  },
+  {
+    "id": "q-03-07-003",
+    "source_file": "03-07-string-search.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["find-index"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "s = \"banana\"\nprint(s.find(\"x\"))",
+    "options": [
+      {"id": "A", "text": "0"},
+      {"id": "B", "text": "1"},
+      {"id": "C", "text": "-1"},
+      {"id": "D", "text": "None"}
+    ],
+    "answer": ["C"],
+    "explanation": "find() 找不到子字串時回傳 -1。",
+    "common_mistake": "以為找不到會回傳 0；其實 0 代表在開頭找到。"
+  },
+  {
+    "id": "q-03-08-001",
+    "source_file": "03-08-string-case-align-split.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["string", "split"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "text = \"A,B,C\"\nprint(text.split(\",\"))",
+    "options": [
+      {"id": "A", "text": "['A', 'B', 'C']"},
+      {"id": "B", "text": "A,B,C"},
+      {"id": "C", "text": "ABC"},
+      {"id": "D", "text": "('A', 'B', 'C')"}
+    ],
+    "answer": ["A"],
+    "explanation": "split(\",\") 會用逗號切割字串，結果是 list。",
+    "common_mistake": "以為 split() 只會刪掉逗號，結果仍是字串。"
+  },
+  {
+    "id": "q-03-08-002",
+    "source_file": "03-08-string-case-align-split.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["string"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "print(\"python\".upper())",
+    "options": [
+      {"id": "A", "text": "python"},
+      {"id": "B", "text": "Python"},
+      {"id": "C", "text": "PYTHON"},
+      {"id": "D", "text": "upper"}
+    ],
+    "answer": ["C"],
+    "explanation": "upper() 會回傳大寫版本。",
+    "common_mistake": "看到原字串是小寫就忽略 .upper() 的效果。"
+  },
+  {
+    "id": "q-03-08-003",
+    "source_file": "03-08-string-case-align-split.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["split", "type-conversion"],
+    "stem": "\"80,90\".split(\",\") 的結果中，元素型態是什麼？",
+    "code": "print(\"80,90\".split(\",\"))",
+    "options": [
+      {"id": "A", "text": "str"},
+      {"id": "B", "text": "int"},
+      {"id": "C", "text": "float"},
+      {"id": "D", "text": "bool"}
+    ],
+    "answer": ["A"],
+    "explanation": "split() 會得到字串組成的 list，'80' 和 '90' 還是 str。",
+    "common_mistake": "看到內容像數字就以為 split() 會自動轉成 int。"
+  },
+  {
+    "id": "q-04-01-002",
+    "source_file": "04-01-containers-overview.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["containers", "list", "tuple", "dict", "set"],
+    "stem": "下列哪一個是 dict 的典型外觀？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "[1, 2, 3]"},
+      {"id": "B", "text": "(1, 2, 3)"},
+      {"id": "C", "text": "{\"apple\": 30}"},
+      {"id": "D", "text": "{1, 2, 3}"}
+    ],
+    "answer": ["C"],
+    "explanation": "dict 使用 key: value 配對，例如 {\"apple\": 30}。",
+    "common_mistake": "只看大括號，沒有注意 dict 裡有冒號。"
+  },
+  {
+    "id": "q-04-01-003",
+    "source_file": "04-01-containers-overview.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["containers", "set", "dict"],
+    "stem": "在 Python 中，{} 代表什麼？",
+    "code": "print(type({}))",
+    "options": [
+      {"id": "A", "text": "空 list"},
+      {"id": "B", "text": "空 tuple"},
+      {"id": "C", "text": "空 dict"},
+      {"id": "D", "text": "空 set"}
+    ],
+    "answer": ["C"],
+    "explanation": "{} 是空 dict；空 set 要用 set() 建立。",
+    "common_mistake": "看到大括號就以為一定是 set。"
+  },
+  {
+    "id": "q-04-02-002",
+    "source_file": "04-02-list-ops-1.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["list", "index"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "scores = [80, 90, 100]\nprint(scores[1])",
+    "options": [
+      {"id": "A", "text": "80"},
+      {"id": "B", "text": "90"},
+      {"id": "C", "text": "100"},
+      {"id": "D", "text": "[90]"}
+    ],
+    "answer": ["B"],
+    "explanation": "list 索引從 0 開始，所以 scores[1] 是第二個元素 90。",
+    "common_mistake": "把索引 1 當成第一個元素。"
+  },
+  {
+    "id": "q-04-02-003",
+    "source_file": "04-02-list-ops-1.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["list", "slice"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "scores = [80, 90, 100, 70]\nprint(scores[1:3])",
+    "options": [
+      {"id": "A", "text": "[80, 90]"},
+      {"id": "B", "text": "[90, 100]"},
+      {"id": "C", "text": "[90, 100, 70]"},
+      {"id": "D", "text": "90"}
+    ],
+    "answer": ["B"],
+    "explanation": "scores[1:3] 取索引 1、2，不包含 3。",
+    "common_mistake": "把切片 stop 也算進結果。"
+  },
+  {
+    "id": "q-04-03-002",
+    "source_file": "04-03-list-add-update-delete.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["list", "append-extend"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "items = [1, 2]\nitems.append([3, 4])\nprint(items)",
+    "options": [
+      {"id": "A", "text": "[1, 2, 3, 4]"},
+      {"id": "B", "text": "[1, 2, [3, 4]]"},
+      {"id": "C", "text": "[[1, 2], 3, 4]"},
+      {"id": "D", "text": "[3, 4, 1, 2]"}
+    ],
+    "answer": ["B"],
+    "explanation": "append() 會把 [3, 4] 整個 list 當成一個元素加到最後。",
+    "common_mistake": "把 append() 的效果和 extend() 混淆。"
+  },
+  {
+    "id": "q-04-03-003",
+    "source_file": "04-03-list-add-update-delete.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["list", "append-extend"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "items = [1, 2]\nitems.extend([3, 4])\nprint(items)",
+    "options": [
+      {"id": "A", "text": "[1, 2, 3, 4]"},
+      {"id": "B", "text": "[1, 2, [3, 4]]"},
+      {"id": "C", "text": "[[1, 2], 3, 4]"},
+      {"id": "D", "text": "[3, 4]"}
+    ],
+    "answer": ["A"],
+    "explanation": "extend() 會把 [3, 4] 裡的元素逐一加進原 list。",
+    "common_mistake": "以為 extend() 也會把整包 list 當成單一元素。"
+  },
+  {
+    "id": "q-04-04-002",
+    "source_file": "04-04-list-sort.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["sort-sorted"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "nums = [3, 1, 2]\nprint(sorted(nums))\nprint(nums)",
+    "options": [
+      {"id": "A", "text": "[1, 2, 3]\n[3, 1, 2]"},
+      {"id": "B", "text": "[1, 2, 3]\n[1, 2, 3]"},
+      {"id": "C", "text": "None\n[1, 2, 3]"},
+      {"id": "D", "text": "[3, 1, 2]\n[1, 2, 3]"}
+    ],
+    "answer": ["A"],
+    "explanation": "sorted(nums) 回傳排序後的新 list，不會改變 nums 原本順序。",
+    "common_mistake": "以為 sorted() 會原地修改原 list。"
+  },
+  {
+    "id": "q-04-04-003",
+    "source_file": "04-04-list-sort.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["sort-sorted"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "nums = [3, 1, 2]\nresult = nums.sort()\nprint(result)\nprint(nums)",
+    "options": [
+      {"id": "A", "text": "[1, 2, 3]\n[1, 2, 3]"},
+      {"id": "B", "text": "None\n[1, 2, 3]"},
+      {"id": "C", "text": "[3, 1, 2]\n[1, 2, 3]"},
+      {"id": "D", "text": "None\n[3, 1, 2]"}
+    ],
+    "answer": ["B"],
+    "explanation": "list.sort() 會原地排序並回傳 None，所以 result 是 None，nums 被改成 [1, 2, 3]。",
+    "common_mistake": "把 nums.sort() 當成會回傳排序後新 list。"
+  },
+  {
+    "id": "q-04-05-001",
+    "source_file": "04-05-multidimensional-list.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["list", "nested-list", "index"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "grid = [[\"A1\", \"A2\"], [\"B1\", \"B2\"]]\nprint(grid[0])",
+    "options": [
+      {"id": "A", "text": "A1"},
+      {"id": "B", "text": "A2"},
+      {"id": "C", "text": "['A1', 'A2']"},
+      {"id": "D", "text": "['B1', 'B2']"}
+    ],
+    "answer": ["C"],
+    "explanation": "grid[0] 先取出外層 list 的第 0 個元素，也就是第一個小 list。",
+    "common_mistake": "看到 grid[0] 就以為一定取到最裡面的單一字串。"
+  },
+  {
+    "id": "q-04-05-002",
+    "source_file": "04-05-multidimensional-list.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["list", "nested-list", "index"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "grid = [[\"A1\", \"A2\"], [\"B1\", \"B2\"]]\nprint(grid[0][1])",
+    "options": [
+      {"id": "A", "text": "A1"},
+      {"id": "B", "text": "A2"},
+      {"id": "C", "text": "B1"},
+      {"id": "D", "text": "B2"}
+    ],
+    "answer": ["B"],
+    "explanation": "grid[0] 先得到 [\"A1\", \"A2\"]，再 [1] 取出 \"A2\"。",
+    "common_mistake": "沒有從左到右拆解雙層索引。"
+  },
+  {
+    "id": "q-04-05-003",
+    "source_file": "04-05-multidimensional-list.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["list", "nested-list", "index"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "scores = [[80, 90], [70, 100]]\nprint(scores[1][0])",
+    "options": [
+      {"id": "A", "text": "80"},
+      {"id": "B", "text": "90"},
+      {"id": "C", "text": "70"},
+      {"id": "D", "text": "100"}
+    ],
+    "answer": ["C"],
+    "explanation": "scores[1] 先取第二個小 list [70, 100]，再 [0] 取出 70。",
+    "common_mistake": "把 [1][0] 看成座標時順序顛倒。"
+  },
+  {
+    "id": "q-04-06-001",
+    "source_file": "04-06-list-functions-methods.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["list", "builtin-functions"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "nums = [3, 1, 2]\nprint(len(nums))\nprint(sum(nums))",
+    "options": [
+      {"id": "A", "text": "3\n6"},
+      {"id": "B", "text": "6\n3"},
+      {"id": "C", "text": "2\n6"},
+      {"id": "D", "text": "3\n[3, 1, 2]"}
+    ],
+    "answer": ["A"],
+    "explanation": "len(nums) 是元素個數 3，sum(nums) 是總和 6。",
+    "common_mistake": "把 len() 和 sum() 的用途混在一起。"
+  },
+  {
+    "id": "q-04-06-002",
+    "source_file": "04-06-list-functions-methods.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["list", "builtin-functions"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "nums = [3, 1, 2]\nprint(max(nums))\nprint(min(nums))",
+    "options": [
+      {"id": "A", "text": "3\n1"},
+      {"id": "B", "text": "1\n3"},
+      {"id": "C", "text": "2\n3"},
+      {"id": "D", "text": "[1, 2, 3]"}
+    ],
+    "answer": ["A"],
+    "explanation": "max(nums) 是最大值 3，min(nums) 是最小值 1。",
+    "common_mistake": "以為 max/min 會回傳排序後的 list。"
+  },
+  {
+    "id": "q-04-06-003",
+    "source_file": "04-06-list-functions-methods.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["list", "method", "builtin-functions"],
+    "stem": "下列哪一個是 list 方法呼叫？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "len(nums)"},
+      {"id": "B", "text": "sum(nums)"},
+      {"id": "C", "text": "nums.append(5)"},
+      {"id": "D", "text": "max(nums)"}
+    ],
+    "answer": ["C"],
+    "explanation": "nums.append(5) 是寫在 list 物件後面的方法呼叫。",
+    "common_mistake": "把所有有括號的寫法都當成一樣。"
+  },
+  {
+    "id": "q-04-07-002",
+    "source_file": "04-07-tuple.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["tuple"],
+    "stem": "tuple 和 list 最主要的差異之一是什麼？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "tuple 建立後不可直接修改元素，list 可以修改"},
+      {"id": "B", "text": "tuple 不能用索引取值，list 可以"},
+      {"id": "C", "text": "tuple 一定只能放字串"},
+      {"id": "D", "text": "list 一定不能放數字"}
+    ],
+    "answer": ["A"],
+    "explanation": "tuple 有順序且可索引，但不可變；list 則可變。",
+    "common_mistake": "把不可變誤解成不能讀取或不能索引。"
+  },
+  {
+    "id": "q-04-07-003",
+    "source_file": "04-07-tuple.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["tuple", "index"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "point = (10, 20)\nprint(point[1])",
+    "options": [
+      {"id": "A", "text": "10"},
+      {"id": "B", "text": "20"},
+      {"id": "C", "text": "(10, 20)"},
+      {"id": "D", "text": "IndexError"}
+    ],
+    "answer": ["B"],
+    "explanation": "tuple 可用索引取值，point[1] 是第二個元素 20。",
+    "common_mistake": "以為 tuple 不可變，所以連索引讀取也不行。"
+  },
+  {
+    "id": "q-04-08-001",
+    "source_file": "04-08-tuple-list-builtins.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["tuple", "list", "type-conversion"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "data = (1, 2, 3)\nitems = list(data)\nprint(items)",
+    "options": [
+      {"id": "A", "text": "(1, 2, 3)"},
+      {"id": "B", "text": "[1, 2, 3]"},
+      {"id": "C", "text": "{1, 2, 3}"},
+      {"id": "D", "text": "list"}
+    ],
+    "answer": ["B"],
+    "explanation": "list(data) 會把 tuple 轉成 list。",
+    "common_mistake": "忘記轉換後外觀和型態都會改變。"
+  },
+  {
+    "id": "q-04-08-002",
+    "source_file": "04-08-tuple-list-builtins.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["tuple", "list", "type-conversion"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "items = [1, 2, 3]\ndata = tuple(items)\nprint(data)",
+    "options": [
+      {"id": "A", "text": "[1, 2, 3]"},
+      {"id": "B", "text": "(1, 2, 3)"},
+      {"id": "C", "text": "{1, 2, 3}"},
+      {"id": "D", "text": "tuple"}
+    ],
+    "answer": ["B"],
+    "explanation": "tuple(items) 會把 list 轉成 tuple。",
+    "common_mistake": "以為 tuple() 會原地修改原本的 list。"
+  },
+  {
+    "id": "q-04-08-003",
+    "source_file": "04-08-tuple-list-builtins.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["tuple", "list", "type-conversion"],
+    "stem": "若要修改 tuple 的內容，常見的基本做法是什麼？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "先轉成 list，修改後再視需要轉回 tuple"},
+      {"id": "B", "text": "直接用 data[0] = 100 修改 tuple"},
+      {"id": "C", "text": "用 set() 一定能保留順序修改"},
+      {"id": "D", "text": "用 print() 就會自動修改"}
+    ],
+    "answer": ["A"],
+    "explanation": "tuple 不可直接改元素，若要修改內容，可先轉成 list 處理。",
+    "common_mistake": "忘記轉型產生的是新物件，不是讓原 tuple 原地變成 list。"
+  },
+  {
+    "id": "q-04-09-002",
+    "source_file": "04-09-dict.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["dict", "key-value"],
+    "stem": "執行下列程式會輸出什麼？",
+    "code": "fruit = {\"香蕉\": 20, \"蘋果\": 30}\nprint(fruit[\"香蕉\"])",
+    "options": [
+      {"id": "A", "text": "香蕉"},
+      {"id": "B", "text": "20"},
+      {"id": "C", "text": "30"},
+      {"id": "D", "text": "蘋果"}
+    ],
+    "answer": ["B"],
+    "explanation": "fruit[\"香蕉\"] 用 key \"香蕉\" 找到對應 value 20。",
+    "common_mistake": "把 dict 當成 list，用位置而不是 key 思考。"
+  },
+  {
+    "id": "q-04-09-003",
+    "source_file": "04-09-dict.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["dict", "key-value"],
+    "stem": "下列哪一項最能描述 dict 的 key？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "用來查找 value 的名稱或代號"},
+      {"id": "B", "text": "一定是 list 的索引位置"},
+      {"id": "C", "text": "一定只能是 0 和 1"},
+      {"id": "D", "text": "print() 的輸出結尾"}
+    ],
+    "answer": ["A"],
+    "explanation": "dict 使用 key 查找對應的 value。",
+    "common_mistake": "把 dict 的 key 和 list 的 index 混在一起。"
+  },
+  {
+    "id": "q-04-10-002",
+    "source_file": "04-10-set.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["set"],
+    "stem": "執行下列程式後，set 的元素有幾個？",
+    "code": "letters = {\"a\", \"b\", \"a\", \"c\"}\nprint(len(letters))",
+    "options": [
+      {"id": "A", "text": "2"},
+      {"id": "B", "text": "3"},
+      {"id": "C", "text": "4"},
+      {"id": "D", "text": "5"}
+    ],
+    "answer": ["B"],
+    "explanation": "set 不保留重複元素，\"a\" 只算一份，所以共有 a、b、c 三個元素。",
+    "common_mistake": "把 set 當成 list，以為重複元素都會保留。"
+  },
+  {
+    "id": "q-04-10-003",
+    "source_file": "04-10-set.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["set", "dict"],
+    "stem": "建立空 set 的正確寫法是哪一個？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "{}"},
+      {"id": "B", "text": "[]"},
+      {"id": "C", "text": "()"},
+      {"id": "D", "text": "set()"}
+    ],
+    "answer": ["D"],
+    "explanation": "{} 是空 dict；空 set 要用 set()。",
+    "common_mistake": "看到 set 也用大括號建立，就以為空 set 是 {}。"
+  }
+]

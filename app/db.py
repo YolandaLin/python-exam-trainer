@@ -14,7 +14,6 @@ from .security import hash_password, verify_password
 ROOT = Path(__file__).resolve().parents[1]
 DATABASE_URL = os.environ.get("DATABASE_URL")
 DB_PATH = Path(os.environ.get("DB_PATH", ROOT / "data" / "app.db"))
-QUESTIONS_PATH = ROOT / "content" / "questions.json"
 LESSONS_PATH = ROOT / "content" / "lessons.json"
 
 
@@ -221,8 +220,15 @@ def unit_from_source(source_file: str) -> str:
     return ""
 
 
+def load_questions() -> list[dict[str, Any]]:
+    questions: list[dict[str, Any]] = []
+    for path in sorted((ROOT / "content").glob("questions*.json")):
+        questions.extend(json.loads(path.read_text(encoding="utf-8")))
+    return questions
+
+
 def seed_questions() -> None:
-    questions = json.loads(QUESTIONS_PATH.read_text(encoding="utf-8"))
+    questions = load_questions()
     with get_db() as db:
         for question in questions:
             db.execute(

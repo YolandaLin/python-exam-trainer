@@ -6,12 +6,18 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LESSONS_PATH = ROOT / "content" / "lessons.json"
-QUESTIONS_PATH = ROOT / "content" / "questions.json"
+
+
+def load_questions() -> list[dict]:
+    questions: list[dict] = []
+    for path in sorted((ROOT / "content").glob("questions*.json")):
+        questions.extend(json.loads(path.read_text(encoding="utf-8")))
+    return questions
 
 
 def main() -> int:
     lessons = json.loads(LESSONS_PATH.read_text(encoding="utf-8"))
-    questions = json.loads(QUESTIONS_PATH.read_text(encoding="utf-8"))
+    questions = load_questions()
     question_ids = {question["id"] for question in questions}
     lesson_ids: set[str] = set()
     errors: list[str] = []
@@ -85,6 +91,8 @@ def main() -> int:
         missing_questions = sorted(set(lesson["checkpoint_question_ids"]) - question_ids)
         if missing_questions:
             errors.append(f"{lesson_id}: checkpoint ids not found: {', '.join(missing_questions)}")
+        if len(lesson["checkpoint_question_ids"]) < 3:
+            errors.append(f"{lesson_id}: expected at least 3 checkpoint questions")
 
     if errors:
         print("Lesson checks failed:")

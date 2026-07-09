@@ -24,7 +24,7 @@
       "看到程式最後能被電腦執行，就把 Python 誤認成機器語言。",
       "把程式語言想成背英文單字；更重要的是理解規則和執行順序。"
     ],
-    "checkpoint_question_ids": ["q-01-01-001", "q-01-01-002"]
+    "checkpoint_question_ids": ["q-01-01-001", "q-01-01-002", "q-01-01-003"]
   },
   {
     "id": "lesson-01-02-python-intro",
@@ -51,7 +51,7 @@
       "以為 Python 簡單，所以標點符號和大小寫不重要。",
       "只背語法名字，沒有練習預測程式執行結果。"
     ],
-    "checkpoint_question_ids": ["q-01-02-001"]
+    "checkpoint_question_ids": ["q-01-02-001", "q-01-02-002", "q-01-02-003"]
   },
   {
     "id": "lesson-01-03-install-python-runtime",
@@ -78,7 +78,7 @@
       "以為 Disable path length limit 是讓 python 指令可用的主要選項。",
       "命令列找不到 python 時，只一直改程式內容，沒有檢查環境。"
     ],
-    "checkpoint_question_ids": ["q-01-03-001"]
+    "checkpoint_question_ids": ["q-01-03-001", "q-01-03-002", "q-01-03-003"]
   },
   {
     "id": "lesson-01-04-python-shell",
@@ -106,7 +106,7 @@
       "以為互動模式看到的所有東西都要照抄進程式。",
       "不分清楚「試一行」和「寫完整程式」的使用情境。"
     ],
-    "checkpoint_question_ids": ["q-01-04-001"]
+    "checkpoint_question_ids": ["q-01-04-001", "q-01-04-002", "q-01-04-003"]
   },
   {
     "id": "lesson-01-05-functions-intro",
@@ -133,7 +133,7 @@
       "呼叫函式時忘記括號。",
       "分不清 print() 是顯示結果，round() 是算出一個數值。"
     ],
-    "checkpoint_question_ids": ["q-01-05-001"]
+    "checkpoint_question_ids": ["q-01-05-001", "q-01-05-002", "q-01-05-003"]
   },
   {
     "id": "lesson-01-06-object-oriented-intro",
@@ -160,7 +160,7 @@
       "分不清函式呼叫 len(s) 和方法呼叫 s.lower() 的外觀。",
       "看到 class、object 就覺得全部都不懂；第一階段先會用方法即可。"
     ],
-    "checkpoint_question_ids": []
+    "checkpoint_question_ids": ["q-01-06-001", "q-01-06-002", "q-01-06-003"]
   },
   {
     "id": "lesson-02-01-basic-data-types",
@@ -187,7 +187,7 @@
       "把 True 寫成 true；Python 的布林值大小寫固定。",
       "以為 \"123\" 可以直接和數字 1 相加。"
     ],
-    "checkpoint_question_ids": ["q-02-01-001", "q-02-01-002"]
+    "checkpoint_question_ids": ["q-02-01-001", "q-02-01-002", "q-02-01-003"]
   },
   {
     "id": "lesson-02-02-operators",
@@ -214,7 +214,7 @@
       "以為 % 是百分比；在這裡它是取餘數。",
       "忘記字串可以用 * 重複，但只能乘整數。"
     ],
-    "checkpoint_question_ids": ["q-02-02-001", "q-02-02-002"]
+    "checkpoint_question_ids": ["q-02-02-001", "q-02-02-002", "q-02-02-003"]
   },
   {
     "id": "lesson-03-01-print",
@@ -242,7 +242,7 @@
       "把 sep 和 end 控制的位置弄反。",
       "輸出題只看文字，忽略空白、換行也會影響答案。"
     ],
-    "checkpoint_question_ids": ["q-03-01-001"]
+    "checkpoint_question_ids": ["q-03-01-001", "q-03-01-002", "q-03-01-003"]
   },
   {
     "id": "lesson-03-02-input",
@@ -270,7 +270,7 @@
       "忘記轉型就拿 input() 的結果做加法。",
       "看到 + 就以為一定是數學加法；字串加字串是串接。"
     ],
-    "checkpoint_question_ids": ["q-03-02-001", "q-03-02-002"]
+    "checkpoint_question_ids": ["q-03-02-001", "q-03-02-002", "q-03-02-003"]
   },
   {
     "id": "lesson-03-03-ascii-escape",
@@ -299,7 +299,7 @@
       "忘記 \\n 輸出時會真的換行。",
       "以為 ord() 可以直接處理一整串很長的字串。"
     ],
-    "checkpoint_question_ids": ["q-03-03-001"]
+    "checkpoint_question_ids": ["q-03-03-001", "q-03-03-002", "q-03-03-003"]
   },
   {
     "id": "lesson-03-04-unicode",
@@ -326,7 +326,7 @@
       "把中文顯示問題一律當成 Python 語法錯誤。",
       "看到 ord() 回傳很大的數字就以為程式錯了。"
     ],
-    "checkpoint_question_ids": []
+    "checkpoint_question_ids": ["q-03-04-001", "q-03-04-002", "q-03-04-003"]
   },
   {
     "id": "lesson-03-05-string-basic-ops",
@@ -354,7 +354,7 @@
       "切片時忘記結尾 stop 不包含在結果裡。",
       "把 s[1] 和 s[1:2] 的結果型態和意義混在一起。"
     ],
-    "checkpoint_question_ids": ["q-03-05-001"]
+    "checkpoint_question_ids": ["q-03-05-001", "q-03-05-002", "q-03-05-003"]
   },
   {
     "id": "lesson-03-06-string-formatting",
@@ -382,7 +382,7 @@
       "把大括號裡的變數名稱打錯。",
       "分不清字串外面的引號和 f-string 裡的大括號。"
     ],
-    "checkpoint_question_ids": []
+    "checkpoint_question_ids": ["q-03-06-001", "q-03-06-002", "q-03-06-003"]
   },
   {
     "id": "lesson-03-07-string-search",
@@ -409,7 +409,7 @@
       "以為 find() 找不到會回傳 0。",
       "看到回傳 0 就以為是假或沒找到，忽略它代表第一個位置。"
     ],
-    "checkpoint_question_ids": ["q-03-07-001"]
+    "checkpoint_question_ids": ["q-03-07-001", "q-03-07-002", "q-03-07-003"]
   },
   {
     "id": "lesson-03-08-string-case-align-split",
@@ -437,7 +437,7 @@
       "忘記 split() 切出來的 '80' 仍是字串，不是整數。",
       "以為所有字串方法都會直接修改原本字串。"
     ],
-    "checkpoint_question_ids": []
+    "checkpoint_question_ids": ["q-03-08-001", "q-03-08-002", "q-03-08-003"]
   },
   {
     "id": "lesson-04-01-containers-overview",
@@ -464,7 +464,7 @@
       "看到 dict 和 set 都用大括號，就以為它們一樣。",
       "把所有容器都當成可以用 0、1、2 位置索引。"
     ],
-    "checkpoint_question_ids": ["q-04-01-001"]
+    "checkpoint_question_ids": ["q-04-01-001", "q-04-01-002", "q-04-01-003"]
   },
   {
     "id": "lesson-04-02-list-ops-1",
@@ -492,7 +492,7 @@
       "忘記 list 切片回傳的是 list，不是單一元素。",
       "切片時把 stop 也算進結果。"
     ],
-    "checkpoint_question_ids": ["q-04-02-001"]
+    "checkpoint_question_ids": ["q-04-02-001", "q-04-02-002", "q-04-02-003"]
   },
   {
     "id": "lesson-04-03-list-add-update-delete",
@@ -520,7 +520,7 @@
       "忘記 list 方法通常會直接改變原本的 list。",
       "以為 append() 會回傳修改後的新 list。"
     ],
-    "checkpoint_question_ids": ["q-04-03-001"]
+    "checkpoint_question_ids": ["q-04-03-001", "q-04-03-002", "q-04-03-003"]
   },
   {
     "id": "lesson-04-04-list-sort",
@@ -548,7 +548,7 @@
       "忽略 sort() 是直接改原本 list。",
       "只看排序結果，沒有追蹤變數後來指向什麼內容。"
     ],
-    "checkpoint_question_ids": ["q-04-04-001"]
+    "checkpoint_question_ids": ["q-04-04-001", "q-04-04-002", "q-04-04-003"]
   },
   {
     "id": "lesson-04-05-multidimensional-list",
@@ -576,7 +576,7 @@
       "把列和欄的索引順序看反。",
       "忘記每一層索引都從 0 開始。"
     ],
-    "checkpoint_question_ids": []
+    "checkpoint_question_ids": ["q-04-05-001", "q-04-05-002", "q-04-05-003"]
   },
   {
     "id": "lesson-04-06-list-functions-methods",
@@ -604,7 +604,7 @@
       "把 append() 當成會回傳新 list 的函式。",
       "只背名稱，不看它到底有沒有改變原本資料。"
     ],
-    "checkpoint_question_ids": []
+    "checkpoint_question_ids": ["q-04-06-001", "q-04-06-002", "q-04-06-003"]
   },
   {
     "id": "lesson-04-07-tuple",
@@ -632,7 +632,7 @@
       "把 tuple 當成 list 一樣指定索引修改。",
       "忽略單一元素 tuple 需要逗號，例如 (1,)。"
     ],
-    "checkpoint_question_ids": ["q-04-07-001"]
+    "checkpoint_question_ids": ["q-04-07-001", "q-04-07-002", "q-04-07-003"]
   },
   {
     "id": "lesson-04-08-tuple-list-builtins",
@@ -660,7 +660,7 @@
       "忘記轉換後型態已經不同，可用的方法也不同。",
       "轉成 list 修改後，卻還去印原本的 tuple，以為修改失敗。"
     ],
-    "checkpoint_question_ids": []
+    "checkpoint_question_ids": ["q-04-08-001", "q-04-08-002", "q-04-08-003"]
   },
   {
     "id": "lesson-04-09-dict",
@@ -688,7 +688,7 @@
       "忘記 key 要寫對，字串 key 還要加引號。",
       "看到大括號就以為一定是 set，忽略 dict 有冒號。"
     ],
-    "checkpoint_question_ids": ["q-04-09-001"]
+    "checkpoint_question_ids": ["q-04-09-001", "q-04-09-002", "q-04-09-003"]
   },
   {
     "id": "lesson-04-10-set",
@@ -716,6 +716,6 @@
       "把 {} 當成空集合。",
       "看到輸出順序和自己想的不一樣，就以為 set 壞掉；其實 set 本來就不強調順序。"
     ],
-    "checkpoint_question_ids": ["q-04-10-001"]
+    "checkpoint_question_ids": ["q-04-10-001", "q-04-10-002", "q-04-10-003"]
   }
 ]

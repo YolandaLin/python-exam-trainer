@@ -86,6 +86,13 @@
 - GeeksforGeeks Python MCQ：依變數、運算子、資料型態、list、string、dict、set、function 等主題分類。
 - Sanfoundry Python MCQ：大量題庫，適合參考章節化與考試導向編排。
 
+參考英文題庫時的翻譯規則：
+
+- 可以把題幹翻成中文，讓國三升高一學生讀得懂。
+- 答案選項若是程式碼、輸出字串、函式名稱、型態名稱、錯誤訊息，不可翻譯。
+- 選項中的文字若翻譯後會改變程式輸出或字串本身，必須保留原樣。
+- 外部題目只參考題型、難度、考點與出題方式，不直接複製題目。
+
 參考連結：
 
 - http://exam.bestdaylong.com/test3359.htm

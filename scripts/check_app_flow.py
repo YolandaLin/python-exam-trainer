@@ -20,7 +20,9 @@ def main() -> None:
 
         from app.main import app
 
-        questions = json.loads((ROOT / "content" / "questions.json").read_text(encoding="utf-8"))
+        questions = []
+        for path in sorted((ROOT / "content").glob("questions*.json")):
+            questions.extend(json.loads(path.read_text(encoding="utf-8")))
         answers = {question["id"]: question["answer"] for question in questions}
 
         with TestClient(app) as client:
