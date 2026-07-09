@@ -4,9 +4,11 @@
 
 ## 狀態摘要
 
-- 狀態：本機課程 + 練習 MVP 已完成；26 節課程已重寫成國三升高一可讀的上課講解版，學生可先上課、完成小檢查，再進入對應練習題。
+- 狀態：已部署到 Render；第 1 到第 4 講課程 + 練習 MVP 可用。26 節課程已重寫成國三升高一可讀的上課講解版，學生可先上課、完成小檢查，再進入對應練習題。
 - 主要資料來源：`../02-雄女電資班考題整理/`。
 - 目標：把第 1 到第 4 講考題整理先轉成可練習、可追蹤弱點、可在網頁執行 Python 的公開網站，供兩位學生在家登入使用。
+- 公開網址：`https://python-exam-trainer.onrender.com/`。
+- GitHub：`https://github.com/YolandaLin/python-exam-trainer`。
 
 ## 對應表
 
@@ -19,15 +21,16 @@
 | 題目資料 | `content/questions.json` | 進行中 | 已建立第 1 到第 4 講第一批 23 題。 |
 | 檢查工具 | `scripts/check_questions.py` / `scripts/check_lessons.py` / `scripts/check_app_flow.py` | 已建立 | 可檢查題目、課程資料與 API 主流程。 |
 | 本機資料庫 | `data/app.db` | 開發用 | 啟動時自動建立，已由 `.gitignore` 排除。 |
-| 部署設定 | `render.yaml` / [DEPLOYMENT.md](DEPLOYMENT.md) | 已建立 | Render Blueprint：FastAPI Web Service + PostgreSQL。 |
+| 部署設定 | `render.yaml` / [DEPLOYMENT.md](DEPLOYMENT.md) | 已上線 | Render Blueprint：FastAPI Web Service + PostgreSQL；正式密碼已由使用者於 Render Environment 設定，不寫入 Git。 |
+| README 帳密處理 | [README.md](README.md) | 已完成 | 已移除密碼欄位，只保留帳號名稱；commit `41f416f`。 |
 
 ## 下一步
 
-1. 擴充第 1 到第 4 講題庫，讓每個主要觀念至少有 3 題，並補齊目前沒有小檢查題的課程。
-2. 補更完整的管理者弱點檢視，加入課程完成率與最近課程進度。
-3. 補更完整的密碼初始化/重設流程，避免正式環境帳號建立後只能靠資料庫處理。
-4. 實際建立 Render Blueprint，取得公開網址。
-5. 部署後測試登入、課程、作答、Python 執行區與弱點追蹤。
+1. 用正式帳號做完整上線流程驗證：登入、課程、小檢查、練習題、dashboard、管理者學生總覽、Python 執行區。
+2. 擴充第 1 到第 4 講題庫，讓每個主要觀念至少有 3 題，並補齊目前沒有小檢查題的課程。
+3. 補更完整的管理者弱點檢視，加入課程完成率與最近課程進度。
+4. 補更完整的密碼初始化/重設流程，避免正式環境帳號建立後只能靠資料庫處理。
+5. 觀察 Render 免費方案休眠狀況；若學生使用體驗不佳，再評估升級或改部署方案。
 
 ## 已驗證
 
@@ -36,8 +39,18 @@
 - `python scripts/check_app_flow.py`：通過，登入、課程列表、課程進度、依課程取下一題、送出正解、dashboard 查詢皆正常。
 - `node --check app/static/app.js`：通過。
 - `python -m compileall app scripts`：通過。
+- Render 公開站：`/health`、首頁、`/static/app.js` 皆回 200。
+- Render 公開站：`admin/admin123`、`student1/student123` 已被 production 登入門檻拒絕。
 
 ## 上線前置
 
 - 已登記上線前置 3 項到 `D:/AI/handoffs/pending/deploy-prerequisites.md`：`ADMIN_PASSWORD`、`STUDENT1_PASSWORD`、`STUDENT2_PASSWORD`。
 - 2026-07-09 上線後檢查發現公開站仍可使用開發預設密碼登入；已補 production 安全門檻，正式環境會拒絕 `admin123` / `student123` 登入，並可用 Render env vars 更新既有帳號密碼。
+- 使用者已表示正式環境密碼已更換；密碼不落檔、不提交 Git。
+
+## 今日交接重點
+
+- 最新 Git commit：`41f416f Remove passwords from README`。
+- 正式網址：`https://python-exam-trainer.onrender.com/`。
+- 已完成：課程優先流程、26 節初學者版課程、23 題第一批題庫、Render 部署、PostgreSQL 支援、production 預設密碼阻擋、README 移除密碼欄。
+- 下次接手先做：用正式帳號驗證完整學生流程；確認沒有問題後，開始補第 1 到第 4 講題庫密度。
