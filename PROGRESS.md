@@ -4,7 +4,7 @@
 
 ## 狀態摘要
 
-- 狀態：本機課程 + 練習 MVP 已完成；學生可先上課、完成小檢查，再進入對應練習題。
+- 狀態：本機課程 + 練習 MVP 已完成；26 節課程已重寫成國三升高一可讀的上課講解版，學生可先上課、完成小檢查，再進入對應練習題。
 - 主要資料來源：`../02-雄女電資班考題整理/`。
 - 目標：把第 1 到第 4 講考題整理先轉成可練習、可追蹤弱點、可在網頁執行 Python 的公開網站，供兩位學生在家登入使用。
 
@@ -15,7 +15,7 @@
 | 專案說明 | [README.md](README.md) | 已建立 | 說明用途、資料來源與第一版範圍。 |
 | 計畫書 | [PLAN.md](PLAN.md) | 已建立 | 已定義部署範圍、MVP、題庫來源、弱點追蹤、技術架構與部署決策。 |
 | 網頁程式 | `app/` | 進行中 | 已建立 FastAPI API、靜態前端、課程頁、練習頁與進度紀錄。 |
-| 課程資料 | `content/lessons.json` | 已建立 | 已從 `../02-雄女電資班考題整理/videos/` 整理第 1 到第 4 講 26 節課程。 |
+| 課程資料 | `content/lessons.json` | 已重寫 | 已從 `../02-雄女電資班考題整理/videos/` 整理第 1 到第 4 講 26 節課程；每節補生活例子、可執行範例與常見誤解。 |
 | 題目資料 | `content/questions.json` | 進行中 | 已建立第 1 到第 4 講第一批 23 題。 |
 | 檢查工具 | `scripts/check_questions.py` / `scripts/check_lessons.py` / `scripts/check_app_flow.py` | 已建立 | 可檢查題目、課程資料與 API 主流程。 |
 | 本機資料庫 | `data/app.db` | 開發用 | 啟動時自動建立，已由 `.gitignore` 排除。 |
@@ -31,7 +31,7 @@
 ## 已驗證
 
 - `python scripts/check_questions.py`：通過，23 題、32 個觀念。
-- `python scripts/check_lessons.py`：通過，26 節課程、39 個觀念、23 個小檢查連結。
+- `python scripts/check_lessons.py`：通過，26 節課程、39 個觀念、23 個小檢查連結；檢查每節課需有生活例子、可執行範例與足夠解說長度。
 - `python scripts/check_app_flow.py`：通過，登入、課程列表、課程進度、依課程取下一題、送出正解、dashboard 查詢皆正常。
 - `node --check app/static/app.js`：通過。
 - `python -m compileall app scripts`：通過。

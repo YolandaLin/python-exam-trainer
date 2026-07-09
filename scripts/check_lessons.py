@@ -65,6 +65,23 @@ def main() -> int:
             if block_type == "list" and not block.get("items"):
                 errors.append(f"{lesson_id}: body block #{block_index} list must have items")
 
+        body_text_parts: list[str] = []
+        body_types: set[str] = set()
+        for block in lesson["body"]:
+            body_types.add(block.get("type", ""))
+            if block.get("text"):
+                body_text_parts.append(block["text"])
+            if block.get("code"):
+                body_text_parts.append(block["code"])
+            body_text_parts.extend(block.get("items", []))
+        body_text = "\n".join(body_text_parts)
+        if len(body_text) < 350:
+            errors.append(f"{lesson_id}: lesson explanation is too short for beginner teaching")
+        if "生活例子" not in body_text:
+            errors.append(f"{lesson_id}: lesson must include a life example")
+        if "code" not in body_types:
+            errors.append(f"{lesson_id}: lesson must include at least one runnable code example")
+
         missing_questions = sorted(set(lesson["checkpoint_question_ids"]) - question_ids)
         if missing_questions:
             errors.append(f"{lesson_id}: checkpoint ids not found: {', '.join(missing_questions)}")

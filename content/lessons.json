@@ -7,17 +7,22 @@
     "order": 101,
     "concepts": ["programming-language", "machine-language", "compiler-interpreter"],
     "goals": [
-      "知道電腦底層只直接處理 0 和 1",
-      "分辨高階語言、編譯語言與直譯語言的大方向"
+      "用生活例子理解為什麼需要程式語言",
+      "知道電腦底層真正處理的是 0 和 1",
+      "分辨機器語言、高階語言、編譯與直譯的大方向"
     ],
     "body": [
-      {"type": "paragraph", "text": "程式語言是人和電腦溝通的工具。人比較容易讀懂 Python 這種高階語言，但電腦硬體底層真正能處理的是 0 和 1。"},
-      {"type": "paragraph", "text": "所以程式需要經過編譯或直譯，才會變成電腦能執行的形式。Python 通常被拿來當直譯語言的代表。"},
-      {"type": "list", "items": ["機器語言：最接近硬體，主要由 0 和 1 組成。", "高階語言：比較接近人類思考，例如 Python。", "直譯：執行時逐步處理程式。"]}
+      {"type": "paragraph", "text": "先把程式語言想成「你和電腦之間的翻譯」。你想讓電腦幫你做事，例如計算成績、整理名單、判斷答案對錯，但電腦不懂中文，也不懂你心裡的想法，所以你要用一種它能被翻譯的規則寫下指令。"},
+      {"type": "paragraph", "text": "生活例子：你去飲料店點「一杯微糖綠茶」，店員聽得懂中文，所以可以幫你做。但如果店員只看得懂代號，你可能要寫成 G-30。電腦更極端，它底層最直接理解的是 0 和 1，所以 Python 這種人比較看得懂的語言，最後還是要被處理成電腦能執行的形式。"},
+      {"type": "list", "items": ["機器語言：最接近硬體，主要是 0 和 1，人很難直接閱讀。", "高階語言：比較接近人的想法，例如 Python、JavaScript、C。", "編譯：先把程式整批翻譯成比較底層的形式，再執行。", "直譯：執行時一段一段處理，Python 常被拿來當直譯語言代表。"]},
+      {"type": "paragraph", "text": "初學 Python 時，不需要先背很硬的定義。你只要先記住：Python 原始碼是給人寫、給工具處理的；電腦硬體真正直接吃的是更底層的表示。"},
+      {"type": "code", "code": "print(\"請電腦幫我顯示這句話\")"},
+      {"type": "paragraph", "text": "這行程式看起來像英文加中文，但它不是自然語言作文，而是符合 Python 規則的指令。Python 會處理這個指令，讓電腦在畫面上顯示文字。"}
     ],
     "common_mistakes": [
-      "以為 Python 原始碼可以被硬體直接理解",
-      "把直譯語言誤認成機器語言"
+      "以為 Python 原始碼可以被硬體直接理解；其實還需要直譯器處理。",
+      "看到程式最後能被電腦執行，就把 Python 誤認成機器語言。",
+      "把程式語言想成背英文單字；更重要的是理解規則和執行順序。"
     ],
     "checkpoint_question_ids": ["q-01-01-001", "q-01-01-002"]
   },
@@ -30,16 +35,21 @@
     "concepts": ["python-history"],
     "goals": [
       "知道 Python 名稱的由來",
-      "理解 Python 適合初學與快速開發的原因"
+      "理解 Python 為什麼常被拿來當入門語言",
+      "建立初學 Python 時該注意的學習方式"
     ],
     "body": [
-      {"type": "paragraph", "text": "Python 是一種常見的高階程式語言，語法相對接近英文，適合用來入門。"},
-      {"type": "paragraph", "text": "Python 這個名稱不是因為蟒蛇，而是來自 BBC 喜劇 Monty Python's Flying Circus。"},
-      {"type": "list", "items": ["常用於教學、自動化、資料處理與網站後端。", "初學時先重視語法規則與輸出結果，不需要一開始理解所有內部細節。"]}
+      {"type": "paragraph", "text": "Python 是一種很常見的程式語言。它受歡迎的一個原因是語法相對清楚，很多指令看起來接近英文，所以很適合拿來當第一個正式學的程式語言。"},
+      {"type": "paragraph", "text": "但 Python 不是因為蟒蛇才叫 Python。這個名字來自 BBC 喜劇 Monty Python's Flying Circus。考題很愛考這種反直覺的小細節，因為很多人看到 Python 就直接選蛇。"},
+      {"type": "paragraph", "text": "生活例子：學 Python 有點像學用計算機。一開始你不用知道計算機裡面每個零件怎麼做，只要先知道按哪些鍵會得到什麼結果。等你熟悉後，再慢慢理解背後原理。"},
+      {"type": "list", "items": ["Python 常用在教學、自動化、資料分析、網站後端和人工智慧。", "語法比較好讀，不代表可以隨便寫；括號、引號、大小寫都很重要。", "初學時最重要的是：看懂每一行做了什麼，並能預測輸出。"]},
+      {"type": "code", "code": "print(\"Hello, Python\")\nprint(1 + 2)"},
+      {"type": "paragraph", "text": "上面兩行程式分別做兩件事：第一行顯示文字，第二行先算 1 + 2，再把結果顯示出來。初學者每看到一行，都要練習問自己：這一行的輸入是什麼？輸出是什麼？"}
     ],
     "common_mistakes": [
-      "看到 Python 的英文意思就選蟒蛇",
-      "把語法簡單誤解成不需要嚴格遵守格式"
+      "看到 Python 的英文意思是蛇，就直接選蟒蛇當名稱來源。",
+      "以為 Python 簡單，所以標點符號和大小寫不重要。",
+      "只背語法名字，沒有練習預測程式執行結果。"
     ],
     "checkpoint_question_ids": ["q-01-02-001"]
   },
@@ -51,17 +61,22 @@
     "order": 103,
     "concepts": ["python-install", "path"],
     "goals": [
-      "知道 Python runtime 是執行 Python 程式的環境",
-      "知道 PATH 會影響命令列能不能找到 python 指令"
+      "知道安裝 Python 是為了讓電腦能執行 Python 程式",
+      "理解 PATH 是命令列找程式的位置清單",
+      "分辨安裝設定問題和程式語法錯誤"
     ],
     "body": [
-      {"type": "paragraph", "text": "要執行 Python 程式，電腦需要先有 Python 執行環境。安裝時常看到的 Add python.exe to PATH，目的是讓命令列能直接找到 python。"},
+      {"type": "paragraph", "text": "你寫 Python 程式之前，電腦要先有能讀懂 Python 的工具。這個工具可以先粗略想成 Python 執行環境。沒有它，電腦看到 .py 檔案也不知道該怎麼處理。"},
+      {"type": "paragraph", "text": "生活例子：你手機可以開照片，是因為手機裡有看照片的 App。如果沒有對應 App，檔案在那裡也打不開。Python 程式也是一樣，要有 Python 環境才能跑。"},
+      {"type": "paragraph", "text": "安裝時常看到 Add python.exe to PATH。PATH 可以想成命令列的「找人名單」。你在命令列打 python，系統會照 PATH 裡的資料夾找有沒有 python.exe。"},
       {"type": "code", "code": "python --version"},
-      {"type": "paragraph", "text": "如果命令列找不到 python，通常不是程式碼錯，而是安裝位置或 PATH 設定的問題。"}
+      {"type": "paragraph", "text": "如果這個指令能顯示版本，代表命令列找得到 Python。如果找不到，不一定是你程式寫錯，可能只是 PATH 沒設定好。"},
+      {"type": "list", "items": ["語法錯誤：通常是程式內容寫錯，例如少括號、少引號。", "安裝或 PATH 問題：通常是連 python 指令都找不到。", "考試遇到安裝選項時，要記得 Add python.exe to PATH 的用途。"]}
     ],
     "common_mistakes": [
-      "把 PATH 問題誤認成 Python 語法錯誤",
-      "把 Disable path length limit 當成讓 python 指令可用的主要選項"
+      "把 PATH 問題誤認成 Python 程式碼寫錯。",
+      "以為 Disable path length limit 是讓 python 指令可用的主要選項。",
+      "命令列找不到 python 時，只一直改程式內容，沒有檢查環境。"
     ],
     "checkpoint_question_ids": ["q-01-03-001"]
   },
@@ -74,16 +89,22 @@
     "concepts": ["python-shell"],
     "goals": [
       "看懂 >>> 代表 Python 互動模式",
-      "知道互動模式適合快速試一行程式"
+      "知道互動模式適合快速試一小段程式",
+      "分辨互動模式和 .py 程式檔"
     ],
     "body": [
-      {"type": "paragraph", "text": "看到 >>> 時，代表你已經進入 Python 互動模式，可以直接輸入一行 Python 指令並立刻看到結果。"},
+      {"type": "paragraph", "text": "當畫面出現 >>>，代表 Python 正在等你輸入一行指令。這叫互動模式。你輸入一行，它就立刻處理一行，很適合拿來試小東西。"},
+      {"type": "paragraph", "text": "生活例子：互動模式像是問答。你問「1 + 2 是多少？」它馬上回答 3。寫 .py 檔比較像把一整張考卷寫完，再交給電腦一次執行。"},
       {"type": "code", "code": "1 + 2\nprint(\"Hello\")"},
-      {"type": "paragraph", "text": "互動模式適合試小片段；正式程式通常會寫在 .py 檔案中。"}
+      {"type": "paragraph", "text": "在互動模式裡，直接輸入 1 + 2 可能會看到結果；但在正式 .py 檔中，如果你想讓結果顯示在畫面上，通常要用 print()。"},
+      {"type": "paragraph", "text": "練習時可以這樣分工：不確定某個小語法會怎樣，就丟到互動模式試；如果要保存一段完整流程，例如先輸入、再計算、再輸出，就寫成 .py 檔。這樣比較不會把測試用的小片段和正式程式混在一起。"},
+      {"type": "list", "items": [">>> 是提示符號，不是你要寫進程式檔的內容。", "互動模式適合試算、試語法、看小結果。", ".py 檔適合保存完整程式，之後可以重複執行。"]},
+      {"type": "paragraph", "text": "初學時可以多用互動模式測試：先猜結果，再執行確認。這樣比只看答案更容易進步。"}
     ],
     "common_mistakes": [
-      "把 >>> 複製到 .py 程式檔裡",
-      "以為互動模式和程式檔完全沒有差別"
+      "把 >>> 複製到 .py 檔裡，導致語法錯誤。",
+      "以為互動模式看到的所有東西都要照抄進程式。",
+      "不分清楚「試一行」和「寫完整程式」的使用情境。"
     ],
     "checkpoint_question_ids": ["q-01-04-001"]
   },
@@ -95,17 +116,22 @@
     "order": 105,
     "concepts": ["builtin-functions", "round"],
     "goals": [
-      "知道函式可以接收資料並產生結果",
-      "看懂 round(number, ndigits) 的基本用法"
+      "用工具箱的概念理解函式",
+      "看懂函式名稱、括號和參數",
+      "會判斷 round() 的基本輸出"
     ],
     "body": [
-      {"type": "paragraph", "text": "函式像是一個已經做好的工具，把資料放進括號，函式會依規則處理。Python 有很多內建函式，不需要自己先定義。"},
-      {"type": "code", "code": "print(round(3.141596, 3))"},
-      {"type": "paragraph", "text": "round(3.141596, 3) 的第二個參數 3，代表四捨五入到小數點後 3 位。"}
+      {"type": "paragraph", "text": "函式可以先想成「已經做好的工具」。你把資料放進去，函式按照固定規則處理，再給你結果。Python 內建很多工具，所以你不需要從零開始做。"},
+      {"type": "paragraph", "text": "生活例子：自動販賣機就像函式。你投入錢、按下飲料編號，它會依照規則吐出飲料。函式也是一樣，括號裡放的是你給它的資料，稱為參數。"},
+      {"type": "code", "code": "print(len(\"Python\"))\nprint(round(3.141596, 3))"},
+      {"type": "paragraph", "text": "len(\"Python\") 會算字串長度。round(3.141596, 3) 會把數字四捨五入到小數點後 3 位，所以結果是 3.142。"},
+      {"type": "list", "items": ["函式名稱：例如 print、len、round。", "括號：呼叫函式時要有括號。", "參數：放在括號裡，告訴函式要處理什麼。", "回傳或輸出：函式處理完可能給你一個結果，也可能顯示東西。"]},
+      {"type": "paragraph", "text": "考題常考 round() 的第二個參數。它不是總共保留幾位數，而是小數點後保留幾位。這個差異很容易錯。"}
     ],
     "common_mistakes": [
-      "把第二個參數誤解成總共保留幾位數",
-      "忘記函式名稱後面要有括號"
+      "把 round() 第二個參數誤解成總共保留幾位數。",
+      "呼叫函式時忘記括號。",
+      "分不清 print() 是顯示結果，round() 是算出一個數值。"
     ],
     "checkpoint_question_ids": ["q-01-05-001"]
   },
@@ -118,16 +144,21 @@
     "concepts": ["object-oriented", "object", "method"],
     "goals": [
       "先用直覺理解物件是帶有資料與功能的東西",
-      "知道方法通常是物件可以做的動作"
+      "知道方法通常是物件可以做的動作",
+      "先看懂方法呼叫，不急著寫 class"
     ],
     "body": [
-      {"type": "paragraph", "text": "初學時不需要立刻寫 class。先把物件想成一個有狀態、也有功能的資料。"},
-      {"type": "code", "code": "name = \"Python\"\nprint(name.lower())"},
-      {"type": "paragraph", "text": "像 name.lower() 這種寫在物件後面的功能，常稱為方法。"}
+      {"type": "paragraph", "text": "物件導向聽起來很抽象，但初學先不要怕。你可以先把物件想成「一個東西」，這個東西裡面有資料，也可能有它能做的動作。"},
+      {"type": "paragraph", "text": "生活例子：一支手機是一個物件。它有資料，例如電量、型號、照片；也有動作，例如拍照、播放音樂、開啟 App。程式裡的物件也常用類似方式思考。"},
+      {"type": "code", "code": "name = \"Python\"\nprint(name.lower())\nprint(name.upper())"},
+      {"type": "paragraph", "text": "name 是一個字串物件。lower() 和 upper() 是字串可以做的動作，也就是方法。寫法是物件後面接一個點，再接方法名稱和括號。"},
+      {"type": "list", "items": ["函式呼叫常長得像 len(name)。", "方法呼叫常長得像 name.lower()。", "現在先會看懂外觀就好，不需要立刻寫 class。"]},
+      {"type": "paragraph", "text": "之後看到 s.split()、items.append()、nums.sort()，都可以先想成：某個物件正在使用它自己的功能。"}
     ],
     "common_mistakes": [
-      "一開始就想背完整物件導向定義，反而忽略語法",
-      "分不清函式呼叫和方法呼叫的外觀差異"
+      "一開始就想背完整物件導向定義，反而忽略基本語法。",
+      "分不清函式呼叫 len(s) 和方法呼叫 s.lower() 的外觀。",
+      "看到 class、object 就覺得全部都不懂；第一階段先會用方法即可。"
     ],
     "checkpoint_question_ids": []
   },
@@ -140,16 +171,21 @@
     "concepts": ["data-types", "string", "bool", "type-conversion"],
     "goals": [
       "分辨數字、字串、布林值等基本型態",
-      "知道 type() 可以查看資料型態"
+      "知道引號會影響資料型態",
+      "會用 type() 查看型態"
     ],
     "body": [
-      {"type": "paragraph", "text": "Python 中的資料有型態。123 是整數，\"123\" 是字串，True 和 False 是布林值。"},
-      {"type": "code", "code": "print(type(123))\nprint(type(\"123\"))\nprint(type(True))"},
-      {"type": "paragraph", "text": "字串外面有引號。即使內容看起來像數字，只要被引號包住，通常就是字串。"}
+      {"type": "paragraph", "text": "資料型態就是資料的種類。人看到 123 和 \"123\" 可能都覺得是 123，但 Python 會分得很清楚：沒有引號的 123 是數字，有引號的 \"123\" 是文字。"},
+      {"type": "paragraph", "text": "生活例子：學生證號碼看起來像數字，但你不會拿它來加減乘除；它比較像一段文字代碼。Python 裡的字串也是這種概念。"},
+      {"type": "code", "code": "print(type(123))\nprint(type(\"123\"))\nprint(type(True))\nprint(type(3.14))"},
+      {"type": "list", "items": ["int：整數，例如 123。", "float：小數，例如 3.14。", "str：字串，例如 \"123\"、\"Python\"。", "bool：布林值，只有 True 和 False。"]},
+      {"type": "paragraph", "text": "type() 可以讓你查看資料型態。做輸出預測題時，看到引號要特別小心，因為引號常常決定它是不是字串。"},
+      {"type": "code", "code": "print(123 + 1)\nprint(\"123\" + \"1\")"}
     ],
     "common_mistakes": [
-      "看到 123 就一定認為是數字，忽略引號",
-      "把 True 寫成 true，大小寫錯誤"
+      "看到 123 就一定認為是數字，沒有檢查有沒有引號。",
+      "把 True 寫成 true；Python 的布林值大小寫固定。",
+      "以為 \"123\" 可以直接和數字 1 相加。"
     ],
     "checkpoint_question_ids": ["q-02-01-001", "q-02-01-002"]
   },
@@ -161,17 +197,22 @@
     "order": 202,
     "concepts": ["operators", "floor-division", "string-repeat"],
     "goals": [
-      "分辨常見算術運算子",
-      "看懂 //、% 與字串重複的結果"
+      "知道運算子是讓資料做運算的符號",
+      "分辨 /、//、% 的差異",
+      "看懂字串重複的結果"
     ],
     "body": [
-      {"type": "paragraph", "text": "運算子是用來做運算或比較的符號。常見的有 +、-、*、/、//、%。"},
-      {"type": "code", "code": "print(10 // 3)\nprint(10 % 3)\nprint(\"ha\" * 3)"},
-      {"type": "paragraph", "text": "// 是整除，% 是取餘數。字串乘上整數時，會重複字串。"}
+      {"type": "paragraph", "text": "運算子就是用來做運算的符號。你熟悉的 +、-、*、/ 都是運算子。Python 還有一些考題常出現的符號，例如 // 和 %。"},
+      {"type": "paragraph", "text": "生活例子：10 顆糖果分給 3 個人，每人可以拿 3 顆，剩下 1 顆。這裡的每人 3 顆像 10 // 3，剩下 1 顆像 10 % 3。"},
+      {"type": "code", "code": "print(10 / 3)\nprint(10 // 3)\nprint(10 % 3)\nprint(\"ha\" * 3)"},
+      {"type": "list", "items": ["/：一般除法，可能得到小數。", "//：整除，只取商的整數部分。", "%：取餘數。", "字串 * 整數：重複字串。"]},
+      {"type": "paragraph", "text": "考題常用很短的程式考你有沒有分清楚。尤其 10 / 3 和 10 // 3 看起來很像，但結果完全不同。"},
+      {"type": "code", "code": "print(7 // 2)\nprint(7 % 2)\nprint(\"Python\" + \"!\" * 3)"}
     ],
     "common_mistakes": [
-      "把 / 和 // 的結果混在一起",
-      "忘記字串可以用 * 做重複"
+      "把 / 和 // 的結果混在一起。",
+      "以為 % 是百分比；在這裡它是取餘數。",
+      "忘記字串可以用 * 重複，但只能乘整數。"
     ],
     "checkpoint_question_ids": ["q-02-02-001", "q-02-02-002"]
   },
@@ -183,17 +224,23 @@
     "order": 301,
     "concepts": ["print", "sep"],
     "goals": [
-      "知道 print() 會把資料顯示到畫面上",
-      "看懂 sep 與 end 影響輸出格式"
+      "知道 print() 是把資料顯示到畫面上",
+      "看懂多個輸出物件中間為什麼會有空白",
+      "理解 sep 和 end 分別控制哪裡"
     ],
     "body": [
-      {"type": "paragraph", "text": "print() 是最常用的輸出函式。可以輸出字串、數字、變數，也可以一次輸出多個物件。"},
-      {"type": "code", "code": "print(\"A\", \"B\")\nprint(\"A\", \"B\", sep=\"!!\")"},
-      {"type": "paragraph", "text": "多個物件預設用一個空白隔開。sep 可以改中間分隔字串，end 可以改最後接上的字串。"}
+      {"type": "paragraph", "text": "print() 是你和程式結果見面的地方。程式算完、處理完，如果你想在畫面上看到結果，最常用的就是 print()。"},
+      {"type": "paragraph", "text": "生活例子：你做完數學題，如果答案只放在腦中，老師看不到；你要把答案寫出來。print() 就像把程式裡的答案寫到螢幕上。"},
+      {"type": "code", "code": "print(\"歡迎加入\", \"高雄女中\", \"電資班\")\nprint(\"歡迎加入\", \"高雄女中\", \"電資班\", sep=\"-\")"},
+      {"type": "paragraph", "text": "第一行給 print() 三個物件，Python 預設會在中間放一個空白。第二行指定 sep=\"-\"，所以中間改用 - 連起來。"},
+      {"type": "code", "code": "print(\"A\", end=\"\")\nprint(\"B\")"},
+      {"type": "paragraph", "text": "end 控制的是整個 print() 最後接什麼。預設會換行；如果 end=\"\"，下一次輸出就會接在同一行。"},
+      {"type": "list", "items": ["sep：控制多個物件中間的分隔。", "end：控制這次輸出的結尾。", "考輸出格式時，空白和換行都要算。"]}
     ],
     "common_mistakes": [
-      "忘記 print(\"A\", \"B\") 中間會多一個空白",
-      "把 sep 和 end 控制的位置弄反"
+      "忘記 print(\"A\", \"B\") 中間會自動有一個空白。",
+      "把 sep 和 end 控制的位置弄反。",
+      "輸出題只看文字，忽略空白、換行也會影響答案。"
     ],
     "checkpoint_question_ids": ["q-03-01-001"]
   },
@@ -205,17 +252,23 @@
     "order": 302,
     "concepts": ["input", "type-conversion"],
     "goals": [
-      "知道 input() 會讀取使用者輸入",
-      "記住 input() 回傳值一律先是字串"
+      "知道 input() 會讓使用者輸入資料",
+      "記住 input() 回傳值一律先是字串",
+      "知道何時需要 int() 或 float() 轉型"
     ],
     "body": [
-      {"type": "paragraph", "text": "input() 可以從鍵盤讀取資料，但它讀到的內容會先是字串。要拿來做數學運算時，通常需要轉成 int 或 float。"},
+      {"type": "paragraph", "text": "input() 可以讓使用者從鍵盤輸入資料。它常用在題目要你讀入一個數字、名字或一行文字的時候。"},
+      {"type": "paragraph", "text": "最重要的一句話：input() 讀進來的東西一律先是字串。就算使用者輸入 2，Python 拿到的也會先是 \"2\"，不是數字 2。"},
+      {"type": "paragraph", "text": "生活例子：表單收到的內容通常先是一段文字。你在網頁表單填年齡 15，系統先收到字元 1 和 5 組成的文字，需要轉換後才能拿來算明年幾歲。"},
       {"type": "code", "code": "age = input(\"請輸入年齡：\")\nprint(type(age))"},
-      {"type": "code", "code": "num = int(input(\"請輸入數字：\"))\nprint(num + 1)"}
+      {"type": "code", "code": "age = int(input(\"請輸入年齡：\"))\nprint(age + 1)"},
+      {"type": "paragraph", "text": "第一段會告訴你 age 是 str。第二段先用 int() 把輸入轉成整數，所以才能做 age + 1。"},
+      {"type": "list", "items": ["要顯示文字：可以直接用 input() 的結果。", "要做整數運算：常用 int(input())。", "要做小數運算：常用 float(input())。"]}
     ],
     "common_mistakes": [
-      "輸入 2 就以為變數型態是 int",
-      "忘記轉型就拿 input() 的結果做加法"
+      "使用者輸入 2，就以為變數型態是 int。",
+      "忘記轉型就拿 input() 的結果做加法。",
+      "看到 + 就以為一定是數學加法；字串加字串是串接。"
     ],
     "checkpoint_question_ids": ["q-03-02-001", "q-03-02-002"]
   },
@@ -227,17 +280,24 @@
     "order": 303,
     "concepts": ["ascii", "ord-chr"],
     "goals": [
-      "知道字元可以對應到編碼數字",
-      "看懂常見跳脫字元的輸出效果"
+      "知道文字在電腦裡會對應到編碼數字",
+      "理解 ord() 和 chr() 的基本用途",
+      "看懂 \\n 這種跳脫字元的輸出效果"
     ],
     "body": [
-      {"type": "paragraph", "text": "電腦儲存文字時，需要把字元對應成數字。ASCII 是早期常見的字元編碼。"},
-      {"type": "code", "code": "print(ord(\"A\"))\nprint(chr(65))\nprint(\"A\\nB\")"},
-      {"type": "paragraph", "text": "\\n 是換行字元，寫在字串中會讓輸出換到下一行。"}
+      {"type": "paragraph", "text": "電腦要處理文字，也需要把文字轉成某種數字表示。ASCII 是早期常見的字元編碼，讓英文字母、數字、符號能對應到固定數字。"},
+      {"type": "paragraph", "text": "生活例子：學校每個學生都有座號或學號。老師看到座號 5，就知道是某位同學。電腦也會把字元對應到數字，例如 A 對應到 65。"},
+      {"type": "code", "code": "print(ord(\"A\"))\nprint(chr(65))"},
+      {"type": "paragraph", "text": "ord(\"A\") 是問：字元 A 的編碼數字是多少？chr(65) 是反過來問：編碼 65 對應哪個字元？"},
+      {"type": "code", "code": "print(\"A\\nB\")\nprint(\"A\\tB\")"},
+      {"type": "paragraph", "text": "\\n 不是兩個普通字元，它代表換行。\\t 代表定位空格。這種用反斜線開頭、有特殊意義的寫法叫跳脫字元。"},
+      {"type": "paragraph", "text": "做輸出預測題時，要把跳脫字元想成「效果」。看到 \"A\\nB\"，不要回答畫面會印出反斜線和 n；真正畫面會先印 A，換行後再印 B。這類題目常故意考你有沒有把字串內容和顯示效果分開。"},
+      {"type": "list", "items": ["ord()：字元變成數字。", "chr()：數字變成字元。", "\\n：換行。", "\\t：較大的水平空格。"]}
     ],
     "common_mistakes": [
-      "把字元 A 和字串 \"A\" 的概念混在一起",
-      "忘記 \\n 輸出時會變成換行"
+      "把字元 A 和字串 \"A\" 的寫法搞混。",
+      "忘記 \\n 輸出時會真的換行。",
+      "以為 ord() 可以直接處理一整串很長的字串。"
     ],
     "checkpoint_question_ids": ["q-03-03-001"]
   },
@@ -249,17 +309,22 @@
     "order": 304,
     "concepts": ["unicode", "string"],
     "goals": [
-      "知道 Unicode 可以表示更多語言的文字",
-      "理解 Python 字串可以包含中文"
+      "知道 Unicode 是為了表示更多語言的文字",
+      "理解 Python 3 字串可以直接包含中文",
+      "知道編碼問題和語法錯誤不是同一件事"
     ],
     "body": [
-      {"type": "paragraph", "text": "ASCII 能表示的字元有限。Unicode 目標是讓不同語言的文字都能被一致地表示。"},
-      {"type": "code", "code": "print(\"高雄女中\")\nprint(ord(\"高\"))"},
-      {"type": "paragraph", "text": "Python 3 的字串可以直接處理中文，這讓初學者能用熟悉的文字測試輸出。"}
+      {"type": "paragraph", "text": "ASCII 能表示的字元有限，主要適合英文和常見符號。但世界上有中文、日文、韓文、各種符號，只靠 ASCII 不夠用，所以有 Unicode。"},
+      {"type": "paragraph", "text": "生活例子：如果學校名單只允許英文字母，那中文姓名就放不進去。Unicode 像是一套更大的名單規則，讓更多語言的文字都有自己的位置。"},
+      {"type": "code", "code": "print(\"高雄女中\")\nprint(ord(\"高\"))\nprint(chr(ord(\"高\")))"},
+      {"type": "paragraph", "text": "Python 3 的字串可以直接包含中文。ord(\"高\") 會得到一個數字，代表這個中文字的編碼位置；chr() 可以把它轉回字元。"},
+      {"type": "list", "items": ["ASCII：範圍較小，常用來理解英文字元。", "Unicode：範圍更大，可以表示中文等多語文字。", "Python 3：字串處理 Unicode 文字比早期環境方便。"]},
+      {"type": "paragraph", "text": "初學階段不需要背每個字的編碼數字，但要知道：畫面上看到文字，電腦裡其實用編碼表示。"}
     ],
     "common_mistakes": [
-      "以為所有文字都只能用 ASCII 表示",
-      "把編碼問題和 Python 語法錯誤混在一起"
+      "以為所有文字都只能用 ASCII 表示。",
+      "把中文顯示問題一律當成 Python 語法錯誤。",
+      "看到 ord() 回傳很大的數字就以為程式錯了。"
     ],
     "checkpoint_question_ids": []
   },
@@ -271,17 +336,23 @@
     "order": 305,
     "concepts": ["string", "index", "slice"],
     "goals": [
-      "知道字串可以用索引取單一字元",
-      "看懂基本切片 start:stop 的範圍"
+      "知道字串是有順序的資料",
+      "會用索引取單一字元",
+      "看懂切片 start:stop 不包含 stop"
     ],
     "body": [
-      {"type": "paragraph", "text": "字串是有順序的資料，可以用索引取出其中一個字元。Python 的索引從 0 開始。"},
-      {"type": "code", "code": "s = \"Python\"\nprint(s[0])\nprint(s[1:4])"},
-      {"type": "paragraph", "text": "切片 s[1:4] 會取索引 1、2、3，不包含索引 4。"}
+      {"type": "paragraph", "text": "字串可以想成一排排好的字元。既然有順序，就可以用位置去拿其中一個字元。Python 的位置從 0 開始，不是從 1 開始。"},
+      {"type": "paragraph", "text": "生活例子：排隊時，老師可能說第一位、第二位；但 Python 很特別，它叫最前面那位第 0 位。這是很多初學者第一個會錯的地方。"},
+      {"type": "code", "code": "s = \"Python\"\nprint(s[0])\nprint(s[1])\nprint(s[-1])"},
+      {"type": "paragraph", "text": "s[0] 是 P，s[1] 是 y。負數索引可以從後面算，s[-1] 是最後一個字元。"},
+      {"type": "code", "code": "s = \"Python\"\nprint(s[1:4])\nprint(s[:3])\nprint(s[3:])"},
+      {"type": "paragraph", "text": "切片 s[1:4] 會取索引 1、2、3，不包含 4。你可以把它想成從 1 開始，走到 4 前面停下來。"},
+      {"type": "list", "items": ["索引：取一個字元，例如 s[0]。", "切片：取一段字串，例如 s[1:4]。", "stop 不包含在結果裡，這點最常考。"]}
     ],
     "common_mistakes": [
-      "把第一個位置當成索引 1",
-      "忘記切片結尾不包含 stop"
+      "把第一個位置當成索引 1。",
+      "切片時忘記結尾 stop 不包含在結果裡。",
+      "把 s[1] 和 s[1:2] 的結果型態和意義混在一起。"
     ],
     "checkpoint_question_ids": ["q-03-05-001"]
   },
@@ -293,17 +364,23 @@
     "order": 306,
     "concepts": ["string", "formatting"],
     "goals": [
-      "知道格式化可以把變數放進字串",
-      "看懂 f-string 的基本寫法"
+      "知道格式化是把變數放進輸出文字",
+      "看懂 f-string 的基本寫法",
+      "理解格式化可以讓輸出更清楚"
     ],
     "body": [
-      {"type": "paragraph", "text": "格式化讓輸出文字更容易控制。初學時先記住 f-string：在字串前加 f，變數放在大括號裡。"},
-      {"type": "code", "code": "name = \"Amy\"\nscore = 90\nprint(f\"{name} 得到 {score} 分\")"},
-      {"type": "paragraph", "text": "f-string 常用在需要把變數和文字合在一起輸出時。"}
+      {"type": "paragraph", "text": "字串格式化就是把文字和變數漂亮地組合起來。沒有格式化也能輸出，但程式會比較亂，尤其要輸出成績、姓名、單位時更明顯。"},
+      {"type": "paragraph", "text": "生活例子：成績單不會只印 90，而會印「小明的數學成績是 90 分」。格式化就是幫你把固定文字和變動資料放在同一句話裡。"},
+      {"type": "code", "code": "name = \"Amy\"\nscore = 90\nprint(f\"{name} 的成績是 {score} 分\")"},
+      {"type": "paragraph", "text": "f-string 的寫法是在字串前面加 f，然後把變數放在大括號裡。執行時，Python 會把大括號裡的變數換成它的值。"},
+      {"type": "code", "code": "price = 35\ncount = 3\nprint(f\"總金額是 {price * count} 元\")"},
+      {"type": "paragraph", "text": "大括號裡也可以放簡單運算。上面會先算 price * count，再放進輸出文字裡。"},
+      {"type": "list", "items": ["字串前面要有 f。", "變數或運算式放在 { } 裡。", "適合輸出需要混合文字和資料的句子。"]}
     ],
     "common_mistakes": [
-      "忘記字串前面的 f",
-      "把大括號裡的變數名稱打錯"
+      "忘記字串前面的 f，導致大括號原樣印出。",
+      "把大括號裡的變數名稱打錯。",
+      "分不清字串外面的引號和 f-string 裡的大括號。"
     ],
     "checkpoint_question_ids": []
   },
@@ -316,16 +393,21 @@
     "concepts": ["find-index"],
     "goals": [
       "知道可以查詢子字串的位置",
-      "分辨 find() 找不到時的回傳值"
+      "理解 find() 找不到時回傳 -1",
+      "練習用索引從 0 開始判斷位置"
     ],
     "body": [
-      {"type": "paragraph", "text": "字串可以用方法查詢某段文字出現在哪裡。find() 找到時回傳索引，找不到時回傳 -1。"},
-      {"type": "code", "code": "s = \"banana\"\nprint(s.find(\"na\"))\nprint(s.find(\"x\"))"},
-      {"type": "paragraph", "text": "考題常會問第一次出現的位置，記得索引從 0 開始算。"}
+      {"type": "paragraph", "text": "字串查詢就是在一段文字中找某個小片段出現在哪裡。Python 的 find() 可以幫你找第一次出現的位置。"},
+      {"type": "paragraph", "text": "生活例子：你在文章裡用搜尋功能找「Python」，系統會帶你到第一次出現的位置。find() 做的事情很像，只是它回傳的是索引數字。"},
+      {"type": "code", "code": "s = \"banana\"\nprint(s.find(\"ba\"))\nprint(s.find(\"na\"))\nprint(s.find(\"x\"))"},
+      {"type": "paragraph", "text": "\"ba\" 從索引 0 開始，所以回傳 0。\"na\" 第一次出現在索引 2。找不到 \"x\" 時，find() 回傳 -1。"},
+      {"type": "list", "items": ["find() 找到：回傳第一次出現的索引。", "find() 找不到：回傳 -1。", "回傳 0 代表在最前面找到，不是找不到。"]},
+      {"type": "paragraph", "text": "考題常利用 0 和 -1 混淆你。0 是有效位置，-1 才是 find() 找不到時的結果。"}
     ],
     "common_mistakes": [
-      "忘記索引從 0 開始",
-      "以為 find() 找不到會回傳 0"
+      "忘記索引從 0 開始。",
+      "以為 find() 找不到會回傳 0。",
+      "看到回傳 0 就以為是假或沒找到，忽略它代表第一個位置。"
     ],
     "checkpoint_question_ids": ["q-03-07-001"]
   },
@@ -338,16 +420,22 @@
     "concepts": ["string", "split"],
     "goals": [
       "認識常見字串方法的用途",
-      "知道 split() 會把字串切成 list"
+      "知道 split() 會把字串切成 list",
+      "理解字串方法通常回傳新結果"
     ],
     "body": [
-      {"type": "paragraph", "text": "字串有很多方法，例如大小寫轉換、對齊、切割。先把重點放在每個方法會回傳什麼。"},
-      {"type": "code", "code": "text = \"A,B,C\"\nprint(text.split(\",\"))\nprint(\"python\".upper())"},
-      {"type": "paragraph", "text": "split() 的結果是 list，不再是原本那個完整字串。"}
+      {"type": "paragraph", "text": "字串方法就是字串自己可以做的動作。前面學過物件和方法後，看到 \"python\".upper() 就可以理解成：這個字串使用 upper() 這個功能。"},
+      {"type": "paragraph", "text": "生活例子：一段文字可以做很多處理，例如全部改成大寫、去掉前後空白、用逗號切開。這些都像文書軟體裡的文字工具。"},
+      {"type": "code", "code": "text = \"python\"\nprint(text.upper())\nprint(text.capitalize())"},
+      {"type": "paragraph", "text": "upper() 會回傳大寫版本，capitalize() 會讓開頭變大寫。注意：原本的 text 不一定被改掉，很多字串方法會產生新字串。"},
+      {"type": "code", "code": "scores = \"80,90,100\"\nprint(scores.split(\",\"))"},
+      {"type": "paragraph", "text": "split(\",\") 會用逗號當切割點，把原本一整串文字切成 list：['80', '90', '100']。切完後裡面的元素仍然是字串。"},
+      {"type": "list", "items": ["upper()：轉大寫。", "lower()：轉小寫。", "split()：切割字串，結果是 list。", "strip()：去掉前後空白。"]}
     ],
     "common_mistakes": [
-      "以為 split() 只會印出文字，不會產生 list",
-      "忘記字串方法通常會回傳新結果"
+      "以為 split() 結果還是原本的字串。",
+      "忘記 split() 切出來的 '80' 仍是字串，不是整數。",
+      "以為所有字串方法都會直接修改原本字串。"
     ],
     "checkpoint_question_ids": []
   },
@@ -360,16 +448,21 @@
     "concepts": ["containers", "list", "tuple", "dict", "set"],
     "goals": [
       "知道容器可以存放多個資料",
-      "先分辨 list、tuple、dict、set 的外觀"
+      "先分辨 list、tuple、dict、set 的外觀",
+      "理解不同容器適合不同用途"
     ],
     "body": [
-      {"type": "paragraph", "text": "容器資料型態可以在一個變數中保存多個資料。Python 常見容器有 list、tuple、dict、set。"},
-      {"type": "code", "code": "print(type([1, 2, 3]))\nprint(type((1, 2, 3)))\nprint(type({\"a\": 1}))\nprint(type({1, 2, 3}))"},
-      {"type": "paragraph", "text": "list 和 tuple 可用位置索引；dict 用 key 查 value；set 沒有固定索引。"}
+      {"type": "paragraph", "text": "前面學的數字、字串、布林值通常是一個值。容器資料型態則可以一次放很多資料，就像一個盒子、書包或資料夾。"},
+      {"type": "paragraph", "text": "生活例子：如果你要記全班成績，不會只用一張便利貼寫一個分數，而會用一張表或一個名單。list、tuple、dict、set 就是 Python 裡常見的資料容器。"},
+      {"type": "code", "code": "print(type([1, 2, 3]))\nprint(type((1, 2, 3)))\nprint(type({\"apple\": 30}))\nprint(type({1, 2, 3}))"},
+      {"type": "list", "items": ["list：有順序、可修改，用中括號 []。", "tuple：有順序、不可修改，常用小括號 ()。", "dict：用 key 找 value，用大括號和冒號。", "set：不重複、無固定順序，用大括號但沒有冒號。"]},
+      {"type": "paragraph", "text": "list 和 tuple 都能用位置索引。dict 不是用位置，而是用 key。set 沒有穩定的位置索引，因為它重點是不重複。"},
+      {"type": "paragraph", "text": "先不要急著背所有方法。第一步先看到外觀能判斷是哪一種容器，知道它大概適合做什麼。"}
     ],
     "common_mistakes": [
-      "以為 {} 是空 set，其實是空 dict",
-      "把 dict 和 set 都用大括號就認為一樣"
+      "以為 {} 是空 set；Python 裡 {} 是空 dict。",
+      "看到 dict 和 set 都用大括號，就以為它們一樣。",
+      "把所有容器都當成可以用 0、1、2 位置索引。"
     ],
     "checkpoint_question_ids": ["q-04-01-001"]
   },
@@ -381,17 +474,23 @@
     "order": 402,
     "concepts": ["list", "index"],
     "goals": [
-      "知道 list 可以用索引取元素",
-      "看懂 list 的切片結果仍是 list"
+      "知道 list 是有順序、可修改的容器",
+      "會用索引取出 list 元素",
+      "看懂 list 切片的結果"
     ],
     "body": [
-      {"type": "paragraph", "text": "list 是有順序、可變的容器。可以用索引取出其中一個元素。"},
-      {"type": "code", "code": "scores = [80, 90, 100]\nprint(scores[0])\nprint(scores[1:3])"},
-      {"type": "paragraph", "text": "list 的索引同樣從 0 開始，切片不包含 stop。"}
+      {"type": "paragraph", "text": "list 是 Python 很常用的容器，可以放一串資料。它有順序，所以可以用索引取出第幾個元素。"},
+      {"type": "paragraph", "text": "生活例子：一排置物櫃從左到右編號。Python 的編號從 0 開始，所以第一格是 0，第二格是 1。list 取值也是這樣。"},
+      {"type": "code", "code": "scores = [80, 90, 100]\nprint(scores[0])\nprint(scores[1])\nprint(scores[-1])"},
+      {"type": "paragraph", "text": "scores[0] 是第一個成績 80。scores[-1] 是最後一個元素 100。負數索引從右邊往左數。"},
+      {"type": "code", "code": "scores = [80, 90, 100, 70]\nprint(scores[1:3])\nprint(scores[:2])"},
+      {"type": "paragraph", "text": "list 切片和字串一樣，不包含 stop。scores[1:3] 取索引 1 和 2，結果是一個新的 list。"},
+      {"type": "list", "items": ["list[index]：取單一元素。", "list[start:stop]：取一段，結果仍是 list。", "索引超出範圍會出錯。"]}
     ],
     "common_mistakes": [
-      "把第一個元素當成索引 1",
-      "忘記 list 切片回傳的是一個新的 list"
+      "把第一個元素當成索引 1。",
+      "忘記 list 切片回傳的是 list，不是單一元素。",
+      "切片時把 stop 也算進結果。"
     ],
     "checkpoint_question_ids": ["q-04-02-001"]
   },
@@ -404,16 +503,22 @@
     "concepts": ["list", "append-extend"],
     "goals": [
       "知道 list 可以被修改",
-      "分辨 append() 和 extend() 的效果"
+      "會看懂 append() 和 extend() 的差異",
+      "理解修改 list 會影響原本資料"
     ],
     "body": [
-      {"type": "paragraph", "text": "list 是可變的，所以可以新增、修改、刪除元素。append() 會把一個物件加到最後。"},
-      {"type": "code", "code": "items = [1, 2]\nitems.append([3, 4])\nprint(items)"},
-      {"type": "code", "code": "items = [1, 2]\nitems.extend([3, 4])\nprint(items)"}
+      {"type": "paragraph", "text": "list 是可變的，意思是建立後還可以改內容。你可以新增元素、改某個位置的值，也可以刪掉元素。"},
+      {"type": "paragraph", "text": "生活例子：購物清單就是 list。你可以把「牛奶」加到最後，也可以把「餅乾」改成「麵包」，還可以刪掉已經買好的東西。"},
+      {"type": "code", "code": "items = [\"麵包\", \"牛奶\"]\nitems.append(\"蘋果\")\nprint(items)"},
+      {"type": "paragraph", "text": "append() 是把一個東西加到 list 最後。注意是一個東西；如果你 append 一個 list，那整個 list 會被當成一個元素加進去。"},
+      {"type": "code", "code": "a = [1, 2]\na.append([3, 4])\nprint(a)\n\nb = [1, 2]\nb.extend([3, 4])\nprint(b)"},
+      {"type": "paragraph", "text": "append([3, 4]) 會把 [3, 4] 整包放進去；extend([3, 4]) 會把 3 和 4 一個一個加進去。這是 list 考題很常見的陷阱。"},
+      {"type": "list", "items": ["append(x)：把 x 當成一個元素加到最後。", "extend(iterable)：把裡面的元素逐一加進 list。", "list[index] = value：修改指定位置。"]}
     ],
     "common_mistakes": [
-      "把 append([3, 4]) 和 extend([3, 4]) 的結果混在一起",
-      "忘記 list 方法會直接改變原本的 list"
+      "把 append([3, 4]) 和 extend([3, 4]) 的結果混在一起。",
+      "忘記 list 方法通常會直接改變原本的 list。",
+      "以為 append() 會回傳修改後的新 list。"
     ],
     "checkpoint_question_ids": ["q-04-03-001"]
   },
@@ -425,17 +530,23 @@
     "order": 404,
     "concepts": ["sort-sorted"],
     "goals": [
+      "知道排序是把資料依大小或字母順序重排",
       "分辨 sort() 和 sorted()",
-      "知道排序後資料順序會改變"
+      "判斷原本 list 有沒有被改變"
     ],
     "body": [
-      {"type": "paragraph", "text": "list.sort() 會直接改變原本的 list；sorted() 會回傳排序後的新 list。"},
-      {"type": "code", "code": "nums = [3, 1, 2]\nprint(sorted(nums))\nprint(nums)\nnums.sort()\nprint(nums)"},
-      {"type": "paragraph", "text": "考題常考原本 list 有沒有被改變。"}
+      {"type": "paragraph", "text": "排序就是把資料照規則排好，例如成績由小到大、名字照字母順序。Python 有兩個常見工具：list.sort() 和 sorted()。"},
+      {"type": "paragraph", "text": "生活例子：如果你把桌上的考卷直接重排，原本那疊考卷順序就改了，像 sort()。如果你影印一份再排序，原本那疊不變，像 sorted()。"},
+      {"type": "code", "code": "nums = [3, 1, 2]\nprint(sorted(nums))\nprint(nums)"},
+      {"type": "paragraph", "text": "sorted(nums) 會產生排序後的新 list，但 nums 原本順序還是 [3, 1, 2]。"},
+      {"type": "code", "code": "nums = [3, 1, 2]\nnums.sort()\nprint(nums)"},
+      {"type": "paragraph", "text": "nums.sort() 會直接修改 nums 本身，所以之後再印 nums，就會看到排序後的結果。"},
+      {"type": "list", "items": ["sorted(nums)：回傳新的排序結果。", "nums.sort()：直接改原本的 nums。", "考題要特別看下一行印的是誰。"]}
     ],
     "common_mistakes": [
-      "以為 sorted(nums) 會改變 nums",
-      "忽略 sort() 的回傳值不是排序後的新 list"
+      "以為 sorted(nums) 會改變 nums。",
+      "忽略 sort() 是直接改原本 list。",
+      "只看排序結果，沒有追蹤變數後來指向什麼內容。"
     ],
     "checkpoint_question_ids": ["q-04-04-001"]
   },
@@ -448,16 +559,22 @@
     "concepts": ["list", "nested-list", "index"],
     "goals": [
       "知道 list 裡面也可以放 list",
-      "看懂雙層索引的取值方式"
+      "看懂雙層索引的取值順序",
+      "用表格概念理解巢狀 list"
     ],
     "body": [
-      {"type": "paragraph", "text": "list 的元素可以是另一個 list，這時就會形成巢狀或多維 list。"},
-      {"type": "code", "code": "grid = [[1, 2], [3, 4]]\nprint(grid[0])\nprint(grid[0][1])"},
-      {"type": "paragraph", "text": "grid[0][1] 先取第 0 個 list，再取裡面的第 1 個元素。"}
+      {"type": "paragraph", "text": "list 的元素不一定只能放數字或字串，也可以放另一個 list。list 裡面有 list，就形成巢狀 list，也常拿來表示表格資料。"},
+      {"type": "paragraph", "text": "生活例子：座位表可以想成多維 list。第一排是一個 list，第二排也是一個 list，整張座位表就是很多排組成的大 list。"},
+      {"type": "code", "code": "grid = [[\"A1\", \"A2\"], [\"B1\", \"B2\"]]\nprint(grid[0])\nprint(grid[0][1])"},
+      {"type": "paragraph", "text": "grid[0] 先取出第 0 排，也就是 [\"A1\", \"A2\"]。接著 grid[0][1] 是在第 0 排裡取索引 1，所以得到 \"A2\"。"},
+      {"type": "code", "code": "scores = [[80, 90], [70, 100]]\nprint(scores[1][0])"},
+      {"type": "paragraph", "text": "讀雙層索引時，一定從左到右看。scores[1] 先拿到第二個小 list，再 [0] 拿那個小 list 的第一個元素。"},
+      {"type": "list", "items": ["外層索引：先選哪一個小 list。", "內層索引：再從小 list 裡選哪個元素。", "看到兩組中括號，不要一起算，從左到右拆開。"]}
     ],
     "common_mistakes": [
-      "一次看兩個中括號就不知道先後順序",
-      "把列和欄的索引順序看反"
+      "一次看到兩個中括號就跳著猜答案。",
+      "把列和欄的索引順序看反。",
+      "忘記每一層索引都從 0 開始。"
     ],
     "checkpoint_question_ids": []
   },
@@ -470,16 +587,22 @@
     "concepts": ["list", "builtin-functions"],
     "goals": [
       "認識 len()、sum()、max()、min()",
-      "分辨函式和方法的呼叫外觀"
+      "分辨函式和方法的呼叫外觀",
+      "理解哪些操作會回傳結果，哪些會修改原資料"
     ],
     "body": [
-      {"type": "paragraph", "text": "list 可以搭配內建函式，也有自己的方法。函式通常寫成 len(items)，方法通常寫成 items.append(x)。"},
-      {"type": "code", "code": "nums = [3, 1, 2]\nprint(len(nums))\nprint(sum(nums))\nprint(max(nums))"},
-      {"type": "paragraph", "text": "考題會混合函式與方法，先看括號前面是函式名稱還是物件。"}
+      {"type": "paragraph", "text": "list 可以搭配很多工具。像 len()、sum()、max()、min() 是常見內建函式；append()、sort() 則是 list 自己的方法。"},
+      {"type": "paragraph", "text": "生活例子：一張成績單可以被拿去做很多事：數有幾筆成績、算總分、找最高分、找最低分。這些就是 len、sum、max、min 的感覺。"},
+      {"type": "code", "code": "nums = [3, 1, 2]\nprint(len(nums))\nprint(sum(nums))\nprint(max(nums))\nprint(min(nums))"},
+      {"type": "paragraph", "text": "len(nums) 是元素個數，sum(nums) 是總和，max(nums) 是最大值，min(nums) 是最小值。"},
+      {"type": "code", "code": "nums = [3, 1, 2]\nnums.append(5)\nnums.sort()\nprint(nums)"},
+      {"type": "paragraph", "text": "append() 和 sort() 是方法，寫在 list 後面。這些方法常會直接改變原本的 list，所以做輸出題時要追蹤每一步。"},
+      {"type": "list", "items": ["函式外觀：len(nums)、sum(nums)。", "方法外觀：nums.append(5)、nums.sort()。", "考題重點：這一步有沒有改掉原本的 list。"]}
     ],
     "common_mistakes": [
-      "把 len(nums) 寫成 nums.len()",
-      "把 append() 當成會回傳新 list 的函式"
+      "把 len(nums) 寫成 nums.len()。",
+      "把 append() 當成會回傳新 list 的函式。",
+      "只背名稱，不看它到底有沒有改變原本資料。"
     ],
     "checkpoint_question_ids": []
   },
@@ -492,16 +615,22 @@
     "concepts": ["tuple"],
     "goals": [
       "知道 tuple 是有順序但不可變的容器",
-      "看懂 tuple 的建立方式"
+      "看懂 tuple 的建立和取值",
+      "分辨 tuple 和 list 的主要差異"
     ],
     "body": [
-      {"type": "paragraph", "text": "tuple 和 list 一樣有順序、可以用索引取值，但 tuple 建立後不能修改元素。"},
-      {"type": "code", "code": "point = (10, 20)\nprint(point[0])"},
-      {"type": "paragraph", "text": "初學時可以先把 tuple 想成不能直接改內容的 list。"}
+      {"type": "paragraph", "text": "tuple 和 list 很像，都可以存放一串有順序的資料，也可以用索引取值。最大的差別是：tuple 建立後不能直接修改裡面的元素。"},
+      {"type": "paragraph", "text": "生活例子：list 像鉛筆寫的購物清單，可以擦掉重寫；tuple 像已經護貝的卡片，內容固定，不希望被隨便改。"},
+      {"type": "code", "code": "point = (10, 20)\nprint(point[0])\nprint(point[1])"},
+      {"type": "paragraph", "text": "point[0] 和 point[1] 可以正常取值，因為 tuple 有順序，也支援索引。"},
+      {"type": "code", "code": "items = (1, 2, 3)\n# items[0] = 100  # 這行會出錯，因為 tuple 不可變"},
+      {"type": "paragraph", "text": "不可變不是不能讀，而是不能直接改。這在考題裡常拿來和 list 比較。"},
+      {"type": "list", "items": ["list：用 []，可修改。", "tuple：常用 ()，不可修改。", "兩者都可用索引取值。"]}
     ],
     "common_mistakes": [
-      "以為 tuple 可以像 list 一樣指定索引修改",
-      "忽略單一元素 tuple 需要逗號"
+      "以為 tuple 不能用索引取值；其實可以讀，但不能直接改。",
+      "把 tuple 當成 list 一樣指定索引修改。",
+      "忽略單一元素 tuple 需要逗號，例如 (1,)。"
     ],
     "checkpoint_question_ids": ["q-04-07-001"]
   },
@@ -514,16 +643,22 @@
     "concepts": ["tuple", "list", "type-conversion"],
     "goals": [
       "知道 list() 和 tuple() 可以做型態轉換",
-      "理解轉換後是新的容器"
+      "理解轉換會產生另一種容器",
+      "知道為什麼有時要先轉成 list 再修改"
     ],
     "body": [
-      {"type": "paragraph", "text": "list 和 tuple 可以互相轉換。若需要修改 tuple 的內容，常見做法是先轉成 list，改完再視需要轉回 tuple。"},
+      {"type": "paragraph", "text": "tuple 不可直接修改，但有時你真的需要改內容。常見做法是先把 tuple 轉成 list，修改後再視需要轉回 tuple。"},
+      {"type": "paragraph", "text": "生活例子：護貝卡片不能直接改，你可以先把內容抄到白紙上修改，改完再重新護貝。tuple 轉 list 的概念有點像這樣。"},
       {"type": "code", "code": "data = (1, 2, 3)\nitems = list(data)\nitems.append(4)\nprint(items)"},
-      {"type": "paragraph", "text": "轉換會產生新的物件，不是直接把原本 tuple 變成可修改。"}
+      {"type": "paragraph", "text": "list(data) 會產生一個 list，所以 items 可以 append。原本的 data 還是 tuple，不會因為這樣自動變成 list。"},
+      {"type": "code", "code": "items = [1, 2, 3]\ndata = tuple(items)\nprint(data)"},
+      {"type": "paragraph", "text": "tuple(items) 會把 list 轉成 tuple。轉換後外觀和可修改性都變了。"},
+      {"type": "list", "items": ["list(x)：嘗試把 x 轉成 list。", "tuple(x)：嘗試把 x 轉成 tuple。", "轉換通常會產生新物件，不是把原本物件原地變身。"]}
     ],
     "common_mistakes": [
-      "以為 tuple(data) 會修改原本資料",
-      "忘記轉換後型態已經不同"
+      "以為 list(data) 會把原本 data 改成 list。",
+      "忘記轉換後型態已經不同，可用的方法也不同。",
+      "轉成 list 修改後，卻還去印原本的 tuple，以為修改失敗。"
     ],
     "checkpoint_question_ids": []
   },
@@ -536,16 +671,22 @@
     "concepts": ["dict", "key-value"],
     "goals": [
       "知道 dict 用 key 對應 value",
-      "會用 key 取出 value"
+      "會用 key 取出 value",
+      "分辨 dict 和 list 的取值方式"
     ],
     "body": [
-      {"type": "paragraph", "text": "dict 適合保存一對一對的資料，例如水果名稱對庫存數量。左邊是 key，右邊是 value。"},
+      {"type": "paragraph", "text": "dict 是字典資料型態，重點是 key 和 value 的配對。你不是用第幾個位置找資料，而是用 key 找對應的 value。"},
+      {"type": "paragraph", "text": "生活例子：真正的字典是用「字」查「意思」；Python 的 dict 也是用 key 查 value。水果庫存表可以用水果名稱查數量。"},
       {"type": "code", "code": "fruit = {\"香蕉\": 20, \"蘋果\": 30}\nprint(fruit[\"香蕉\"])"},
-      {"type": "paragraph", "text": "dict 不是用第幾個位置查資料，而是用 key 查 value。"}
+      {"type": "paragraph", "text": "這裡 \"香蕉\" 是 key，20 是 value。fruit[\"香蕉\"] 的意思是：請用 key \"香蕉\" 找出對應的 value。"},
+      {"type": "code", "code": "student = {\"name\": \"Amy\", \"score\": 95}\nprint(student[\"name\"])\nprint(student[\"score\"])"},
+      {"type": "paragraph", "text": "dict 很適合表示一筆資料的多個欄位，例如姓名、分數、座號。每個欄位名稱就是 key。"},
+      {"type": "list", "items": ["key：用來查資料的名稱。", "value：key 對應到的值。", "dict 取值：dict[key]。", "key 不存在時，直接用 [] 取值會出錯。"]}
     ],
     "common_mistakes": [
-      "把 dict 當成 list，用數字索引取值",
-      "忘記 key 必須存在，否則會出錯"
+      "把 dict 當成 list，用位置索引取值。",
+      "忘記 key 要寫對，字串 key 還要加引號。",
+      "看到大括號就以為一定是 set，忽略 dict 有冒號。"
     ],
     "checkpoint_question_ids": ["q-04-09-001"]
   },
@@ -557,17 +698,23 @@
     "order": 410,
     "concepts": ["set"],
     "goals": [
-      "知道 set 是不重複、無固定順序的容器",
+      "知道 set 不保留重複元素",
+      "理解 set 沒有固定順序和索引",
       "記住空 set 要用 set() 建立"
     ],
     "body": [
-      {"type": "paragraph", "text": "set 會自動去除重複元素，而且沒有固定順序，所以不能用穩定的索引位置取值。"},
-      {"type": "code", "code": "letters = {\"a\", \"b\", \"a\"}\nprint(letters)\nprint(type({}))\nprint(type(set()))"},
-      {"type": "paragraph", "text": "{} 在 Python 裡是空 dict，不是空 set。空 set 要寫 set()。"}
+      {"type": "paragraph", "text": "set 是集合資料型態，最重要的特性是不重複。你把重複的東西放進 set，它只會保留一份。"},
+      {"type": "paragraph", "text": "生活例子：班上參加社團的名單，只需要知道有哪些人參加，不需要同一個名字出現兩次。set 就很適合用來表示這種不重複名單。"},
+      {"type": "code", "code": "letters = {\"a\", \"b\", \"a\", \"c\"}\nprint(letters)"},
+      {"type": "paragraph", "text": "輸出時你會看到重複的 \"a\" 只保留一個。set 的順序不保證固定，所以不要用第幾個位置去想它。"},
+      {"type": "code", "code": "print(type({}))\nprint(type(set()))"},
+      {"type": "paragraph", "text": "{} 在 Python 裡是空 dict，不是空 set。要建立空 set，要寫 set()。這是考題很常見的陷阱。"},
+      {"type": "list", "items": ["set：不重複。", "set：沒有穩定索引，不能用 S[0] 取第一個。", "{}：空 dict。", "set()：空 set。"]}
     ],
     "common_mistakes": [
-      "以為 set 可以用 S[0] 取第一個元素",
-      "把 {} 當成空集合"
+      "以為 set 可以用 S[0] 取第一個元素。",
+      "把 {} 當成空集合。",
+      "看到輸出順序和自己想的不一樣，就以為 set 壞掉；其實 set 本來就不強調順序。"
     ],
     "checkpoint_question_ids": ["q-04-10-001"]
   }
