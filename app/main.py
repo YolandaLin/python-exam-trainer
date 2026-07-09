@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import random
 from pathlib import Path
 from typing import Annotated, Any
@@ -57,6 +58,7 @@ LESSON_PROGRESS_GROUP_BY = """
     lp.status, lp.last_viewed_at, lp.completed_at,
     lp.checkpoint_correct_count, lp.checkpoint_total_count
 """
+PRODUCTION_BLOCKED_PASSWORDS = {"admin123", "student123"}
 
 
 def public_question(row: Any, include_answer: bool = False) -> dict[str, Any]:
@@ -236,6 +238,8 @@ def health() -> dict[str, str]:
 
 @app.post("/api/login")
 def login(payload: LoginRequest) -> dict[str, Any]:
+    if os.environ.get("APP_ENV") == "production" and payload.password in PRODUCTION_BLOCKED_PASSWORDS:
+        raise HTTPException(status_code=401, detail="帳號或密碼錯誤")
     with get_db() as db:
         user = db.execute("SELECT * FROM users WHERE username = ?", (payload.username,)).fetchone()
         if not user or not verify_password(payload.password, user["password_hash"]):

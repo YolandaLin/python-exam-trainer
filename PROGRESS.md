@@ -40,4 +40,4 @@
 ## 上線前置
 
 - 已登記上線前置 3 項到 `D:/AI/handoffs/pending/deploy-prerequisites.md`：`ADMIN_PASSWORD`、`STUDENT1_PASSWORD`、`STUDENT2_PASSWORD`。
-- 2026-07-09 上線後檢查發現公開站仍可使用開發預設密碼登入；已補 production 安全門檻，正式環境三組密碼未設定或仍是預設值時會拒絕啟動。
+- 2026-07-09 上線後檢查發現公開站仍可使用開發預設密碼登入；已補 production 安全門檻，正式環境會拒絕 `admin123` / `student123` 登入，並可用 Render env vars 更新既有帳號密碼。

@@ -356,27 +356,12 @@ def seed_user_configs() -> list[dict[str, str]]:
     ]
 
 
-def validate_production_passwords(configs: list[dict[str, str]]) -> None:
-    if not is_production():
-        return
-
-    invalid = [
-        config["password_key"]
-        for config in configs
-        if config["password_key"] not in os.environ or config["password"] == config["default_password"]
-    ]
-    if invalid:
-        raise RuntimeError(
-            "Production deployment requires non-default secret values for: "
-            + ", ".join(invalid)
-        )
-
-
 def seed_users() -> None:
     configs = seed_user_configs()
-    validate_production_passwords(configs)
     with get_db() as db:
         for config in configs:
+            if is_production() and config["password_key"] not in os.environ:
+                continue
             exists = db.execute("SELECT * FROM users WHERE username = ?", (config["username"],)).fetchone()
             if exists:
                 if config["password_key"] in os.environ and not verify_password(config["password"], exists["password_hash"]):
