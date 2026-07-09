@@ -28,5 +28,8 @@
 ## 注意事項
 
 - 不要在正式環境使用 `admin123` 或 `student123`。
+- `APP_ENV=production` 時，若 `ADMIN_PASSWORD`、`STUDENT1_PASSWORD`、`STUDENT2_PASSWORD` 沒設定，或仍是開發預設密碼，網站會拒絕啟動。
+- 若 Blueprint 已經建立過，`sync: false` 的密碼值不會靠 Git push 自動更新。請到 Render Web Service 的 Environment 手動設定三組密碼後，重新部署。
+- 若 PostgreSQL 已經用開發密碼建立過帳號，重新部署時只要三組正式密碼環境變數存在，系統會更新既有帳號密碼。
 - Pyodide 由瀏覽器從 CDN 載入，學生端瀏覽器需要能連網。
 - Render 免費 Web Service 可能會休眠，第一次開啟可能較慢。

@@ -8,7 +8,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Iterator
 
-from .security import hash_password
+from .security import hash_password, verify_password
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +41,10 @@ class Database:
 
 def is_postgres() -> bool:
     return bool(DATABASE_URL)
+
+
+def is_production() -> bool:
+    return os.environ.get("APP_ENV") == "production"
 
 
 def string_agg_expr(value: str) -> str:
@@ -323,38 +327,85 @@ def seed_lessons() -> None:
                 )
 
 
-def seed_users() -> None:
-    defaults = [
-        (
-            os.environ.get("ADMIN_USERNAME", "admin"),
-            os.environ.get("ADMIN_PASSWORD", "admin123"),
-            "admin",
-            "管理者",
-        ),
-        (
-            os.environ.get("STUDENT1_USERNAME", "student1"),
-            os.environ.get("STUDENT1_PASSWORD", "student123"),
-            "student",
-            "學生一",
-        ),
-        (
-            os.environ.get("STUDENT2_USERNAME", "student2"),
-            os.environ.get("STUDENT2_PASSWORD", "student123"),
-            "student",
-            "學生二",
-        ),
+def seed_user_configs() -> list[dict[str, str]]:
+    return [
+        {
+            "username": os.environ.get("ADMIN_USERNAME", "admin"),
+            "password": os.environ.get("ADMIN_PASSWORD", "admin123"),
+            "password_key": "ADMIN_PASSWORD",
+            "default_password": "admin123",
+            "role": "admin",
+            "display_name": "管理者",
+        },
+        {
+            "username": os.environ.get("STUDENT1_USERNAME", "student1"),
+            "password": os.environ.get("STUDENT1_PASSWORD", "student123"),
+            "password_key": "STUDENT1_PASSWORD",
+            "default_password": "student123",
+            "role": "student",
+            "display_name": "學生一",
+        },
+        {
+            "username": os.environ.get("STUDENT2_USERNAME", "student2"),
+            "password": os.environ.get("STUDENT2_PASSWORD", "student123"),
+            "password_key": "STUDENT2_PASSWORD",
+            "default_password": "student123",
+            "role": "student",
+            "display_name": "學生二",
+        },
     ]
+
+
+def validate_production_passwords(configs: list[dict[str, str]]) -> None:
+    if not is_production():
+        return
+
+    invalid = [
+        config["password_key"]
+        for config in configs
+        if config["password_key"] not in os.environ or config["password"] == config["default_password"]
+    ]
+    if invalid:
+        raise RuntimeError(
+            "Production deployment requires non-default secret values for: "
+            + ", ".join(invalid)
+        )
+
+
+def seed_users() -> None:
+    configs = seed_user_configs()
+    validate_production_passwords(configs)
     with get_db() as db:
-        for username, password, role, display_name in defaults:
-            exists = db.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()
+        for config in configs:
+            exists = db.execute("SELECT * FROM users WHERE username = ?", (config["username"],)).fetchone()
             if exists:
+                if config["password_key"] in os.environ and not verify_password(config["password"], exists["password_hash"]):
+                    db.execute(
+                        """
+                        UPDATE users
+                        SET password_hash = ?, role = ?, display_name = ?
+                        WHERE username = ?
+                        """,
+                        (
+                            hash_password(config["password"]),
+                            config["role"],
+                            config["display_name"],
+                            config["username"],
+                        ),
+                    )
                 continue
             db.execute(
                 """
                 INSERT INTO users (username, password_hash, role, display_name, created_at)
                 VALUES (?, ?, ?, ?, ?)
                 """,
-                (username, hash_password(password), role, display_name, utcnow()),
+                (
+                    config["username"],
+                    hash_password(config["password"]),
+                    config["role"],
+                    config["display_name"],
+                    utcnow(),
+                ),
             )
 
 
