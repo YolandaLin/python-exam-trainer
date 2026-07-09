@@ -35,15 +35,15 @@ python -m uvicorn app.main:app --reload
 http://127.0.0.1:8000
 ```
 
-## 開發用預設帳號
+## 帳號
 
-若沒有設定環境變數，系統會建立下列開發用帳號：
+系統預設使用下列帳號名稱；密碼不寫入 README 或 Git，請在環境變數設定：
 
-| 角色 | 帳號 | 密碼 |
-|---|---|---|
-| 管理者 | `admin` | `admin123` |
-| 學生 | `student1` | `student123` |
-| 學生 | `student2` | `student123` |
+| 角色 | 帳號 |
+|---|---|
+| 管理者 | `admin` |
+| 學生 | `student1` |
+| 學生 | `student2` |
 
 正式部署前必須用環境變數覆蓋密碼，參考 [.env.example](.env.example)。
 
