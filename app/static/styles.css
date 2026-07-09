@@ -341,6 +341,18 @@ textarea {
   padding: 8px 0;
 }
 
+.course-progress-box {
+  background: #f0f7f1;
+  border: 1px solid #cfe5d3;
+  border-radius: 8px;
+  margin: -4px -4px 18px;
+  padding: 14px;
+}
+
+.course-progress-box h2 {
+  margin-top: 0;
+}
+
 .lesson-list {
   display: grid;
   gap: 6px;
@@ -406,6 +418,8 @@ textarea {
 }
 
 .runner-panel {
+  background: #eef6fb;
+  border-color: #c7dfea;
   margin-top: 18px;
 }
 
