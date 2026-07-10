@@ -124,7 +124,7 @@
       {"type": "paragraph", "text": "函式可以先想成「已經做好的工具」。你把資料放進去，函式按照固定規則處理，再給你結果。Python 內建很多工具，所以你不需要從零開始做。"},
       {"type": "paragraph", "text": "生活例子：自動販賣機就像函式。你投入錢、按下飲料編號，它會依照規則吐出飲料。函式也是一樣，括號裡放的是你給它的資料，稱為參數。"},
       {"type": "code", "code": "print(len(\"Python\"))\nprint(round(3.141596, 3))"},
-      {"type": "paragraph", "text": "len(\"Python\") 會算字串長度。round(3.141596, 3) 會把數字四捨五入到小數點後 3 位，所以結果是 3.142。"},
+      {"type": "paragraph", "text": "len(\"Python\") 會算字串長度。round(3.141596, 3) 會把數字捨入到小數點後 3 位，所以結果是 3.142。（小提醒：遇到剛好一半的數字，Python 會挑偶數那邊——round(2.5) 是 2、round(3.5) 是 4，跟小學教的四捨五入不太一樣，別被騙了。）"},
       {"type": "list", "items": ["函式名稱：例如 print、len、round。", "括號：呼叫函式時要有括號。", "參數：放在括號裡，告訴函式要處理什麼。", "回傳或輸出：函式處理完可能給你一個結果，也可能顯示東西。"]},
       {"type": "paragraph", "text": "考題常考 round() 的第二個參數。它不是總共保留幾位數，而是小數點後保留幾位。這個差異很容易錯。"}
     ],
@@ -205,7 +205,7 @@
       {"type": "paragraph", "text": "運算子就是用來做運算的符號。你熟悉的 +、-、*、/ 都是運算子。Python 還有一些考題常出現的符號，例如 // 和 %。"},
       {"type": "paragraph", "text": "生活例子：10 顆糖果分給 3 個人，每人可以拿 3 顆，剩下 1 顆。這裡的每人 3 顆像 10 // 3，剩下 1 顆像 10 % 3。"},
       {"type": "code", "code": "print(10 / 3)\nprint(10 // 3)\nprint(10 % 3)\nprint(\"ha\" * 3)"},
-      {"type": "list", "items": ["/：一般除法，可能得到小數。", "//：整除，只取商的整數部分。", "%：取餘數。", "字串 * 整數：重複字串。"]},
+      {"type": "list", "items": ["/：一般除法，可能得到小數。", "//：整除，答案永遠往小的方向取。正數時就像把小數尾巴剪掉：10 // 3 得 3；但負數要小心，是往更小的方向走：-7 // 2 是 -4，不是 -3。", "%：取餘數。", "字串 * 整數：重複字串。"]},
       {"type": "paragraph", "text": "考題常用很短的程式考你有沒有分清楚。尤其 10 / 3 和 10 // 3 看起來很像，但結果完全不同。"},
       {"type": "code", "code": "print(7 // 2)\nprint(7 % 2)\nprint(\"Python\" + \"!\" * 3)"}
     ],
@@ -427,7 +427,7 @@
       {"type": "paragraph", "text": "字串方法就是字串自己可以做的動作。前面學過物件和方法後，看到 \"python\".upper() 就可以理解成：這個字串使用 upper() 這個功能。"},
       {"type": "paragraph", "text": "生活例子：一段文字可以做很多處理，例如全部改成大寫、去掉前後空白、用逗號切開。這些都像文書軟體裡的文字工具。"},
       {"type": "code", "code": "text = \"python\"\nprint(text.upper())\nprint(text.capitalize())"},
-      {"type": "paragraph", "text": "upper() 會回傳大寫版本，capitalize() 會讓開頭變大寫。注意：原本的 text 不一定被改掉，很多字串方法會產生新字串。"},
+      {"type": "paragraph", "text": "upper() 會回傳大寫版本，capitalize() 會讓開頭變大寫。注意：原本的 text 不會被改掉——字串是「不可變」的，這些方法都是做一個新字串交給你，舊的原封不動。想留住結果，記得用變數接起來。"},
       {"type": "code", "code": "scores = \"80,90,100\"\nprint(scores.split(\",\"))"},
       {"type": "paragraph", "text": "split(\",\") 會用逗號當切割點，把原本一整串文字切成 list：['80', '90', '100']。切完後裡面的元素仍然是字串。"},
       {"type": "list", "items": ["upper()：轉大寫。", "lower()：轉小寫。", "split()：切割字串，結果是 list。", "strip()：去掉前後空白。"]}
@@ -848,7 +848,7 @@
       {"type": "code", "code": "def count_args(*args):\n    print(len(args))\n\ncount_args(1, 2, 3)"},
       {"type": "paragraph", "text": "*args 會把多個位置參數收成 tuple，**kwargs 會把多個關鍵字參數收成 dict。初學先記住：星號不是乘法時，常表示「把很多參數收起來」。"},
       {"type": "code", "code": "def add_item(items):\n    items.append(\"B\")\n\nletters = [\"A\"]\nadd_item(letters)\nprint(letters)"},
-      {"type": "paragraph", "text": "list 是可變物件，函式裡 append() 改的是同一個 list，所以函式外面也看得到改變。相反地，整數、字串、tuple 這類不可變物件，在函式內重新指定變數通常不會改到外面的變數。"},
+      {"type": "paragraph", "text": "上面的 append() 是「直接在原本那個 list 上動手」，函式裡外看到的是同一個 list，所以外面也看得到改變。但如果在函式裡寫 items = [\"C\"] 這種「重新指定」，意思是叫 items 這個名字改指向一個全新的 list，原本外面的 letters 完全不受影響。可以這樣記：動手改（append）外面看得到，換人指（=）外面沒感覺。"},
       {"type": "code", "code": "x = 1\ndef change():\n    global x\n    x = 5\n\nchange()\nprint(x)"},
       {"type": "paragraph", "text": "函式裡的變數通常是區域變數，離開函式後外面不能直接使用。若真的要在函式裡改外層變數，要用 global，但初學時不建議濫用，因為它會讓程式比較難追蹤。"},
       {"type": "list", "items": ["def 只是在定義，函式名稱加括號才是呼叫。", "return 會結束函式並交回結果。", "沒有 return 時回傳 None。", "list、dict 這類可變物件在函式內被修改，外面也可能看到改變。", "區域變數和全域變數要分清楚。"]}
@@ -858,7 +858,7 @@
       "把 print() 當成 return。",
       "以為 return 後面的程式還會繼續跑。",
       "忽略沒有 return 的函式會回傳 None。",
-      "不分清楚可變物件和不可變物件在函式中的差異。"
+      "不分清楚原地修改（append）和重新指定（=）在函式中的差異。"
     ],
     "checkpoint_question_ids": ["q-08-001", "q-08-002", "q-08-004"]
   },

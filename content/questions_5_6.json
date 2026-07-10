@@ -104,7 +104,7 @@
       {"id": "D", "text": "它一定會造成 IndentationError"}
     ],
     "answer": ["B"],
-    "explanation": "考註解符號時核心是 #；三引號本質上是字串，但未指派時常被用來寫多行說明。",
+    "explanation": "Python 真正的註解符號是 #；三引號本質上是多行字串，沒有指派給變數時，常被拿來當多行說明文字。",
     "common_mistake": "把三引號和 # 完全當成同一種語法。"
   },
   {

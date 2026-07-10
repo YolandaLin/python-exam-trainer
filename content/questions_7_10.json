@@ -509,7 +509,7 @@
     "type": "single_choice",
     "difficulty": 2,
     "concepts": ["method", "self"],
-    "stem": "下列哪一個方法呼叫寫法最正確？假設 `s = Student(\"Amy\")` 已建立完成。",
+    "stem": "下列哪一個方法呼叫寫法最正確？假設 Student 類別內已定義 info() 方法，且 `s = Student(\"Amy\")` 已建立完成。",
     "code": "",
     "options": [
       {"id": "A", "text": "s.info()"},
