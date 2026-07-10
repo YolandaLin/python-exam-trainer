@@ -7,6 +7,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+DENSE_SOURCE_PREFIXES = {"01", "02", "03", "04", "05", "06"}
 
 
 def load_questions() -> list[dict]:
@@ -93,7 +94,7 @@ def main() -> int:
     by_source: dict[str, int] = {}
     for question in questions:
         source_file = question.get("source_file")
-        if source_file and source_file[:2] in {"01", "02", "03", "04"}:
+        if source_file and source_file[:2] in DENSE_SOURCE_PREFIXES:
             by_source[source_file] = by_source.get(source_file, 0) + 1
 
     sparse_sources = {source: count for source, count in by_source.items() if count < 3}

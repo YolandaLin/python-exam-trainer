@@ -717,5 +717,73 @@
       "看到輸出順序和自己想的不一樣，就以為 set 壞掉；其實 set 本來就不強調順序。"
     ],
     "checkpoint_question_ids": ["q-04-10-001", "q-04-10-002", "q-04-10-003"]
+  },
+  {
+    "id": "lesson-05-python-editor",
+    "source_file": "05-python-editor.md",
+    "unit": "第 5 講",
+    "title": "Python 程式語言編輯器",
+    "order": 501,
+    "concepts": ["python-file", "idle", "vscode", "python-extension", "comment", "indentation"],
+    "goals": [
+      "知道為什麼正式程式要存成 .py 檔",
+      "理解 IDLE 與 VS Code 執行 Python 檔案的基本流程",
+      "看懂註解與縮排在 Python 裡的作用"
+    ],
+    "body": [
+      {"type": "paragraph", "text": "前面用 Python shell 試程式，就像在計算紙上快速算一題。它很適合測一兩行，但如果程式越來越長，只靠 shell 就很難保存、修改和重複執行。正式寫程式時，會把內容存成 .py 檔。"},
+      {"type": "paragraph", "text": "生活例子：shell 像便利貼，適合臨時記一下；.py 檔像正式作業本，可以保存、修改、交作業，也能下次再打開繼續寫。"},
+      {"type": "code", "code": "name = input()\nprint(\"你輸入的是\", name)"},
+      {"type": "paragraph", "text": "在 IDLE 裡，可以用 File -> New File 建立新檔，儲存後用 Run -> Run Module 或 F5 執行。執行結果會回到 Python shell 顯示。"},
+      {"type": "paragraph", "text": "VS Code 比 IDLE 更適合寫比較長的程式。它本身支援很多語言，所以寫 Python 時要安裝 Microsoft 的 Python extension，才會有比較好的提示、自動補字和執行環境。"},
+      {"type": "list", "items": ["IDLE：Python 安裝後通常會一起有，適合初學快速建立 .py 檔。", "VS Code：較完整的編輯器，建議安裝 Python extension。", "上機評測時，input() 通常不要放提示文字，避免多印文字造成答案錯。"]},
+      {"type": "code", "code": "# 這一行是註解，不會被執行\nprint(\"Hello\")"},
+      {"type": "paragraph", "text": "# 後面的文字是單行註解，Python 執行時會略過。三引號可以建立多行字串，未指派時常被拿來當多行說明文字；但考試若問單行註解符號，核心答案是 #。"},
+      {"type": "code", "code": "score = 80\nif score >= 60:\n    print(\"pass\")\nprint(\"done\")"},
+      {"type": "paragraph", "text": "Python 很重視縮排。上面程式中，print(\"pass\") 屬於 if 區塊，print(\"done\") 回到最外層。縮排不只是排版，它會決定程式屬於哪個區塊。"},
+      {"type": "list", "items": ["同一個區塊的縮排要一致。", "不該縮排的地方多縮排，可能出現 IndentationError。", "建議一層縮排用 4 個空白，避免 tab 和空白混用。"]}
+    ],
+    "common_mistakes": [
+      "以為 shell 適合保存完整作業程式。",
+      "忘記先儲存 .py 檔，就以為執行結果沒有更新。",
+      "把 # 註解裡的程式碼也當成會執行。",
+      "以為縮排只是好不好看，忽略它會改變 Python 程式結構。"
+    ],
+    "checkpoint_question_ids": ["q-05-001", "q-05-002", "q-05-003"]
+  },
+  {
+    "id": "lesson-06-selection-structure",
+    "source_file": "06-selection-structure.md",
+    "unit": "第 6 講",
+    "title": "選擇結構 if / elif / else",
+    "order": 601,
+    "concepts": ["if", "else", "elif", "condition-order", "nested-if", "conditional-expression", "pass"],
+    "goals": [
+      "知道 if、elif、else 如何依條件選擇執行區塊",
+      "能預測單分支、雙分支與多分支的輸出",
+      "理解條件順序、巢狀條件、條件表達式與 pass 的用途"
+    ],
+    "body": [
+      {"type": "paragraph", "text": "選擇結構就是讓程式依照條件走不同路。條件成立時執行某一段，不成立時可能跳過，或改執行 else 裡的另一段。"},
+      {"type": "paragraph", "text": "生活例子：進校門時，如果有帶學生證就直接進去，否則要到警衛室登記。這就是 if / else 的概念：條件不同，後面的動作不同。"},
+      {"type": "code", "code": "score = 75\nif score >= 60:\n    print(\"pass\")\nelse:\n    print(\"fail\")"},
+      {"type": "paragraph", "text": "if 後面的條件成立，就執行縮排進去的 if 區塊；否則執行 else 區塊。if、elif、else 後面都要有冒號，冒號後的程式區塊要縮排。"},
+      {"type": "code", "code": "x = 0\nif x < 0:\n    print(\"negative\")\nelif x > 0:\n    print(\"positive\")\nelse:\n    print(\"zero\")"},
+      {"type": "paragraph", "text": "elif 不是另一個完全獨立的 if。它只會在前面的條件不成立時才檢查；同一組 if / elif / else 通常只會執行第一個成立的分支。"},
+      {"type": "code", "code": "score = 95\nif score > 100:\n    print(\"error\")\nelif score >= 90:\n    print(\"A\")\nelif score >= 60:\n    print(\"D\")"},
+      {"type": "paragraph", "text": "多分支最容易錯在條件順序。成績等第要先攔下超過 100 的錯誤分數，再從高分往低分判斷；如果先判斷 >= 60，90 分也會先被歸到 D。"},
+      {"type": "code", "code": "member = \"y\"\nmoney = 1200\nif member == \"y\":\n    if money >= 1000:\n        print(\"80%\")\n    else:\n        print(\"90%\")\nelse:\n    print(\"not member\")"},
+      {"type": "paragraph", "text": "if 裡面還可以再放 if，這叫巢狀選擇結構。讀這種題目時，要一層一層看縮排，先判斷外層，再判斷內層。"},
+      {"type": "code", "code": "num = 4\nresult = \"even\" if num % 2 == 0 else \"odd\"\nprint(result)"},
+      {"type": "paragraph", "text": "條件表達式是簡短二選一寫法，格式是 x if 條件 else y。若邏輯變複雜，改回一般 if / else 會比較清楚。pass 則是空語句，用來暫時佔住必須有程式碼的區塊。"},
+      {"type": "list", "items": ["if / elif / else 後面都要有冒號。", "else 不能寫條件。", "== 是比較，= 是指派。", "pass 不會輸出東西，也不代表結束程式。"]}
+    ],
+    "common_mistakes": [
+      "漏掉冒號或縮排。",
+      "把 elif 當成另一個獨立 if。",
+      "多分支條件順序寫錯，導致高分或錯誤分數被提前分類。",
+      "看到 pass 就以為程式停止或條件通過。"
+    ],
+    "checkpoint_question_ids": ["q-06-001", "q-06-002", "q-06-003"]
   }
 ]

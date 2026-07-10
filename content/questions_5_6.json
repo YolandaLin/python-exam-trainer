@@ -1,0 +1,344 @@
+[
+  {
+    "id": "q-05-001",
+    "source_file": "05-python-editor.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["python-file", "idle"],
+    "stem": "為什麼正式寫比較長的 Python 程式時，不建議只用 Python shell？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "因為 shell 不能快速測試一兩行指令"},
+      {"id": "B", "text": "因為 shell 寫完的程式不方便儲存、修改和重複執行"},
+      {"id": "C", "text": "因為 .py 檔不能執行"},
+      {"id": "D", "text": "因為 Python shell 只能輸出數字"}
+    ],
+    "answer": ["B"],
+    "explanation": "Python shell 適合快速試一兩行；正式程式通常要存成 .py 檔，之後才能修改和重複執行。",
+    "common_mistake": "把互動模式當成所有程式都適合的開發方式。"
+  },
+  {
+    "id": "q-05-002",
+    "source_file": "05-python-editor.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["idle", "python-file"],
+    "stem": "在 IDLE 編輯 `.py` 檔時，影片提到可用哪個快捷鍵執行目前程式？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "F1"},
+      {"id": "B", "text": "F5"},
+      {"id": "C", "text": "Ctrl + C"},
+      {"id": "D", "text": "Alt + Tab"}
+    ],
+    "answer": ["B"],
+    "explanation": "IDLE 可用 Run -> Run Module 或 F5 執行目前程式檔。",
+    "common_mistake": "把作業系統快捷鍵和 IDLE 執行程式的快捷鍵混在一起。"
+  },
+  {
+    "id": "q-05-003",
+    "source_file": "05-python-editor.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["comment"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "# print(\"A\")\nprint(\"B\")",
+    "options": [
+      {"id": "A", "text": "A"},
+      {"id": "B", "text": "B"},
+      {"id": "C", "text": "A\nB"},
+      {"id": "D", "text": "# print(\"A\")"}
+    ],
+    "answer": ["B"],
+    "explanation": "# 後面的內容是單行註解，不會被 Python 執行，所以只會執行 print(\"B\")。",
+    "common_mistake": "看到註解裡有 print()，就以為它也會輸出。"
+  },
+  {
+    "id": "q-05-004",
+    "source_file": "05-python-editor.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["comment"],
+    "stem": "Python 的單行註解符號是哪一個？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "#"},
+      {"id": "B", "text": "//"},
+      {"id": "C", "text": "<!-- -->"},
+      {"id": "D", "text": "/* */"}
+    ],
+    "answer": ["A"],
+    "explanation": "Python 使用 # 表示單行註解；# 後面的文字是給人看的說明，不會被執行。",
+    "common_mistake": "把其他語言的註解符號套到 Python。"
+  },
+  {
+    "id": "q-05-005",
+    "source_file": "05-python-editor.md",
+    "type": "error_reason",
+    "difficulty": 2,
+    "concepts": ["indentation"],
+    "stem": "下列程式最可能出現哪一類錯誤？",
+    "code": "print(\"start\")\n    print(\"bad\")",
+    "options": [
+      {"id": "A", "text": "IndentationError"},
+      {"id": "B", "text": "NameError"},
+      {"id": "C", "text": "TypeError"},
+      {"id": "D", "text": "ZeroDivisionError"}
+    ],
+    "answer": ["A"],
+    "explanation": "第二行在沒有進入任何區塊時突然多縮排一層，Python 會把它視為縮排錯誤。",
+    "common_mistake": "以為縮排只是排版好不好看；在 Python 裡縮排是語法的一部分。"
+  },
+  {
+    "id": "q-05-006",
+    "source_file": "05-python-editor.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["comment", "python-file"],
+    "stem": "關於三引號 `\"\"\"...\"\"\"`，下列哪一項最正確？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "它是 Python 單行註解的正式符號"},
+      {"id": "B", "text": "它會建立多行字串，未指派時常被拿來當多行說明文字"},
+      {"id": "C", "text": "它只能包住數字"},
+      {"id": "D", "text": "它一定會造成 IndentationError"}
+    ],
+    "answer": ["B"],
+    "explanation": "考註解符號時核心是 #；三引號本質上是字串，但未指派時常被用來寫多行說明。",
+    "common_mistake": "把三引號和 # 完全當成同一種語法。"
+  },
+  {
+    "id": "q-06-001",
+    "source_file": "06-selection-structure.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["if", "indentation"],
+    "stem": "Python 的 `if` 條件後面必須接哪個符號，下一行的區塊也必須怎麼處理？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "接冒號 `:`，下一行要縮排"},
+      {"id": "B", "text": "接分號 `;`，下一行不能縮排"},
+      {"id": "C", "text": "接逗號 `,`，下一行一定要空白"},
+      {"id": "D", "text": "不用任何符號，下一行用大括號"}
+    ],
+    "answer": ["A"],
+    "explanation": "Python 的 if、elif、else 後面都要有冒號；冒號後的程式區塊用縮排表示。",
+    "common_mistake": "把 Python 和 C/C++ 的大括號區塊規則混在一起。"
+  },
+  {
+    "id": "q-06-002",
+    "source_file": "06-selection-structure.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["if", "else"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "score = 75\nif score >= 60:\n    print(\"pass\")\nelse:\n    print(\"fail\")",
+    "options": [
+      {"id": "A", "text": "pass"},
+      {"id": "B", "text": "fail"},
+      {"id": "C", "text": "pass\nfail"},
+      {"id": "D", "text": "沒有任何輸出"}
+    ],
+    "answer": ["A"],
+    "explanation": "75 >= 60 成立，所以執行 if 區塊，else 區塊不會執行。",
+    "common_mistake": "以為 if 和 else 都會依序執行。"
+  },
+  {
+    "id": "q-06-003",
+    "source_file": "06-selection-structure.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["if"],
+    "stem": "執行下列單分支程式，輸出是什麼？",
+    "code": "num = 5\nif num % 2 == 0:\n    print(\"even\")\nprint(\"done\")",
+    "options": [
+      {"id": "A", "text": "even"},
+      {"id": "B", "text": "done"},
+      {"id": "C", "text": "even\ndone"},
+      {"id": "D", "text": "odd\ndone"}
+    ],
+    "answer": ["B"],
+    "explanation": "5 不是偶數，所以 if 區塊不執行；最後一行沒有縮排，仍會執行並輸出 done。",
+    "common_mistake": "忽略最後一行已經不在 if 區塊裡。"
+  },
+  {
+    "id": "q-06-004",
+    "source_file": "06-selection-structure.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["if", "else"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "num = 5\nif num % 2 == 0:\n    print(\"even\")\nelse:\n    print(\"odd\")",
+    "options": [
+      {"id": "A", "text": "even"},
+      {"id": "B", "text": "odd"},
+      {"id": "C", "text": "even\nodd"},
+      {"id": "D", "text": "沒有任何輸出"}
+    ],
+    "answer": ["B"],
+    "explanation": "5 % 2 的餘數不是 0，所以 if 條件不成立，執行 else 區塊。",
+    "common_mistake": "忘記 else 代表前面條件不成立時才執行。"
+  },
+  {
+    "id": "q-06-005",
+    "source_file": "06-selection-structure.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["if", "elif", "else"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "x = 0\nif x < 0:\n    print(\"negative\")\nelif x > 0:\n    print(\"positive\")\nelse:\n    print(\"zero\")",
+    "options": [
+      {"id": "A", "text": "negative"},
+      {"id": "B", "text": "positive"},
+      {"id": "C", "text": "zero"},
+      {"id": "D", "text": "negative\npositive\nzero"}
+    ],
+    "answer": ["C"],
+    "explanation": "x 是 0，不小於 0，也不大於 0，所以前兩個條件都不成立，最後執行 else。",
+    "common_mistake": "把 elif 當成每個都會被執行的獨立 if。"
+  },
+  {
+    "id": "q-06-006",
+    "source_file": "06-selection-structure.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["elif", "condition-order"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "score = 95\nif score >= 60:\n    print(\"D\")\nelif score >= 90:\n    print(\"A\")",
+    "options": [
+      {"id": "A", "text": "A"},
+      {"id": "B", "text": "D"},
+      {"id": "C", "text": "D\nA"},
+      {"id": "D", "text": "沒有任何輸出"}
+    ],
+    "answer": ["B"],
+    "explanation": "95 >= 60 已經成立，執行第一個分支後，後面的 elif 不會再檢查，所以輸出 D。",
+    "common_mistake": "只看 95 也符合 >= 90，忘記多分支只會執行第一個成立的分支。"
+  },
+  {
+    "id": "q-06-007",
+    "source_file": "06-selection-structure.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["condition-order", "elif"],
+    "stem": "成績等第程式中，為什麼通常要先檢查 `score > 100`，再檢查 `score >= 90`？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "因為 `score > 100` 比較短"},
+      {"id": "B", "text": "因為超過 100 的錯誤分數也符合 `score >= 90`，要先攔下來"},
+      {"id": "C", "text": "因為 `elif` 不能放在 `if` 後面"},
+      {"id": "D", "text": "因為 Python 會自動把 100 以上改成 90"}
+    ],
+    "answer": ["B"],
+    "explanation": "例如 105 也符合 score >= 90；如果先判斷 >= 90，就會被錯誤分類成 A 等。",
+    "common_mistake": "沒有先想邊界值與不合理輸入。"
+  },
+  {
+    "id": "q-06-008",
+    "source_file": "06-selection-structure.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["if", "elif"],
+    "stem": "執行下列兩個獨立 `if` 的程式，輸出是什麼？",
+    "code": "score = 95\nif score >= 90:\n    print(\"A\")\nif score >= 60:\n    print(\"pass\")",
+    "options": [
+      {"id": "A", "text": "A"},
+      {"id": "B", "text": "pass"},
+      {"id": "C", "text": "A\npass"},
+      {"id": "D", "text": "沒有任何輸出"}
+    ],
+    "answer": ["C"],
+    "explanation": "這裡是兩個獨立的 if，所以兩個條件都會各自檢查；95 同時符合兩個條件。",
+    "common_mistake": "把兩個獨立 if 誤認成 if/elif 的互斥分支。"
+  },
+  {
+    "id": "q-06-009",
+    "source_file": "06-selection-structure.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["elif"],
+    "stem": "執行下列 `if/elif` 程式，輸出是什麼？",
+    "code": "score = 95\nif score >= 90:\n    print(\"A\")\nelif score >= 60:\n    print(\"pass\")",
+    "options": [
+      {"id": "A", "text": "A"},
+      {"id": "B", "text": "pass"},
+      {"id": "C", "text": "A\npass"},
+      {"id": "D", "text": "沒有任何輸出"}
+    ],
+    "answer": ["A"],
+    "explanation": "if 條件已成立並輸出 A，後面的 elif 不會再檢查。",
+    "common_mistake": "不分清楚 elif 是接在同一組分支裡，不是另一個獨立 if。"
+  },
+  {
+    "id": "q-06-010",
+    "source_file": "06-selection-structure.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["nested-if"],
+    "stem": "執行下列巢狀選擇結構，輸出是什麼？",
+    "code": "member = \"n\"\nmoney = 500\nif member == \"y\":\n    if money >= 1000:\n        print(money * 0.8)\n    else:\n        print(money * 0.9)\nelse:\n    if money >= 1000:\n        print(money * 0.9)\n    else:\n        print(money * 0.95)",
+    "options": [
+      {"id": "A", "text": "400.0"},
+      {"id": "B", "text": "450.0"},
+      {"id": "C", "text": "475.0"},
+      {"id": "D", "text": "500"}
+    ],
+    "answer": ["C"],
+    "explanation": "member 是 n，進入外層 else；money 低於 1000，所以執行 500 * 0.95，輸出 475.0。",
+    "common_mistake": "只看金額，忘記先判斷會員身分這一層。"
+  },
+  {
+    "id": "q-06-011",
+    "source_file": "06-selection-structure.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["conditional-expression"],
+    "stem": "執行下列條件表達式，輸出是什麼？",
+    "code": "num = 4\nresult = \"even\" if num % 2 == 0 else \"odd\"\nprint(result)",
+    "options": [
+      {"id": "A", "text": "even"},
+      {"id": "B", "text": "odd"},
+      {"id": "C", "text": "True"},
+      {"id": "D", "text": "False"}
+    ],
+    "answer": ["A"],
+    "explanation": "num % 2 == 0 成立，所以條件表達式回傳 if 前面的 \"even\"。",
+    "common_mistake": "把 Python 的條件表達式順序誤記成其他語言的寫法。"
+  },
+  {
+    "id": "q-06-012",
+    "source_file": "06-selection-structure.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["pass"],
+    "stem": "`pass` 在 Python 中的主要用途是什麼？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "讓程式立刻停止"},
+      {"id": "B", "text": "暫時佔住必須有敘述的區塊，什麼都不做"},
+      {"id": "C", "text": "代表密碼驗證一定通過"},
+      {"id": "D", "text": "輸出 pass 這個字"}
+    ],
+    "answer": ["B"],
+    "explanation": "pass 是空語句，常用在語法上需要一個區塊，但內容之後才要補的地方。",
+    "common_mistake": "以為 pass 會結束程式或代表條件通過。"
+  },
+  {
+    "id": "q-05-007",
+    "source_file": "05-python-editor.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["vscode", "python-extension"],
+    "stem": "在 VS Code 寫 Python 時，為什麼建議安裝 Microsoft 的 Python extension？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "讓 VS Code 只能開啟 Python 檔，不能開其他檔案"},
+      {"id": "B", "text": "提供較友善的 Python 編輯、提示、自動補字與執行環境"},
+      {"id": "C", "text": "把 Python 程式自動翻譯成中文"},
+      {"id": "D", "text": "讓註解也會被 Python 執行"}
+    ],
+    "answer": ["B"],
+    "explanation": "VS Code 是通用編輯器；安裝 Python extension 後，寫 Python 會有更完整的提示、補字和執行支援。",
+    "common_mistake": "以為裝了 VS Code 就等於所有 Python 功能都已完整設定。"
+  }
+]
