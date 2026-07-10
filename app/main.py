@@ -416,12 +416,13 @@ def choose_next_question(db: Any, user_id: int, lesson_id: str | None = None) ->
         lesson = lesson_row(db, user_id, lesson_id)
         concepts = lesson_concepts(db, lesson_id)
         source_file = lesson["source_file"]
-        scoped_questions = [
-            question
-            for question in questions
-            if question["source_file"] == source_file
-            or concepts.intersection((question["concepts"] or "").split(","))
-        ]
+        scoped_questions = [question for question in questions if question["source_file"] == source_file]
+        if not scoped_questions:
+            scoped_questions = [
+                question
+                for question in questions
+                if concepts.intersection((question["concepts"] or "").split(","))
+            ]
         if scoped_questions:
             questions = scoped_questions
 

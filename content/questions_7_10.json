@@ -1,0 +1,866 @@
+[
+  {
+    "id": "q-07-001",
+    "source_file": "07-loop-structure.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["while", "loop"],
+    "stem": "`while` 迴圈最適合用在哪一種情況？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "已經知道要照著固定清單逐一處理每個元素"},
+      {"id": "B", "text": "只要條件還成立，就一直重複執行同一段程式"},
+      {"id": "C", "text": "只執行一次，不需要判斷條件"},
+      {"id": "D", "text": "只能用來建立 list，不能執行其他敘述"}
+    ],
+    "answer": ["B"],
+    "explanation": "while 的核心是「條件成立就繼續」。例如密碼還沒輸入正確，就繼續要求輸入。",
+    "common_mistake": "把 while 和 for 都只背成重複，沒有分清楚 while 是看條件。"
+  },
+  {
+    "id": "q-07-002",
+    "source_file": "07-loop-structure.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["while", "accumulator"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "i = 1\ntotal = 0\nwhile i <= 3:\n    total += i\n    i += 1\nprint(total)",
+    "options": [
+      {"id": "A", "text": "3"},
+      {"id": "B", "text": "4"},
+      {"id": "C", "text": "6"},
+      {"id": "D", "text": "7"}
+    ],
+    "answer": ["C"],
+    "explanation": "total 依序加上 1、2、3，最後是 6。i += 1 讓迴圈能往結束條件前進。",
+    "common_mistake": "忘記 total 會累加每一輪，不是只保留最後一個 i。"
+  },
+  {
+    "id": "q-07-003",
+    "source_file": "07-loop-structure.md",
+    "type": "error_reason",
+    "difficulty": 2,
+    "concepts": ["while", "infinite-loop"],
+    "stem": "下列程式最主要的問題是什麼？",
+    "code": "i = 1\nwhile i <= 3:\n    print(i)",
+    "options": [
+      {"id": "A", "text": "少了讓 i 改變的敘述，可能形成無窮迴圈"},
+      {"id": "B", "text": "while 後面不能接比較運算"},
+      {"id": "C", "text": "print() 不能放在 while 裡"},
+      {"id": "D", "text": "i 必須是字串，不能是整數"}
+    ],
+    "answer": ["A"],
+    "explanation": "i 一直是 1，條件 i <= 3 永遠成立，所以會一直印 1。",
+    "common_mistake": "只看到條件一開始成立，忘記檢查迴圈裡有沒有改變條件。"
+  },
+  {
+    "id": "q-07-004",
+    "source_file": "07-loop-structure.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["for", "range"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "for i in range(2, 6, 2):\n    print(i)",
+    "options": [
+      {"id": "A", "text": "2\n4"},
+      {"id": "B", "text": "2\n4\n6"},
+      {"id": "C", "text": "0\n2\n4"},
+      {"id": "D", "text": "6"}
+    ],
+    "answer": ["A"],
+    "explanation": "range(2, 6, 2) 從 2 開始，每次加 2，但不包含 6，所以是 2、4。",
+    "common_mistake": "以為 range 的 stop 會包含在結果裡。"
+  },
+  {
+    "id": "q-07-005",
+    "source_file": "07-loop-structure.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["iterable", "for"],
+    "stem": "下列哪一個最能說明 iterable 的意思？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "可以被 for 逐一取出元素的物件"},
+      {"id": "B", "text": "只能存整數的物件"},
+      {"id": "C", "text": "一定會自動排序的物件"},
+      {"id": "D", "text": "只能用 while 處理的物件"}
+    ],
+    "answer": ["A"],
+    "explanation": "像 str、list、tuple、dict、set、range 都可以被 for 逐一走訪，所以可視為 iterable。",
+    "common_mistake": "以為 for 只能搭配 range，忘記字串和 list 也能逐一走訪。"
+  },
+  {
+    "id": "q-07-006",
+    "source_file": "07-loop-structure.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["for", "string"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "for ch in \"Py\":\n    print(ch)",
+    "options": [
+      {"id": "A", "text": "Py"},
+      {"id": "B", "text": "P\ny"},
+      {"id": "C", "text": "0\n1"},
+      {"id": "D", "text": "ch\nch"}
+    ],
+    "answer": ["B"],
+    "explanation": "字串可以逐一取出字元，所以第一輪 ch 是 P，第二輪 ch 是 y。",
+    "common_mistake": "以為 for 走訪字串時會一次拿到整個字串。"
+  },
+  {
+    "id": "q-07-007",
+    "source_file": "07-loop-structure.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["break", "loop-else"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "for i in range(3):\n    if i == 1:\n        break\n    print(i)\nelse:\n    print(\"done\")",
+    "options": [
+      {"id": "A", "text": "0\ndone"},
+      {"id": "B", "text": "0"},
+      {"id": "C", "text": "1\ndone"},
+      {"id": "D", "text": "done"}
+    ],
+    "answer": ["B"],
+    "explanation": "i 是 0 時先輸出 0；i 變成 1 時遇到 break，迴圈被中斷，所以 for 的 else 不會執行。",
+    "common_mistake": "把 loop else 當成 if else，以為 break 後會去執行 else。"
+  },
+  {
+    "id": "q-07-008",
+    "source_file": "07-loop-structure.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["continue"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "for i in range(4):\n    if i == 2:\n        continue\n    print(i)",
+    "options": [
+      {"id": "A", "text": "0\n1\n2\n3"},
+      {"id": "B", "text": "0\n1\n3"},
+      {"id": "C", "text": "2"},
+      {"id": "D", "text": "0\n1"}
+    ],
+    "answer": ["B"],
+    "explanation": "continue 只跳過這一輪剩下的程式。i 等於 2 時不 print，但迴圈還會繼續到 3。",
+    "common_mistake": "把 continue 誤以為會結束整個迴圈；結束整個迴圈的是 break。"
+  },
+  {
+    "id": "q-07-009",
+    "source_file": "07-loop-structure.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["nested-loop", "list"],
+    "stem": "執行下列巢狀迴圈，輸出是什麼？",
+    "code": "grid = [[1, 2], [3, 4]]\nfor row in grid:\n    for item in row:\n        print(item, end=\"\")",
+    "options": [
+      {"id": "A", "text": "1234"},
+      {"id": "B", "text": "[1, 2][3, 4]"},
+      {"id": "C", "text": "13"},
+      {"id": "D", "text": "24"}
+    ],
+    "answer": ["A"],
+    "explanation": "外層先拿每一列，內層再拿那一列裡的每個元素。end=\"\" 讓輸出接在同一行。",
+    "common_mistake": "只追蹤外層 row，忘記內層 item 會把 row 裡的元素逐一取出。"
+  },
+  {
+    "id": "q-07-010",
+    "source_file": "07-loop-structure.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["list-comprehension", "range"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "nums = [i * i for i in range(4)]\nprint(nums)",
+    "options": [
+      {"id": "A", "text": "[0, 1, 4, 9]"},
+      {"id": "B", "text": "[1, 4, 9, 16]"},
+      {"id": "C", "text": "[0, 1, 2, 3]"},
+      {"id": "D", "text": "0 1 4 9"}
+    ],
+    "answer": ["A"],
+    "explanation": "range(4) 是 0、1、2、3；每個 i 都計算 i * i，所以得到 [0, 1, 4, 9]。",
+    "common_mistake": "忘記 range(4) 從 0 開始，也不包含 4。"
+  },
+  {
+    "id": "q-07-011",
+    "source_file": "07-loop-structure.md",
+    "type": "single_choice",
+    "difficulty": 3,
+    "concepts": ["dict-comprehension", "zip"],
+    "stem": "若 `names = [\"Amy\", \"Bob\"]`、`scores = [90, 80]`，哪一段可建立 `{\"Amy\": 90, \"Bob\": 80}`？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "{name: score for name, score in zip(names, scores)}"},
+      {"id": "B", "text": "{name for name, score in zip(names, scores)}"},
+      {"id": "C", "text": "[name: score for name, score in zip(names, scores)]"},
+      {"id": "D", "text": "dict(name, score for name, score in zip(names, scores))"}
+    ],
+    "answer": ["A"],
+    "explanation": "dict comprehension 要用大括號，且 key 和 value 中間要有冒號。zip(names, scores) 會把兩個 list 配對。",
+    "common_mistake": "看到大括號就以為都一樣；dict comprehension 需要冒號，set comprehension 不需要。"
+  },
+  {
+    "id": "q-07-012",
+    "source_file": "07-loop-structure.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["set-comprehension", "set"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "letters = {ch for ch in \"banana\"}\nprint(len(letters))",
+    "options": [
+      {"id": "A", "text": "3"},
+      {"id": "B", "text": "4"},
+      {"id": "C", "text": "6"},
+      {"id": "D", "text": "banana"}
+    ],
+    "answer": ["A"],
+    "explanation": "set 會去除重複元素，banana 中不同字母只有 b、a、n，共 3 個。",
+    "common_mistake": "用字串長度 6 來回答，忘記 set 會去重複。"
+  },
+  {
+    "id": "q-08-001",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["function", "built-in-function"],
+    "stem": "下列哪一個是 Python 內建函式？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "print()"},
+      {"id": "B", "text": "my_score()"},
+      {"id": "C", "text": "student_homework()"},
+      {"id": "D", "text": "fun_from_video()"}
+    ],
+    "answer": ["A"],
+    "explanation": "print()、input()、len()、range()、type() 都是常見內建函式，可以直接呼叫。",
+    "common_mistake": "只要看到括號就以為都是自己寫的函式。"
+  },
+  {
+    "id": "q-08-002",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["def", "function-call"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "def hello():\n    print(\"Hi\")\n\nhello()",
+    "options": [
+      {"id": "A", "text": "Hi"},
+      {"id": "B", "text": "hello"},
+      {"id": "C", "text": "沒有任何輸出"},
+      {"id": "D", "text": "def hello()"}
+    ],
+    "answer": ["A"],
+    "explanation": "def 先定義函式，最後一行 hello() 才真正呼叫函式，所以會輸出 Hi。",
+    "common_mistake": "忘記函式要加括號呼叫，或以為 def 那一行就會自動執行。"
+  },
+  {
+    "id": "q-08-003",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["def", "function-call"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "def hello():\n    print(\"Hi\")",
+    "options": [
+      {"id": "A", "text": "Hi"},
+      {"id": "B", "text": "hello"},
+      {"id": "C", "text": "沒有任何輸出"},
+      {"id": "D", "text": "None"}
+    ],
+    "answer": ["C"],
+    "explanation": "這段程式只有定義函式，沒有呼叫 hello()，所以不會輸出任何內容。",
+    "common_mistake": "把「定義函式」誤認成「執行函式」。"
+  },
+  {
+    "id": "q-08-004",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["return", "print"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "def add(a, b):\n    return a + b\n\nprint(add(2, 3))",
+    "options": [
+      {"id": "A", "text": "5"},
+      {"id": "B", "text": "2 3"},
+      {"id": "C", "text": "None"},
+      {"id": "D", "text": "a + b"}
+    ],
+    "answer": ["A"],
+    "explanation": "add(2, 3) 回傳 5，外面的 print() 再把 5 顯示出來。",
+    "common_mistake": "分不清 return 是把結果交回去，print 是把結果顯示出來。"
+  },
+  {
+    "id": "q-08-005",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["return"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "def test():\n    return \"A\"\n    print(\"B\")\n\nprint(test())",
+    "options": [
+      {"id": "A", "text": "A"},
+      {"id": "B", "text": "B\nA"},
+      {"id": "C", "text": "A\nB"},
+      {"id": "D", "text": "None"}
+    ],
+    "answer": ["A"],
+    "explanation": "函式執行到 return 就結束，return 後面的 print(\"B\") 不會執行。",
+    "common_mistake": "以為函式內 return 後面的程式仍會照順序跑完。"
+  },
+  {
+    "id": "q-08-006",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["return", "none"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "def show():\n    print(\"Hi\")\n\nprint(show())",
+    "options": [
+      {"id": "A", "text": "Hi"},
+      {"id": "B", "text": "None"},
+      {"id": "C", "text": "Hi\nNone"},
+      {"id": "D", "text": "show"}
+    ],
+    "answer": ["C"],
+    "explanation": "show() 先輸出 Hi，但它沒有 return，所以回傳 None；外層 print() 又把 None 印出來。",
+    "common_mistake": "看到函式裡有 print()，就以為函式也有回傳值。"
+  },
+  {
+    "id": "q-08-007",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["return", "tuple", "unpacking"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "def pair():\n    return 1, 2\n\na, b = pair()\nprint(a + b)",
+    "options": [
+      {"id": "A", "text": "3"},
+      {"id": "B", "text": "(1, 2)"},
+      {"id": "C", "text": "1 2"},
+      {"id": "D", "text": "None"}
+    ],
+    "answer": ["A"],
+    "explanation": "return 1, 2 會回傳 tuple，a, b = pair() 把兩個值拆開，所以 a + b 是 3。",
+    "common_mistake": "以為函式一次只能回傳一個值，或不理解 tuple unpacking。"
+  },
+  {
+    "id": "q-08-008",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["default-parameter", "parameter"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "def greet(name=\"Amy\"):\n    print(\"Hi\", name)\n\ngreet()\ngreet(\"Bob\")",
+    "options": [
+      {"id": "A", "text": "Hi Amy\nHi Bob"},
+      {"id": "B", "text": "Hi name\nHi name"},
+      {"id": "C", "text": "Hi Bob\nHi Amy"},
+      {"id": "D", "text": "Amy\nBob"}
+    ],
+    "answer": ["A"],
+    "explanation": "第一次沒有給參數，所以用預設值 Amy；第二次有給 Bob，就用 Bob。",
+    "common_mistake": "以為預設參數永遠不會被傳入值覆蓋。"
+  },
+  {
+    "id": "q-08-009",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["args-kwargs"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "def count_args(*args):\n    print(len(args))\n\ncount_args(1, 2, 3)",
+    "options": [
+      {"id": "A", "text": "1"},
+      {"id": "B", "text": "2"},
+      {"id": "C", "text": "3"},
+      {"id": "D", "text": "(1, 2, 3)"}
+    ],
+    "answer": ["C"],
+    "explanation": "*args 會把多出來的位置參數收成 tuple。這裡有三個參數，所以 len(args) 是 3。",
+    "common_mistake": "把 *args 當成只能收一個參數。"
+  },
+  {
+    "id": "q-08-010",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["mutable-immutable", "list"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "def add_item(items):\n    items.append(\"B\")\n\nletters = [\"A\"]\nadd_item(letters)\nprint(letters)",
+    "options": [
+      {"id": "A", "text": "['A']"},
+      {"id": "B", "text": "['A', 'B']"},
+      {"id": "C", "text": "['B']"},
+      {"id": "D", "text": "None"}
+    ],
+    "answer": ["B"],
+    "explanation": "list 是可變物件，函式內 append() 會改到同一個 list，所以外面的 letters 也變了。",
+    "common_mistake": "以為所有參數在函式內改動都不會影響外面。"
+  },
+  {
+    "id": "q-08-011",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["mutable-immutable", "scope"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "def change(x):\n    x = 99\n\nnum = 10\nchange(num)\nprint(num)",
+    "options": [
+      {"id": "A", "text": "10"},
+      {"id": "B", "text": "99"},
+      {"id": "C", "text": "None"},
+      {"id": "D", "text": "x"}
+    ],
+    "answer": ["A"],
+    "explanation": "num 是整數，函式內 x = 99 只是讓區域變數 x 改指向 99，不會把外面的 num 改掉。",
+    "common_mistake": "把函式裡重新指定區域變數，誤認成改到外部變數。"
+  },
+  {
+    "id": "q-08-012",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["global", "scope"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "x = 1\ndef change():\n    global x\n    x = 5\n\nchange()\nprint(x)",
+    "options": [
+      {"id": "A", "text": "1"},
+      {"id": "B", "text": "5"},
+      {"id": "C", "text": "None"},
+      {"id": "D", "text": "global"}
+    ],
+    "answer": ["B"],
+    "explanation": "global x 表示函式內要使用外層的 x，所以 change() 會把外面的 x 改成 5。",
+    "common_mistake": "以為函式內任何 x 都一定是新的區域變數，沒有注意 global。"
+  },
+  {
+    "id": "q-09-001",
+    "source_file": "09-objects-and-classes.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["class", "object"],
+    "stem": "物件導向中，class 和 object 的關係最像哪一個？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "class 像設計圖，object 像照設計圖做出的成品"},
+      {"id": "B", "text": "class 一定是數字，object 一定是字串"},
+      {"id": "C", "text": "class 只能被 print() 使用"},
+      {"id": "D", "text": "object 是 def 的另一種寫法"}
+    ],
+    "answer": ["A"],
+    "explanation": "class 定義物件應該有哪些資料和方法；object 是實際建立出來的個體。",
+    "common_mistake": "把 class 和 object 當成同一個東西，沒有分清楚設計圖和實體。"
+  },
+  {
+    "id": "q-09-002",
+    "source_file": "09-objects-and-classes.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["init", "self"],
+    "stem": "在 class 裡，`__init__(self, ...)` 最主要的用途是什麼？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "建立物件時初始化物件資料"},
+      {"id": "B", "text": "刪除整個 class"},
+      {"id": "C", "text": "讓 Python 停止執行"},
+      {"id": "D", "text": "只能用來輸出文字"}
+    ],
+    "answer": ["A"],
+    "explanation": "__init__ 常被稱為建構子，建立物件時會用來設定初始屬性。",
+    "common_mistake": "把 __init__ 的雙底線寫少，或以為它只是一般函式名稱。"
+  },
+  {
+    "id": "q-09-003",
+    "source_file": "09-objects-and-classes.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["class", "attribute", "init"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "class Student:\n    def __init__(self, name):\n        self.name = name\n\ns = Student(\"Amy\")\nprint(s.name)",
+    "options": [
+      {"id": "A", "text": "Amy"},
+      {"id": "B", "text": "name"},
+      {"id": "C", "text": "Student"},
+      {"id": "D", "text": "self.name"}
+    ],
+    "answer": ["A"],
+    "explanation": "建立 Student(\"Amy\") 時，__init__ 把 self.name 設成 Amy，所以 s.name 取到 Amy。",
+    "common_mistake": "把 self.name 當成固定文字，而不是物件的屬性。"
+  },
+  {
+    "id": "q-09-004",
+    "source_file": "09-objects-and-classes.md",
+    "type": "output_prediction",
+    "difficulty": 2,
+    "concepts": ["method", "self"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "class Box:\n    def show(self):\n        print(\"box\")\n\nb = Box()\nb.show()",
+    "options": [
+      {"id": "A", "text": "box"},
+      {"id": "B", "text": "self"},
+      {"id": "C", "text": "Box"},
+      {"id": "D", "text": "沒有任何輸出"}
+    ],
+    "answer": ["A"],
+    "explanation": "show 是 Box 的方法。呼叫 b.show() 時，不需要自己把 self 傳進去。",
+    "common_mistake": "定義方法忘記 self，或呼叫方法時多寫 self。"
+  },
+  {
+    "id": "q-09-005",
+    "source_file": "09-objects-and-classes.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["method", "self"],
+    "stem": "下列哪一個方法呼叫寫法最正確？假設 `s = Student(\"Amy\")` 已建立完成。",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "s.info()"},
+      {"id": "B", "text": "s.info(self)"},
+      {"id": "C", "text": "Student.info"},
+      {"id": "D", "text": "info.s()"}
+    ],
+    "answer": ["A"],
+    "explanation": "方法定義時第一個參數通常寫 self，但透過物件呼叫時寫 s.info()，不需要手動傳 self。",
+    "common_mistake": "看到定義有 self，就在呼叫時也手動寫 self。"
+  },
+  {
+    "id": "q-09-006",
+    "source_file": "09-objects-and-classes.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["class-variable", "instance-variable"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "class Student:\n    school = \"KGHS\"\n    def __init__(self, name):\n        self.name = name\n\ns1 = Student(\"Amy\")\ns2 = Student(\"Bob\")\nprint(s1.school)\nprint(s2.name)",
+    "options": [
+      {"id": "A", "text": "KGHS\nBob"},
+      {"id": "B", "text": "Amy\nBob"},
+      {"id": "C", "text": "school\nname"},
+      {"id": "D", "text": "KGHS\nKGHS"}
+    ],
+    "answer": ["A"],
+    "explanation": "school 是 class variable，兩個物件都可讀到 KGHS；name 是每個物件自己的 instance variable。",
+    "common_mistake": "分不清 class variable 是共用的，instance variable 是每個物件各自的。"
+  },
+  {
+    "id": "q-09-007",
+    "source_file": "09-objects-and-classes.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["instance-variable", "object"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "class Student:\n    def __init__(self, name):\n        self.name = name\n\ns1 = Student(\"Amy\")\ns2 = Student(\"Bob\")\ns1.name = \"Cindy\"\nprint(s1.name)\nprint(s2.name)",
+    "options": [
+      {"id": "A", "text": "Cindy\nBob"},
+      {"id": "B", "text": "Cindy\nCindy"},
+      {"id": "C", "text": "Amy\nBob"},
+      {"id": "D", "text": "Bob\nCindy"}
+    ],
+    "answer": ["A"],
+    "explanation": "s1.name 和 s2.name 是不同物件自己的屬性。改 s1 不會自動改 s2。",
+    "common_mistake": "以為同一個 class 建出的所有物件，屬性值一定會一起改。"
+  },
+  {
+    "id": "q-09-008",
+    "source_file": "09-objects-and-classes.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["init", "error-reason"],
+    "stem": "下列哪一個建構子名稱才是 Python 正確的特殊方法？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "__init__"},
+      {"id": "B", "text": "_init_"},
+      {"id": "C", "text": "init"},
+      {"id": "D", "text": "__main__"}
+    ],
+    "answer": ["A"],
+    "explanation": "正確名稱是前後各兩個底線的 __init__。底線數量錯，Python 就不會把它當建構子。",
+    "common_mistake": "雙底線名稱看起來很像，考題常故意少一個底線。"
+  },
+  {
+    "id": "q-09-009",
+    "source_file": "09-objects-and-classes.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["inheritance", "method"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "class Parent:\n    def hello(self):\n        print(\"parent\")\n\nclass Child(Parent):\n    pass\n\nc = Child()\nc.hello()",
+    "options": [
+      {"id": "A", "text": "parent"},
+      {"id": "B", "text": "Child"},
+      {"id": "C", "text": "pass"},
+      {"id": "D", "text": "沒有任何輸出"}
+    ],
+    "answer": ["A"],
+    "explanation": "Child 繼承 Parent，自己沒有 hello 時，可以使用父類別的 hello 方法。",
+    "common_mistake": "以為子類別沒有重寫方法，就完全不能呼叫父類別方法。"
+  },
+  {
+    "id": "q-09-010",
+    "source_file": "09-objects-and-classes.md",
+    "type": "output_prediction",
+    "difficulty": 3,
+    "concepts": ["method-override", "inheritance"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "class Parent:\n    def hello(self):\n        print(\"parent\")\n\nclass Child(Parent):\n    def hello(self):\n        print(\"child\")\n\nc = Child()\nc.hello()",
+    "options": [
+      {"id": "A", "text": "parent"},
+      {"id": "B", "text": "child"},
+      {"id": "C", "text": "parent\nchild"},
+      {"id": "D", "text": "沒有任何輸出"}
+    ],
+    "answer": ["B"],
+    "explanation": "Child 自己定義了 hello，會覆蓋父類別同名方法，所以輸出 child。",
+    "common_mistake": "看到繼承就以為一定執行父類別的方法，忽略子類別可覆寫。"
+  },
+  {
+    "id": "q-09-011",
+    "source_file": "09-objects-and-classes.md",
+    "type": "output_prediction",
+    "difficulty": 4,
+    "concepts": ["inheritance", "init"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "class Student:\n    def __init__(self, name):\n        self.name = name\n\nclass GradeStudent(Student):\n    def __init__(self, name, grade):\n        Student.__init__(self, name)\n        self.grade = grade\n\ng = GradeStudent(\"Amy\", 10)\nprint(g.name)\nprint(g.grade)",
+    "options": [
+      {"id": "A", "text": "Amy\n10"},
+      {"id": "B", "text": "10\nAmy"},
+      {"id": "C", "text": "name\ngrade"},
+      {"id": "D", "text": "None\n10"}
+    ],
+    "answer": ["A"],
+    "explanation": "子類別建構子先呼叫 Student.__init__ 設定 name，再設定自己的 grade。",
+    "common_mistake": "忘記子類別若自己寫 __init__，仍要處理父類別需要初始化的資料。"
+  },
+  {
+    "id": "q-09-012",
+    "source_file": "09-objects-and-classes.md",
+    "type": "output_prediction",
+    "difficulty": 4,
+    "concepts": ["multiple-inheritance", "method-resolution"],
+    "stem": "執行下列程式，輸出是什麼？",
+    "code": "class A:\n    def show(self):\n        print(\"A\")\n\nclass B:\n    def show(self):\n        print(\"B\")\n\nclass C(A, B):\n    pass\n\nc = C()\nc.show()",
+    "options": [
+      {"id": "A", "text": "A"},
+      {"id": "B", "text": "B"},
+      {"id": "C", "text": "A\nB"},
+      {"id": "D", "text": "pass"}
+    ],
+    "answer": ["A"],
+    "explanation": "這個入門規則可先記：多重繼承遇到同名方法時，會先找左邊的父類別 A。",
+    "common_mistake": "以為多重繼承會把兩個同名方法都執行一遍。"
+  },
+  {
+    "id": "q-10-001",
+    "source_file": "10-modules-packages-programs.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["module", "package"],
+    "stem": "關於模組與套件，下列哪一項最正確？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "模組通常是一個 .py 檔，套件通常是放多個模組的資料夾"},
+      {"id": "B", "text": "模組只能放圖片，套件只能放聲音"},
+      {"id": "C", "text": "模組一定要用 pip 安裝才存在"},
+      {"id": "D", "text": "套件不能包含任何 .py 檔"}
+    ],
+    "answer": ["A"],
+    "explanation": "影片的核心定義是：模組是一個 Python 檔案，套件是把多個模組組織在一起的資料夾。",
+    "common_mistake": "把模組、套件和第三方套件安裝混成同一件事。"
+  },
+  {
+    "id": "q-10-002",
+    "source_file": "10-modules-packages-programs.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["import", "module"],
+    "stem": "若檔案名稱是 `module1.py`，在同一目錄下要匯入它，應該寫哪一行？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "import module1"},
+      {"id": "B", "text": "import module1.py"},
+      {"id": "C", "text": "from module1.py import *"},
+      {"id": "D", "text": "pip module1"}
+    ],
+    "answer": ["A"],
+    "explanation": "import 時寫模組名稱，不寫 .py 副檔名。",
+    "common_mistake": "把檔案完整名稱 module1.py 直接拿去 import。"
+  },
+  {
+    "id": "q-10-003",
+    "source_file": "10-modules-packages-programs.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["import", "module-function"],
+    "stem": "`import random` 之後，若要呼叫 `randrange()`，正確寫法是哪一個？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "random.randrange(1, 7)"},
+      {"id": "B", "text": "randrange(1, 7)"},
+      {"id": "C", "text": "random->randrange(1, 7)"},
+      {"id": "D", "text": "import.randrange(1, 7)"}
+    ],
+    "answer": ["A"],
+    "explanation": "只寫 import random 時，要透過模組名稱加句點呼叫裡面的函式。",
+    "common_mistake": "import 模組後，就以為模組裡所有函式都能直接裸名呼叫。"
+  },
+  {
+    "id": "q-10-004",
+    "source_file": "10-modules-packages-programs.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["import-alias"],
+    "stem": "`import random as rd` 之後，下列哪個呼叫方式正確？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "rd.randrange(1, 7)"},
+      {"id": "B", "text": "random.randrange(1, 7)"},
+      {"id": "C", "text": "as.randrange(1, 7)"},
+      {"id": "D", "text": "range.random(1, 7)"}
+    ],
+    "answer": ["A"],
+    "explanation": "取別名後，程式中用別名 rd 呼叫。若只有 import random as rd，不能再用 random 這個名稱。",
+    "common_mistake": "取了別名後仍用原模組名稱呼叫。"
+  },
+  {
+    "id": "q-10-005",
+    "source_file": "10-modules-packages-programs.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["random", "range"],
+    "stem": "`random.randrange(1, 7)` 可能產生哪些整數？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "1, 2, 3, 4, 5, 6"},
+      {"id": "B", "text": "1, 2, 3, 4, 5, 6, 7"},
+      {"id": "C", "text": "0, 1, 2, 3, 4, 5, 6"},
+      {"id": "D", "text": "只能產生 1"}
+    ],
+    "answer": ["A"],
+    "explanation": "randrange(1, 7) 的上限 7 不包含在結果內，所以適合模擬 1 到 6 的骰子。",
+    "common_mistake": "把 randrange 的上限當成會包含。"
+  },
+  {
+    "id": "q-10-006",
+    "source_file": "10-modules-packages-programs.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["package", "import"],
+    "stem": "若 `module1.py` 放在 `pkg/` 套件資料夾裡，主程式要匯入它，常見寫法是哪一個？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "from pkg import module1"},
+      {"id": "B", "text": "import pkg/module1"},
+      {"id": "C", "text": "from module1 import pkg"},
+      {"id": "D", "text": "pip import pkg"}
+    ],
+    "answer": ["A"],
+    "explanation": "從套件中匯入模組可寫 from 套件名稱 import 模組名稱。",
+    "common_mistake": "把檔案路徑寫法 pkg/module1 直接放進 import 語法。"
+  },
+  {
+    "id": "q-10-007",
+    "source_file": "10-modules-packages-programs.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["package", "init-file"],
+    "stem": "影片介紹的傳統自建套件資料夾中，通常要放哪個檔案？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "__init__.py"},
+      {"id": "B", "text": "__main__.txt"},
+      {"id": "C", "text": "package.exe"},
+      {"id": "D", "text": "pip.ini"}
+    ],
+    "answer": ["A"],
+    "explanation": "影片採用的傳統套件結構中，套件資料夾內有 __init__.py，注意前後各兩個底線。",
+    "common_mistake": "雙底線檔名很容易少打一個底線，或把 init 和 main 混在一起。"
+  },
+  {
+    "id": "q-10-008",
+    "source_file": "10-modules-packages-programs.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["main-guard", "name-variable"],
+    "stem": "`if __name__ == \"__main__\":` 常用來判斷什麼？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "這個檔案是直接執行，還是被其他檔案 import"},
+      {"id": "B", "text": "Python 版本是不是最新"},
+      {"id": "C", "text": "目前電腦是否連上網路"},
+      {"id": "D", "text": "pip 是否已經安裝 numpy"}
+    ],
+    "answer": ["A"],
+    "explanation": "直接執行某檔案時，該檔案的 __name__ 會是 \"__main__\"；被 import 時則通常是模組名稱。",
+    "common_mistake": "只背整行語法，沒有理解它是在分辨直接執行和被匯入。"
+  },
+  {
+    "id": "q-10-009",
+    "source_file": "10-modules-packages-programs.md",
+    "type": "single_choice",
+    "difficulty": 3,
+    "concepts": ["main-guard", "name-variable"],
+    "stem": "把下列內容存成 `demo.py` 並直接執行 `python demo.py`，輸出是什麼？",
+    "code": "def main():\n    print(\"run\")\n\nif __name__ == \"__main__\":\n    main()",
+    "options": [
+      {"id": "A", "text": "run"},
+      {"id": "B", "text": "__main__"},
+      {"id": "C", "text": "main"},
+      {"id": "D", "text": "沒有任何輸出"}
+    ],
+    "answer": ["A"],
+    "explanation": "直接執行 demo.py 時，__name__ 等於 \"__main__\"，條件成立，所以呼叫 main() 並輸出 run。",
+    "common_mistake": "忘記 if 判斷成立後才會呼叫 main()。"
+  },
+  {
+    "id": "q-10-010",
+    "source_file": "10-modules-packages-programs.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["dir", "module"],
+    "stem": "`dir(module1)` 的主要用途是什麼？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "查詢 module1 中有哪些名稱，例如變數或函式"},
+      {"id": "B", "text": "自動安裝 module1"},
+      {"id": "C", "text": "刪除 module1.py"},
+      {"id": "D", "text": "把 module1 轉成字串"}
+    ],
+    "answer": ["A"],
+    "explanation": "dir() 可查看某個模組或物件裡有哪些名稱，常用來探索可用函式或屬性。",
+    "common_mistake": "把 dir() 誤認成檔案目錄操作或 pip 指令。"
+  },
+  {
+    "id": "q-10-011",
+    "source_file": "10-modules-packages-programs.md",
+    "type": "single_choice",
+    "difficulty": 1,
+    "concepts": ["standard-library", "third-party-package"],
+    "stem": "下列哪一組配對最正確？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "Python 內建模組查標準函式庫文件；第三方套件可到 PyPI 查"},
+      {"id": "B", "text": "Python 內建模組一定要先 pip install"},
+      {"id": "C", "text": "第三方套件只能在 Python shell 用，不能在 .py 檔用"},
+      {"id": "D", "text": "PyPI 是用來查 Python 錯誤行號的工具"}
+    ],
+    "answer": ["A"],
+    "explanation": "標準函式庫是 Python 內建可用的模組集合；第三方套件通常可在 PyPI 查詢，並透過 pip 管理。",
+    "common_mistake": "把內建模組和第三方套件都當成一定要 pip 安裝。"
+  },
+  {
+    "id": "q-10-012",
+    "source_file": "10-modules-packages-programs.md",
+    "type": "single_choice",
+    "difficulty": 2,
+    "concepts": ["pip", "import"],
+    "stem": "關於 `pip install numpy` 和 `import numpy as np`，下列哪一項最正確？",
+    "code": "",
+    "options": [
+      {"id": "A", "text": "pip install 是安裝套件；程式中仍要 import 才能使用"},
+      {"id": "B", "text": "pip install numpy 會自動在每個程式中寫好 import"},
+      {"id": "C", "text": "import numpy as np 會移除 numpy"},
+      {"id": "D", "text": "pip uninstall numpy 是用來匯入 numpy"}
+    ],
+    "answer": ["A"],
+    "explanation": "安裝和匯入是兩件事。pip install 讓環境有這個套件，程式執行時仍要 import 它。",
+    "common_mistake": "以為安裝完成後，不用在程式裡寫 import 就能直接呼叫套件。"
+  }
+]

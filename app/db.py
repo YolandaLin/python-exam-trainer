@@ -221,6 +221,14 @@ def unit_from_source(source_file: str) -> str:
         return "第 5 講"
     if source_file.startswith("06-"):
         return "第 6 講"
+    if source_file.startswith("07-"):
+        return "第 7 講"
+    if source_file.startswith("08-"):
+        return "第 8 講"
+    if source_file.startswith("09-"):
+        return "第 9 講"
+    if source_file.startswith("10-"):
+        return "第 10 講"
     return ""
 
 

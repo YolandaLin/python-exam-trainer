@@ -785,5 +785,156 @@
       "看到 pass 就以為程式停止或條件通過。"
     ],
     "checkpoint_question_ids": ["q-06-001", "q-06-002", "q-06-003"]
+  },
+  {
+    "id": "lesson-07-loop-structure",
+    "source_file": "07-loop-structure.md",
+    "unit": "第 7 講",
+    "title": "重複結構 while / for",
+    "order": 701,
+    "concepts": ["while", "for", "range", "iterable", "break", "continue", "loop-else", "nested-loop", "list-comprehension", "dict-comprehension", "set-comprehension"],
+    "goals": [
+      "知道 while 和 for 都能重複執行程式，但適合的情境不同",
+      "能判斷 range() 的起點、終點與間隔，特別是不包含 stop",
+      "理解 break、continue、巢狀迴圈與 comprehension 的基本用法"
+    ],
+    "body": [
+      {"type": "paragraph", "text": "第 7 講要處理的是「重複」。程式常常不是只做一次，例如印出 1 到 100、檢查班上每個人的成績、把一張表格逐格讀出來。這些事情如果一行一行手寫會很累，所以需要迴圈。"},
+      {"type": "paragraph", "text": "生活例子：while 像是「只要還沒排到我，就繼續等」。你不一定知道要等幾次，只知道條件還成立就繼續。for 像是「照著名單一個一個點名」，名單裡有誰，就依序處理誰。"},
+      {"type": "code", "code": "i = 1\ntotal = 0\nwhile i <= 3:\n    total += i\n    i += 1\nprint(total)"},
+      {"type": "paragraph", "text": "while 後面接條件。上面程式每一輪都把 i 加到 total，接著 i += 1。如果忘了讓 i 改變，條件可能永遠成立，程式就會一直跑下去。做 while 題時，一定要檢查控制變數有沒有前進。"},
+      {"type": "code", "code": "for i in range(2, 6, 2):\n    print(i)"},
+      {"type": "paragraph", "text": "for 常搭配 range()。range(2, 6, 2) 從 2 開始，每次加 2，但 6 不包含在內，所以只會得到 2 和 4。考試很常把 stop 不包含這件事放進選項。"},
+      {"type": "code", "code": "for ch in \"Py\":\n    print(ch)"},
+      {"type": "paragraph", "text": "for 不只能走 range，也可以走字串、list、tuple、dict、set 等可迭代物件。字串會一個字元一個字元拿出來，list 則會一個元素一個元素拿出來。"},
+      {"type": "code", "code": "for i in range(4):\n    if i == 2:\n        continue\n    print(i)"},
+      {"type": "paragraph", "text": "break 和 continue 很容易混。break 是直接離開整個迴圈；continue 是跳過這一輪剩下的程式，下一輪還會繼續。for 或 while 後面也可以接 else，但只在迴圈正常結束時執行；如果中途 break，else 就不會執行。"},
+      {"type": "code", "code": "grid = [[1, 2], [3, 4]]\nfor row in grid:\n    for item in row:\n        print(item, end=\"\")"},
+      {"type": "paragraph", "text": "巢狀迴圈就是迴圈裡再放迴圈，常用來處理表格或二維 list。讀題時先看外層拿到哪一列，再看內層怎麼處理那一列裡的元素。"},
+      {"type": "code", "code": "nums = [i * i for i in range(4)]\nprint(nums)\n\nnames = [\"Amy\", \"Bob\"]\nscores = [90, 80]\ntable = {name: score for name, score in zip(names, scores)}\nprint(table)"},
+      {"type": "paragraph", "text": "comprehension 是比較短的建立容器寫法。list comprehension 用中括號，dict comprehension 用大括號且中間有冒號，set comprehension 也用大括號但沒有冒號。看到大括號時要先找有沒有冒號，才能分辨 dict 和 set。"},
+      {"type": "list", "items": ["while：條件成立就繼續，記得更新控制變數。", "for：常用來走訪 range、字串、list 等 iterable。", "range 的 stop 不包含。", "break 結束迴圈；continue 跳過本輪剩下部分。", "巢狀迴圈要照縮排一層一層追。"]}
+    ],
+    "common_mistakes": [
+      "忘記 range() 不包含 stop。",
+      "while 裡沒有改變控制變數，造成無窮迴圈。",
+      "把 break 和 continue 的效果混在一起。",
+      "以為 loop else 和 if else 一樣。",
+      "看到大括號就直接判斷成 set，忽略 dict comprehension 需要冒號。"
+    ],
+    "checkpoint_question_ids": ["q-07-001", "q-07-002", "q-07-004"]
+  },
+  {
+    "id": "lesson-08-builtins-and-custom-functions",
+    "source_file": "08-builtins-and-custom-functions.md",
+    "unit": "第 8 講",
+    "title": "內建函式與自訂函式",
+    "order": 801,
+    "concepts": ["function", "built-in-function", "def", "function-call", "return", "parameter", "default-parameter", "args-kwargs", "mutable-immutable", "scope", "global"],
+    "goals": [
+      "知道函式可以把一段常用流程包起來重複使用",
+      "分辨定義函式、呼叫函式、print() 與 return 的差異",
+      "理解參數、預設參數、*args、可變物件與變數作用範圍的常見考點"
+    ],
+    "body": [
+      {"type": "paragraph", "text": "第 8 講的核心是函式。函式可以先想成一台小機器：你給它資料，它照固定流程處理，最後可能顯示結果，也可能把結果交回給你。Python 已經內建很多函式，例如 print()、input()、len()、range()、type()。"},
+      {"type": "paragraph", "text": "生活例子：飲料店的點餐流程就像函式。你給店員品項和甜度，店員照流程做出飲料。你不需要每次都重新說明如何煮茶、加冰、封膜；函式也是把常用流程包好。"},
+      {"type": "code", "code": "def hello():\n    print(\"Hi\")\n\nhello()"},
+      {"type": "paragraph", "text": "def 是定義函式，不是執行函式。上面真正讓 Hi 出現的是最後一行 hello()。如果只有 def hello(): 而沒有呼叫，程式不會自動輸出。"},
+      {"type": "code", "code": "def add(a, b):\n    return a + b\n\nprint(add(2, 3))"},
+      {"type": "paragraph", "text": "print() 是顯示在畫面上，return 是把結果交回函式外面。return 後函式就結束，所以 return 後面的程式不會繼續執行。沒有寫 return 的函式，預設會回傳 None。"},
+      {"type": "code", "code": "def greet(name=\"Amy\"):\n    print(\"Hi\", name)\n\ngreet()\ngreet(\"Bob\")"},
+      {"type": "paragraph", "text": "參數是呼叫函式時交給函式的資料。預設參數像備用答案：如果呼叫時沒給 name，就用 Amy；如果有給 Bob，就用 Bob。呼叫函式時也可以用關鍵字參數指定名稱。"},
+      {"type": "code", "code": "def count_args(*args):\n    print(len(args))\n\ncount_args(1, 2, 3)"},
+      {"type": "paragraph", "text": "*args 會把多個位置參數收成 tuple，**kwargs 會把多個關鍵字參數收成 dict。初學先記住：星號不是乘法時，常表示「把很多參數收起來」。"},
+      {"type": "code", "code": "def add_item(items):\n    items.append(\"B\")\n\nletters = [\"A\"]\nadd_item(letters)\nprint(letters)"},
+      {"type": "paragraph", "text": "list 是可變物件，函式裡 append() 改的是同一個 list，所以函式外面也看得到改變。相反地，整數、字串、tuple 這類不可變物件，在函式內重新指定變數通常不會改到外面的變數。"},
+      {"type": "code", "code": "x = 1\ndef change():\n    global x\n    x = 5\n\nchange()\nprint(x)"},
+      {"type": "paragraph", "text": "函式裡的變數通常是區域變數，離開函式後外面不能直接使用。若真的要在函式裡改外層變數，要用 global，但初學時不建議濫用，因為它會讓程式比較難追蹤。"},
+      {"type": "list", "items": ["def 只是在定義，函式名稱加括號才是呼叫。", "return 會結束函式並交回結果。", "沒有 return 時回傳 None。", "list、dict 這類可變物件在函式內被修改，外面也可能看到改變。", "區域變數和全域變數要分清楚。"]}
+    ],
+    "common_mistakes": [
+      "定義函式後忘記加括號呼叫。",
+      "把 print() 當成 return。",
+      "以為 return 後面的程式還會繼續跑。",
+      "忽略沒有 return 的函式會回傳 None。",
+      "不分清楚可變物件和不可變物件在函式中的差異。"
+    ],
+    "checkpoint_question_ids": ["q-08-001", "q-08-002", "q-08-004"]
+  },
+  {
+    "id": "lesson-09-objects-and-classes",
+    "source_file": "09-objects-and-classes.md",
+    "unit": "第 9 講",
+    "title": "物件、類別與繼承",
+    "order": 901,
+    "concepts": ["class", "object", "attribute", "method", "init", "self", "class-variable", "instance-variable", "inheritance", "method-override", "multiple-inheritance"],
+    "goals": [
+      "用設計圖與成品的概念理解 class 和 object",
+      "看懂 __init__、self、屬性與方法的基本寫法",
+      "理解類別變數、物件變數、繼承、覆寫與多重繼承的入門規則"
+    ],
+    "body": [
+      {"type": "paragraph", "text": "第 9 講進入物件導向。先不要把它想成很抽象的名詞，先抓住一個圖像：class 是設計圖，object 是照設計圖做出來的實際東西。設計圖可以規定物件有哪些資料，也可以規定物件能做哪些動作。"},
+      {"type": "paragraph", "text": "生活例子：學生資料表的格式像 class，每一位學生的實際資料像 object。每位學生都有姓名、年齡、學號，但 Amy 和 Bob 的姓名不同，這就是不同物件各自的資料。"},
+      {"type": "code", "code": "class Student:\n    def __init__(self, name):\n        self.name = name\n\ns = Student(\"Amy\")\nprint(s.name)"},
+      {"type": "paragraph", "text": "__init__ 是建立物件時常用來初始化資料的特殊方法，前後各有兩個底線。self 代表目前這個物件自己，self.name = name 的意思是把傳進來的 name 存到這個物件的 name 屬性。"},
+      {"type": "code", "code": "class Box:\n    def show(self):\n        print(\"box\")\n\nb = Box()\nb.show()"},
+      {"type": "paragraph", "text": "寫在 class 裡的函式通常稱為方法。方法定義時第一個參數通常要寫 self，但透過物件呼叫時寫 b.show()，不用自己傳 self。這是初學最常錯的地方之一。"},
+      {"type": "code", "code": "class Student:\n    school = \"KGHS\"\n    def __init__(self, name):\n        self.name = name\n\ns1 = Student(\"Amy\")\ns2 = Student(\"Bob\")\nprint(s1.school)\nprint(s2.name)"},
+      {"type": "paragraph", "text": "school 寫在 class 裡、方法外，屬於類別變數，通常可以被同一類別的物件共用。self.name 是物件變數，每個物件各自保存自己的值。題目常考改一個物件的 name，另一個物件不會一起改。"},
+      {"type": "code", "code": "class Parent:\n    def hello(self):\n        print(\"parent\")\n\nclass Child(Parent):\n    pass\n\nc = Child()\nc.hello()"},
+      {"type": "paragraph", "text": "繼承就是子類別可以沿用父類別已有的內容。Child 沒有自己寫 hello，但它繼承 Parent，所以 c.hello() 可以用父類別的方法。若 Child 自己也寫了同名 hello，就會覆寫父類別方法。"},
+      {"type": "code", "code": "class A:\n    def show(self):\n        print(\"A\")\n\nclass B:\n    def show(self):\n        print(\"B\")\n\nclass C(A, B):\n    pass\n\nC().show()"},
+      {"type": "paragraph", "text": "多重繼承是同時繼承多個父類別。入門階段先記一個簡化規則：遇到同名方法時，會先找左邊的父類別。完整規則以後可以再學，但考題常先考這個基本方向。"},
+      {"type": "list", "items": ["class 是設計圖，object 是實體。", "__init__ 前後各兩個底線，常用來初始化物件。", "self 代表目前物件；呼叫方法時不用手動傳 self。", "類別變數共用，物件變數各自保存。", "子類別可繼承父類別，也可覆寫同名方法。"]}
+    ],
+    "common_mistakes": [
+      "把 __init__ 的雙底線寫成單底線。",
+      "定義方法忘記 self，或呼叫方法時多傳 self。",
+      "分不清類別變數和物件變數。",
+      "以為方法建立物件時一定會自動執行；通常只有 __init__ 在建立時被呼叫。",
+      "看到繼承就以為永遠執行父類別方法，忽略子類別可以覆寫。"
+    ],
+    "checkpoint_question_ids": ["q-09-001", "q-09-002", "q-09-003"]
+  },
+  {
+    "id": "lesson-10-modules-packages-programs",
+    "source_file": "10-modules-packages-programs.md",
+    "unit": "第 10 講",
+    "title": "模組、套件與獨立程式",
+    "order": 1001,
+    "concepts": ["module", "package", "import", "import-alias", "module-function", "random", "main-guard", "name-variable", "init-file", "dir", "standard-library", "third-party-package", "pip"],
+    "goals": [
+      "分辨模組、套件、內建模組與第三方套件",
+      "會看懂 import、from package import module、as 別名與模組函式呼叫",
+      "理解 __name__ == \"__main__\"、__init__.py、dir() 與 pip 的基本用途"
+    ],
+    "body": [
+      {"type": "paragraph", "text": "第 10 講要把程式拆成多個檔案來看。當程式變大時，不可能所有函式都塞在同一個檔案裡；我們會把相關功能整理成模組或套件，再在主程式中 import 使用。"},
+      {"type": "paragraph", "text": "生活例子：做報告時，你不會把所有資料都寫在同一張便利貼。你可能有一份圖片資料夾、一份參考資料、一份正式報告。Python 的模組和套件也像是在整理程式資料，讓主程式不用全部擠在一起。"},
+      {"type": "paragraph", "text": "模組通常是一個 .py 檔，例如 module1.py 的模組名稱是 module1。套件通常是包含多個模組的資料夾。影片把來源分成自己寫的模組、Python 內建模組，以及需要另外安裝的第三方套件。"},
+      {"type": "code", "code": "import random\n\nprint(random.randrange(1, 7))"},
+      {"type": "paragraph", "text": "import random 之後，呼叫 random 裡的函式要寫 random.randrange(...)。random.randrange(1, 7) 不包含 7，所以可能得到 1 到 6，很適合模擬骰子。因為這是隨機結果，練習時不要用固定輸出背答案，而要背範圍規則。"},
+      {"type": "code", "code": "import random as rd\n\nprint(rd.randrange(1, 7))"},
+      {"type": "paragraph", "text": "as 可以替模組取別名。取別名後，程式中要用 rd.randrange(...)。如果只有 import random as rd，卻寫 random.randrange(...)，就可能找不到 random 這個名稱。"},
+      {"type": "code", "code": "from pkg import module1, module2\n\nmodule1.fun1_1()\nmodule2.fun2_1()"},
+      {"type": "paragraph", "text": "模組放在套件資料夾裡時，常用 from 套件名稱 import 模組名稱。影片採用的傳統套件結構會在資料夾中放 __init__.py，注意 init 前後各兩個底線。把 module1.py 移進 pkg/ 後，主程式就不能再只寫 import module1。"},
+      {"type": "code", "code": "def main():\n    print(\"主程式\")\n\nif __name__ == \"__main__\":\n    main()"},
+      {"type": "paragraph", "text": "__name__ 可以用來分辨檔案是直接執行，還是被別的檔案 import。直接執行時，__name__ 會是 \"__main__\"，所以常見寫法是 if __name__ == \"__main__\": main()。這樣檔案被 import 時，不會自動跑主程式。"},
+      {"type": "code", "code": "import math\nprint(dir(math)[:5])"},
+      {"type": "paragraph", "text": "dir() 可以查詢模組中有哪些名稱。真正寫程式時，內建模組可查 Python 標準函式庫文件，第三方套件可到 PyPI 查。pip 是套件管理工具，可以安裝、更新、列出或移除第三方套件。"},
+      {"type": "code", "code": "pip list\npip install numpy\npip uninstall numpy"},
+      {"type": "paragraph", "text": "pip 指令通常在命令列執行，不是寫在 Python 程式裡。安裝套件和匯入套件是兩件事：pip install numpy 只是讓環境有 numpy，程式中仍要寫 import numpy as np 才能使用。"},
+      {"type": "list", "items": ["模組是一個 .py 檔，套件是整理模組的資料夾。", "import module 後，呼叫函式要寫 module.function()。", "取別名後要用別名呼叫。", "__name__ == \"__main__\" 用來區分直接執行和被 import。", "pip install 和 import 是兩件事。"]}
+    ],
+    "common_mistakes": [
+      "import 時把 .py 副檔名也寫進去。",
+      "import random 後直接寫 randrange()，忘記加 random.",
+      "取別名後仍使用原模組名稱。",
+      "__name__、__main__、__init__.py 的底線數量寫錯。",
+      "以為 pip install 後，程式裡就不需要 import。"
+    ],
+    "checkpoint_question_ids": ["q-10-001", "q-10-002", "q-10-008"]
   }
 ]

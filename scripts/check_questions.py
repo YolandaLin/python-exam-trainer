@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DENSE_SOURCE_PREFIXES = {"01", "02", "03", "04", "05", "06"}
+DENSE_SOURCE_PREFIXES = {"01", "02", "03", "04", "05", "06", "07", "08", "09", "10"}
 
 
 def load_questions() -> list[dict]:
