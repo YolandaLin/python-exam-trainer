@@ -11,12 +11,13 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from .db import get_db, init_db, session_expiry, string_agg_expr, utcnow
+from .db import get_db, init_db, load_misconception_question_ids, session_expiry, string_agg_expr, utcnow
 from .security import new_token, verify_password
 
 
 ROOT = Path(__file__).resolve().parents[1]
 STATIC_DIR = ROOT / "app" / "static"
+MISCONCEPTION_QUESTION_IDS = load_misconception_question_ids()
 
 app = FastAPI(title="python-exam-trainer")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -524,6 +525,8 @@ def choose_next_question(
                 score += 24
             if stats and stats["last_correct"] and seen >= 2:
                 score -= min(18, seen * 3)
+            if question["id"] in MISCONCEPTION_QUESTION_IDS:
+                score += 20
         if question["id"] in recent:
             score -= 35
         scored.append((score, question))

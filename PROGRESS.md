@@ -18,7 +18,7 @@
 | 計畫書 | [PLAN.md](PLAN.md) | 已建立 | 已定義部署範圍、MVP、題庫來源、弱點追蹤、技術架構與部署決策。 |
 | 網頁程式 | `app/` | 進行中 | 已建立 FastAPI API、靜態前端、課程頁、練習頁與進度紀錄。 |
 | 課程資料 | `content/lessons.json` | 已重寫 | 已從 `../02-雄女電資班考題整理/videos/` 整理第 1 到第 10 講 32 節課程；每節補生活例子、可執行範例與常見誤解。 |
-| 題目資料 | `content/questions.json` / `content/questions_1_4_extra.json` / `content/questions_5_6.json` / `content/questions_7_10.json` | 已補密度 | 第 1 到第 10 講共 145 題；32 節課每節至少 3 題，第 7 到第 10 講本次新增 48 題。 |
+| 題目資料 | `content/questions*.json` | 已補密度 | 第 1 到第 10 講共 169 題；新增 24 題直接驗證常見誤解。`misconception_questions.json` 維護 32 節、134 個誤解題連結。 |
 | 檢查工具 | `scripts/check_questions.py` / `scripts/check_lessons.py` / `scripts/check_app_flow.py` | 已建立 | 可檢查題目、課程資料與 API 主流程；輸出預測題會實際執行程式片段比對答案。 |
 | 本機資料庫 | `data/app.db` | 開發用 | 啟動時自動建立，已由 `.gitignore` 排除。 |
 | 部署設定 | `render.yaml` / [DEPLOYMENT.md](DEPLOYMENT.md) | 已上線 | Render Blueprint：FastAPI Web Service + PostgreSQL；正式密碼已由使用者於 Render Environment 設定，不寫入 Git。 |
@@ -35,7 +35,7 @@
 
 ## 已驗證
 
-- `python scripts/check_questions.py`：通過，145 題、104 個觀念；會檢查第 1 到第 10 講每個來源小節至少 3 題，並實際執行輸出預測題比對答案。
+- `python scripts/check_questions.py`：通過，169 題、116 個觀念；會檢查第 1 到第 10 講每個來源小節至少 3 題，並實際執行輸出預測題比對答案。
 - `python scripts/check_lessons.py`：通過，32 節課程、96 個觀念、96 個小檢查連結；檢查每節課需有生活例子、可執行範例、足夠解說長度與至少 3 題小檢查。
 - `python scripts/check_app_flow.py`：通過，登入、課程列表、課程進度、總複習鎖定／解鎖、跨章取題、錯題紀錄與摘要查詢皆正常。
 - `node --check app/static/app.js`：通過。
@@ -56,6 +56,6 @@
 
 - Git 狀態：03 專案進度已推上 `main`，下一次接手以 `git log -1` 為準。
 - 正式網址：`https://python-exam-trainer.onrender.com/`。
-- 已完成：課程優先流程、32 節初學者版課程、145 題第 1 到第 10 講題庫、每節 3 題小檢查、Render 部署、PostgreSQL 支援、production 預設密碼阻擋、README 移除密碼欄。
+- 已完成：課程優先流程、32 節初學者版課程、169 題第 1 到第 10 講題庫、常見誤解題映射、每節 3 題小檢查、Render 部署、PostgreSQL 支援、production 預設密碼阻擋、README 移除密碼欄。
 - 本次新增：第 7 講「重複結構」課程 + 12 題；第 8 講「函式」課程 + 12 題；第 9 講「物件與類別」課程 + 12 題；第 10 講「模組、套件與獨立程式」課程 + 12 題；指定課程練習時已調整為優先抽該來源筆記題目，避免第 9 講抽到第 1 講物件導向入門題。
 - 下次接手先做：補管理者弱點檢視與課程完成率；之後再做密碼初始化/重設流程，或依學生練習結果補混合題、錯題本與模擬考模式。

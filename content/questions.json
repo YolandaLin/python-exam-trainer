@@ -186,16 +186,16 @@
     "difficulty": 2,
     "concepts": ["print", "sep"],
     "stem": "執行下列程式會輸出什麼？",
-    "code": "print(\"A\", \"B\", sep=\"!!\")",
+    "code": "print(\"A\", \"B\")",
     "options": [
       {"id": "A", "text": "A B"},
-      {"id": "B", "text": "A!!B"},
-      {"id": "C", "text": "A!! B"},
-      {"id": "D", "text": "AB!!"}
+      {"id": "B", "text": "AB"},
+      {"id": "C", "text": "A  B（兩個空白）"},
+      {"id": "D", "text": "A,B"}
     ],
-    "answer": ["B"],
-    "explanation": "sep 控制多個輸出物件中間的分隔字串。指定 sep=\"!!\" 後，A 和 B 中間會放 !!。",
-    "common_mistake": "忘記 print() 預設 sep 是空白，也忘記 sep 只放在物件之間。"
+    "answer": ["A"],
+    "explanation": "print() 有多個輸出物件時，預設會在物件中間放一個空白，所以輸出是 A B。",
+    "common_mistake": "只看見 A 和 B，忘記 print() 預設會在兩個物件中間加入一個空白。"
   },
   {
     "id": "q-03-02-001",

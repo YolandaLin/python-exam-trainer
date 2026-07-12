@@ -6,6 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 LESSONS_PATH = ROOT / "content" / "lessons.json"
+MISCONCEPTION_QUESTIONS_PATH = ROOT / "content" / "misconception_questions.json"
 
 
 def load_questions() -> list[dict]:
@@ -17,8 +18,10 @@ def load_questions() -> list[dict]:
 
 def main() -> int:
     lessons = json.loads(LESSONS_PATH.read_text(encoding="utf-8"))
+    misconception_mappings = json.loads(MISCONCEPTION_QUESTIONS_PATH.read_text(encoding="utf-8"))
     questions = load_questions()
     question_ids = {question["id"] for question in questions}
+    questions_by_id = {question["id"]: question for question in questions}
     lesson_ids: set[str] = set()
     errors: list[str] = []
 
@@ -94,6 +97,32 @@ def main() -> int:
         if len(lesson["checkpoint_question_ids"]) < 3:
             errors.append(f"{lesson_id}: expected at least 3 checkpoint questions")
 
+        mistake_mappings = misconception_mappings.get(lesson_id)
+        if not isinstance(mistake_mappings, list):
+            errors.append(f"{lesson_id}: missing misconception question mappings")
+        elif len(mistake_mappings) != len(lesson["common_mistakes"]):
+            errors.append(
+                f"{lesson_id}: expected {len(lesson['common_mistakes'])} misconception mappings, "
+                f"found {len(mistake_mappings)}"
+            )
+        else:
+            for mistake_index, mapped_ids in enumerate(mistake_mappings, start=1):
+                if not mapped_ids:
+                    errors.append(f"{lesson_id}: misconception #{mistake_index} has no questions")
+                for question_id in mapped_ids:
+                    question = questions_by_id.get(question_id)
+                    if not question:
+                        errors.append(f"{lesson_id}: misconception question not found: {question_id}")
+                    elif question["source_file"] != lesson["source_file"]:
+                        errors.append(
+                            f"{lesson_id}: misconception question {question_id} belongs to "
+                            f"{question['source_file']}"
+                        )
+
+    unknown_mapping_lessons = sorted(set(misconception_mappings) - lesson_ids)
+    if unknown_mapping_lessons:
+        errors.append(f"unknown lessons in misconception mappings: {', '.join(unknown_mapping_lessons)}")
+
     if errors:
         print("Lesson checks failed:")
         for error in errors:
@@ -102,7 +131,11 @@ def main() -> int:
 
     concept_count = len({concept for lesson in lessons for concept in lesson["concepts"]})
     checkpoint_count = sum(len(lesson["checkpoint_question_ids"]) for lesson in lessons)
-    print(f"OK: {len(lessons)} lessons, {concept_count} concepts, {checkpoint_count} checkpoints")
+    misconception_count = sum(len(ids) for mappings in misconception_mappings.values() for ids in mappings)
+    print(
+        f"OK: {len(lessons)} lessons, {concept_count} concepts, {checkpoint_count} checkpoints, "
+        f"{misconception_count} misconception links"
+    )
     return 0
 
 
