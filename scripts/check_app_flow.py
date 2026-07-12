@@ -45,6 +45,19 @@ def main() -> None:
             locked_review = client.get("/api/next-question?mode=review", headers=headers)
             assert locked_review.status_code == 403, locked_review.text
 
+            admin_login = client.post(
+                "/api/login",
+                json={"username": "admin", "password": "admin123"},
+            )
+            assert admin_login.status_code == 200, admin_login.text
+            admin_headers = {"Authorization": f"Bearer {admin_login.json()['token']}"}
+            admin_review_status = client.get("/api/review/status", headers=admin_headers)
+            assert admin_review_status.status_code == 200, admin_review_status.text
+            assert admin_review_status.json()["unlocked"] is True, admin_review_status.text
+            admin_review_question = client.get("/api/next-question?mode=review", headers=admin_headers)
+            assert admin_review_question.status_code == 200, admin_review_question.text
+            assert "answer" not in admin_review_question.json()["question"], admin_review_question.text
+
             started = client.post(f"/api/lessons/{lesson_id}/start", headers=headers)
             assert started.status_code == 200, started.text
             assert started.json()["lesson"]["status"] == "in_progress", started.text

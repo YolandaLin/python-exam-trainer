@@ -543,7 +543,7 @@ def next_question(
         is_review = mode == "review"
         if is_review:
             unlocked, _, _ = review_unlocked(db, user["id"])
-            if not unlocked:
+            if user["role"] != "admin" and not unlocked:
                 raise HTTPException(status_code=403, detail="完成全部課程後才能開始總複習")
             lesson_id = None
         row = choose_next_question(db, user["id"], lesson_id, review=is_review)
@@ -651,7 +651,7 @@ def submit_attempt(payload: AttemptRequest, user: dict[str, Any] = Depends(auth_
     }
 
 
-def review_summary_data(db: Any, user_id: int) -> dict[str, Any]:
+def review_summary_data(db: Any, user_id: int, force_unlocked: bool = False) -> dict[str, Any]:
     unlocked, completed, total_lessons = review_unlocked(db, user_id)
     stats = question_attempt_stats(db, user_id)
     practiced = len(stats)
@@ -679,7 +679,7 @@ def review_summary_data(db: Any, user_id: int) -> dict[str, Any]:
         item["error_rate"] = round((item["wrong"] + 2) / (item["attempts"] + 4) * 100, 1)
         high_error_questions.append(item)
     return {
-        "unlocked": unlocked,
+        "unlocked": unlocked or force_unlocked,
         "completed_lessons": completed,
         "total_lessons": total_lessons,
         "practiced_questions": practiced,
@@ -691,13 +691,13 @@ def review_summary_data(db: Any, user_id: int) -> dict[str, Any]:
 @app.get("/api/review/status")
 def review_status(user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
     with get_db() as db:
-        return review_summary_data(db, user["id"])
+        return review_summary_data(db, user["id"], force_unlocked=user["role"] == "admin")
 
 
 @app.get("/api/review/summary")
 def review_summary(user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
     with get_db() as db:
-        return review_summary_data(db, user["id"])
+        return review_summary_data(db, user["id"], force_unlocked=user["role"] == "admin")
 
 
 @app.get("/api/dashboard")
