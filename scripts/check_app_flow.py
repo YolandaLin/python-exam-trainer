@@ -77,6 +77,10 @@ def main() -> None:
             assert attempt.status_code == 200, attempt.text
             assert attempt.json()["is_correct"] is True, attempt.text
 
+            following_question = client.get(f"/api/next-question?lesson_id={lesson_id}", headers=headers)
+            assert following_question.status_code == 200, following_question.text
+            assert following_question.json()["question"]["id"] != question["id"], following_question.text
+
             dashboard = client.get("/api/dashboard", headers=headers)
             assert dashboard.status_code == 200, dashboard.text
             assert dashboard.json()["total_attempts"] == 1, dashboard.text
@@ -107,6 +111,13 @@ def main() -> None:
             )
             assert wrong_attempt.status_code == 200, wrong_attempt.text
             assert wrong_attempt.json()["is_correct"] is False, wrong_attempt.text
+
+            following_review_question = client.get("/api/next-question?mode=review", headers=headers)
+            assert following_review_question.status_code == 200, following_review_question.text
+            assert (
+                following_review_question.json()["question"]["id"]
+                != review_question.json()["question"]["id"]
+            ), following_review_question.text
 
             review_summary = client.get("/api/review/summary", headers=headers)
             assert review_summary.status_code == 200, review_summary.text

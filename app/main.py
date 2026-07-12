@@ -407,6 +407,20 @@ def recent_question_ids(db: Any, user_id: int) -> set[str]:
     return {row["question_id"] for row in rows}
 
 
+def last_question_id(db: Any, user_id: int) -> str | None:
+    row = db.execute(
+        """
+        SELECT question_id
+        FROM attempts
+        WHERE user_id = ?
+        ORDER BY id DESC
+        LIMIT 1
+        """,
+        (user_id,),
+    ).fetchone()
+    return row["question_id"] if row else None
+
+
 def review_unlocked(db: Any, user_id: int) -> tuple[bool, int, int]:
     total = db.execute("SELECT COUNT(*) AS count FROM lessons WHERE is_active = 1").fetchone()["count"]
     completed = db.execute(
@@ -476,6 +490,10 @@ def choose_next_question(
             ]
         if scoped_questions:
             questions = scoped_questions
+
+    previous_question_id = last_question_id(db, user_id)
+    if previous_question_id and len(questions) > 1:
+        questions = [question for question in questions if question["id"] != previous_question_id]
 
     mastery = mastery_map(db, user_id)
     recent = recent_question_ids(db, user_id)
