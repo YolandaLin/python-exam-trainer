@@ -407,7 +407,58 @@ def recent_question_ids(db: Any, user_id: int) -> set[str]:
     return {row["question_id"] for row in rows}
 
 
-def choose_next_question(db: Any, user_id: int, lesson_id: str | None = None) -> Any:
+def review_unlocked(db: Any, user_id: int) -> tuple[bool, int, int]:
+    total = db.execute("SELECT COUNT(*) AS count FROM lessons WHERE is_active = 1").fetchone()["count"]
+    completed = db.execute(
+        """
+        SELECT COUNT(*) AS count
+        FROM lesson_progress lp
+        JOIN lessons l ON l.id = lp.lesson_id
+        WHERE lp.user_id = ? AND lp.status = 'completed' AND l.is_active = 1
+        """,
+        (user_id,),
+    ).fetchone()["count"]
+    return total > 0 and completed == total, completed, total
+
+
+def question_attempt_stats(db: Any, user_id: int) -> dict[str, dict[str, Any]]:
+    rows = db.execute(
+        """
+        SELECT question_id, COUNT(*) AS attempts,
+               SUM(CASE WHEN is_correct = 0 THEN 1 ELSE 0 END) AS wrong
+        FROM attempts
+        WHERE user_id = ?
+        GROUP BY question_id
+        """,
+        (user_id,),
+    ).fetchall()
+    latest = db.execute(
+        """
+        SELECT a.question_id, a.is_correct
+        FROM attempts a
+        JOIN (
+            SELECT question_id, MAX(id) AS max_id
+            FROM attempts
+            WHERE user_id = ?
+            GROUP BY question_id
+        ) last_attempt ON last_attempt.max_id = a.id
+        """,
+        (user_id,),
+    ).fetchall()
+    latest_correct = {row["question_id"]: bool(row["is_correct"]) for row in latest}
+    return {
+        row["question_id"]: {
+            "attempts": row["attempts"],
+            "wrong": row["wrong"] or 0,
+            "last_correct": latest_correct.get(row["question_id"]),
+        }
+        for row in rows
+    }
+
+
+def choose_next_question(
+    db: Any, user_id: int, lesson_id: str | None = None, review: bool = False
+) -> Any:
     questions = question_rows(db)
     if not questions:
         raise HTTPException(status_code=404, detail="題庫尚未建立")
@@ -428,6 +479,7 @@ def choose_next_question(db: Any, user_id: int, lesson_id: str | None = None) ->
 
     mastery = mastery_map(db, user_id)
     recent = recent_question_ids(db, user_id)
+    attempt_stats = question_attempt_stats(db, user_id)
     scored: list[tuple[float, Any]] = []
 
     for question in questions:
@@ -443,11 +495,17 @@ def choose_next_question(db: Any, user_id: int, lesson_id: str | None = None) ->
         else:
             gate = 0
 
-        seen = db.execute(
-            "SELECT COUNT(*) AS count FROM attempts WHERE user_id = ? AND question_id = ?",
-            (user_id, question["id"]),
-        ).fetchone()["count"]
+        stats = attempt_stats.get(question["id"])
+        seen = stats["attempts"] if stats else 0
         score = (100 - avg) + (18 if seen == 0 else 0) + gate + random.random() * 12
+        if review:
+            # A 50% prior prevents one early mistake from dominating the review queue.
+            wrong_rate = ((stats["wrong"] if stats else 0) + 2) / (seen + 4)
+            score += wrong_rate * 70
+            if stats and stats["last_correct"] is False:
+                score += 24
+            if stats and stats["last_correct"] and seen >= 2:
+                score -= min(18, seen * 3)
         if question["id"] in recent:
             score -= 35
         scored.append((score, question))
@@ -458,9 +516,19 @@ def choose_next_question(db: Any, user_id: int, lesson_id: str | None = None) ->
 
 
 @app.get("/api/next-question")
-def next_question(lesson_id: str | None = None, user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
+def next_question(
+    lesson_id: str | None = None,
+    mode: str | None = None,
+    user: dict[str, Any] = Depends(auth_user),
+) -> dict[str, Any]:
     with get_db() as db:
-        row = choose_next_question(db, user["id"], lesson_id)
+        is_review = mode == "review"
+        if is_review:
+            unlocked, _, _ = review_unlocked(db, user["id"])
+            if not unlocked:
+                raise HTTPException(status_code=403, detail="完成全部課程後才能開始總複習")
+            lesson_id = None
+        row = choose_next_question(db, user["id"], lesson_id, review=is_review)
         return {"question": public_question(row)}
 
 
@@ -563,6 +631,55 @@ def submit_attempt(payload: AttemptRequest, user: dict[str, Any] = Depends(auth_
         "mastery_updates": mastery_updates,
         "review_lessons": review_lessons,
     }
+
+
+def review_summary_data(db: Any, user_id: int) -> dict[str, Any]:
+    unlocked, completed, total_lessons = review_unlocked(db, user_id)
+    stats = question_attempt_stats(db, user_id)
+    practiced = len(stats)
+    wrong_questions = sum(1 for item in stats.values() if item["wrong"] > 0)
+    high_error_rows = db.execute(
+        """
+        SELECT q.id, q.stem, q.source_file,
+               COUNT(a.id) AS attempts,
+               SUM(CASE WHEN a.is_correct = 0 THEN 1 ELSE 0 END) AS wrong
+        FROM attempts a
+        JOIN questions q ON q.id = a.question_id
+        WHERE a.user_id = ?
+        GROUP BY q.id, q.stem, q.source_file
+        HAVING SUM(CASE WHEN a.is_correct = 0 THEN 1 ELSE 0 END) > 0
+        ORDER BY (SUM(CASE WHEN a.is_correct = 0 THEN 1.0 ELSE 0 END) + 2.0)
+                 / (COUNT(a.id) + 4.0) DESC,
+                 COUNT(a.id) DESC
+        LIMIT 5
+        """,
+        (user_id,),
+    ).fetchall()
+    high_error_questions = []
+    for row in high_error_rows:
+        item = dict(row)
+        item["error_rate"] = round((item["wrong"] + 2) / (item["attempts"] + 4) * 100, 1)
+        high_error_questions.append(item)
+    return {
+        "unlocked": unlocked,
+        "completed_lessons": completed,
+        "total_lessons": total_lessons,
+        "practiced_questions": practiced,
+        "wrong_questions": wrong_questions,
+        "high_error_questions": high_error_questions,
+    }
+
+
+@app.get("/api/review/status")
+def review_status(user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
+    with get_db() as db:
+        return review_summary_data(db, user["id"])
+
+
+@app.get("/api/review/summary")
+def review_summary(user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
+    with get_db() as db:
+        return review_summary_data(db, user["id"])
 
 
 @app.get("/api/dashboard")

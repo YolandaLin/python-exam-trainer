@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>python-exam-trainer</title>
     <link rel="stylesheet" href="/static/styles.css" />
+    <script defer src="/static/vendor/prismjs/prism.js"></script>
+    <script defer src="/static/vendor/prismjs/prism-python.min.js"></script>
     <script defer src="/static/app.js"></script>
   </head>
   <body>
@@ -33,7 +35,7 @@
         <header class="topbar">
           <div>
             <span class="eyebrow">python-exam-trainer</span>
-            <h1>今日課程</h1>
+            <h1 id="page-title">今日課程</h1>
           </div>
           <div class="user-box">
             <span id="user-name"></span>
@@ -72,6 +74,7 @@
 
             <article id="question-panel" class="question-panel hidden">
               <div class="question-meta">
+                <span id="review-progress" class="hidden"></span>
                 <span id="question-source"></span>
                 <span id="question-difficulty"></span>
                 <span id="question-lesson"></span>
@@ -85,9 +88,32 @@
               </div>
               <section id="feedback" class="feedback hidden"></section>
             </article>
+
+            <article id="review-summary-panel" class="review-summary-panel hidden">
+              <span class="eyebrow">本輪完成</span>
+              <h2>總複習結果</h2>
+              <div class="review-result-stats">
+                <div><span>答對</span><strong id="review-round-correct">0 / 20</strong></div>
+                <div><span>正確率</span><strong id="review-round-accuracy">0%</strong></div>
+              </div>
+              <section>
+                <h3>需要優先複習</h3>
+                <ul id="review-high-error" class="weak-list"></ul>
+              </section>
+              <div class="actions">
+                <button id="restart-review" type="button">開始下一輪</button>
+                <button id="leave-review" type="button" class="secondary">回到課程</button>
+              </div>
+            </article>
           </div>
 
           <aside class="side-panel">
+            <section class="review-box">
+              <span class="eyebrow">全部課程完成後</span>
+              <h2>總複習</h2>
+              <p id="review-status-text" class="muted-text">載入中</p>
+              <button id="start-review" type="button" disabled>開始總複習</button>
+            </section>
             <section class="course-progress-box">
               <h2>課程進度</h2>
               <p id="lesson-progress" class="muted-text">載入中</p>

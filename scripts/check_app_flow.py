@@ -39,6 +39,12 @@ def main() -> None:
             assert lessons.json()["lessons"], lessons.text
             lesson_id = lessons.json()["next_lesson"]["id"]
 
+            review_status = client.get("/api/review/status", headers=headers)
+            assert review_status.status_code == 200, review_status.text
+            assert review_status.json()["unlocked"] is False, review_status.text
+            locked_review = client.get("/api/next-question?mode=review", headers=headers)
+            assert locked_review.status_code == 403, locked_review.text
+
             started = client.post(f"/api/lessons/{lesson_id}/start", headers=headers)
             assert started.status_code == 200, started.text
             assert started.json()["lesson"]["status"] == "in_progress", started.text
@@ -75,7 +81,39 @@ def main() -> None:
             assert dashboard.status_code == 200, dashboard.text
             assert dashboard.json()["total_attempts"] == 1, dashboard.text
 
-    print("OK: login, lessons, lesson progress, next question, attempt, dashboard")
+            for lesson in lessons.json()["lessons"]:
+                completed = client.post(
+                    f"/api/lessons/{lesson['id']}/complete",
+                    headers=headers,
+                    json={"checkpoint_correct_count": 0, "checkpoint_total_count": 0},
+                )
+                assert completed.status_code == 200, completed.text
+
+            review_status = client.get("/api/review/status", headers=headers)
+            assert review_status.status_code == 200, review_status.text
+            assert review_status.json()["unlocked"] is True, review_status.text
+
+            review_question = client.get("/api/next-question?mode=review", headers=headers)
+            assert review_question.status_code == 200, review_question.text
+            assert "answer" not in review_question.json()["question"], review_question.text
+
+            wrong_attempt = client.post(
+                "/api/attempts",
+                headers=headers,
+                json={
+                    "question_id": review_question.json()["question"]["id"],
+                    "selected_answer": ["not-an-answer"],
+                },
+            )
+            assert wrong_attempt.status_code == 200, wrong_attempt.text
+            assert wrong_attempt.json()["is_correct"] is False, wrong_attempt.text
+
+            review_summary = client.get("/api/review/summary", headers=headers)
+            assert review_summary.status_code == 200, review_summary.text
+            assert review_summary.json()["wrong_questions"] >= 1, review_summary.text
+            assert review_summary.json()["high_error_questions"], review_summary.text
+
+    print("OK: login, lessons, lesson progress, review lock/unlock, attempts, dashboard")
 
 
 if __name__ == "__main__":

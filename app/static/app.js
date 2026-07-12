@@ -8,6 +8,13 @@ const state = {
   ranCode: false,
   pyodide: null,
   pyodideLoading: null,
+  review: {
+    active: false,
+    size: 20,
+    answered: 0,
+    correct: 0,
+    status: null,
+  },
 };
 
 const $ = (id) => document.getElementById(id);
@@ -52,6 +59,52 @@ function clear(node) {
   }
 }
 
+function configurePythonHighlighting() {
+  if (!window.Prism?.languages?.python) return;
+  Prism.languages.insertBefore("python", "function", {
+    "builtin-method": {
+      pattern:
+        /(\.)(?:append|capitalize|casefold|center|clear|copy|count|difference|discard|endswith|extend|find|format|fromkeys|get|index|insert|intersection|isalnum|isalpha|isascii|isdecimal|isdigit|isidentifier|islower|isnumeric|isprintable|isspace|istitle|isupper|items|join|keys|ljust|lower|lstrip|maketrans|partition|pop|popitem|remove|removeprefix|removesuffix|replace|reverse|rfind|rindex|rjust|rpartition|rsplit|rstrip|setdefault|sort|split|splitlines|startswith|strip|swapcase|symmetric_difference|title|translate|union|update|upper|values|zfill)(?=\s*\()/,
+      lookbehind: true,
+      alias: ["builtin", "builtin-method"],
+    },
+  });
+}
+
+function highlightPython(element) {
+  if (!window.Prism) return;
+  element.classList.add("language-python");
+  Prism.highlightElement(element);
+  element.querySelectorAll(".token.builtin").forEach((token) => {
+    token.title = "Python 內建函式或預設方法";
+  });
+  element.querySelectorAll(".token.function:not(.builtin)").forEach((token) => {
+    token.title = "程式中的函式名稱";
+  });
+}
+
+function setRichText(element, value) {
+  clear(element);
+  const parts = String(value).split(
+    /(`[^`]+`|\b[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*\([^()\n。；，]*\)|\b(?:def|class|return|if|elif|else|for|while|import|from|in|and|or|not|True|False|None)\b)/g,
+  );
+  for (const part of parts) {
+    const isBackticked = part.startsWith("`") && part.endsWith("`") && part.length > 2;
+    const isPythonFragment =
+      /^[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*\([^()\n。；，]*\)$/.test(part) ||
+      /^(?:def|class|return|if|elif|else|for|while|import|from|in|and|or|not|True|False|None)$/.test(part);
+    if (isBackticked || isPythonFragment) {
+      const code = document.createElement("code");
+      code.className = "inline-code";
+      code.textContent = isBackticked ? part.slice(1, -1) : part;
+      element.appendChild(code);
+      highlightPython(code);
+    } else if (part) {
+      element.appendChild(document.createTextNode(part));
+    }
+  }
+}
+
 async function loadMe() {
   if (!state.token) {
     show("login");
@@ -66,7 +119,7 @@ async function loadMe() {
     if (lessonInfo.next_lesson) {
       await loadLesson(lessonInfo.next_lesson.id);
     }
-    await Promise.all([loadDashboard(), loadAdmin()]);
+    await Promise.all([loadDashboard(), loadAdmin(), loadReviewStatus()]);
   } catch (_error) {
     localStorage.removeItem("pet_token");
     state.token = null;
@@ -117,6 +170,10 @@ async function loadLessons() {
 }
 
 async function loadLesson(lessonId) {
+  state.review.active = false;
+  $("page-title").textContent = "今日課程";
+  $("review-summary-panel").classList.add("hidden");
+  $("lesson-panel").classList.remove("hidden");
   $("question-panel").classList.add("hidden");
   const body = await api(`/api/lessons/${lessonId}/start`, { method: "POST" });
   state.currentLesson = body.lesson;
@@ -151,7 +208,7 @@ function renderList(target, values) {
   clear(target);
   for (const value of values) {
     const item = document.createElement("li");
-    item.textContent = value;
+    setRichText(item, value);
     target.appendChild(item);
   }
 }
@@ -162,7 +219,7 @@ function renderLessonBody(blocks) {
   for (const block of blocks) {
     if (block.type === "paragraph") {
       const paragraph = document.createElement("p");
-      paragraph.textContent = block.text;
+      setRichText(paragraph, block.text);
       container.appendChild(paragraph);
     }
     if (block.type === "list") {
@@ -170,7 +227,7 @@ function renderLessonBody(blocks) {
       list.className = "content-list";
       for (const value of block.items) {
         const item = document.createElement("li");
-        item.textContent = value;
+        setRichText(item, value);
         list.appendChild(item);
       }
       container.appendChild(list);
@@ -181,6 +238,7 @@ function renderLessonBody(blocks) {
       const pre = document.createElement("pre");
       pre.className = "code-block";
       pre.textContent = block.code;
+      highlightPython(pre);
       const button = document.createElement("button");
       button.type = "button";
       button.className = "secondary";
@@ -220,6 +278,7 @@ function renderCheckpoints(questions) {
       const pre = document.createElement("pre");
       pre.className = "code-block";
       pre.textContent = question.code;
+      highlightPython(pre);
       wrapper.appendChild(pre);
     }
 
@@ -231,8 +290,9 @@ function renderCheckpoints(questions) {
       label.className = "option";
       label.innerHTML = `
         <input type="${inputType}" name="checkpoint-${escapeHtml(question.id)}" value="${escapeHtml(option.id)}" />
-        <span><strong>${escapeHtml(option.id)}.</strong> ${escapeHtml(option.text)}</span>
+        <span><strong>${escapeHtml(option.id)}.</strong> <span class="option-text"></span></span>
       `;
+      setRichText(label.querySelector(".option-text"), option.text);
       options.appendChild(label);
     }
     wrapper.appendChild(options);
@@ -298,7 +358,7 @@ async function completeCurrentLesson() {
   $("checkpoint-result").textContent = questions.length
     ? `小檢查 ${correct} / ${questions.length} 題答對，已完成本節課。`
     : "已完成本節課。";
-  await Promise.all([loadLessons(), loadDashboard()]);
+  await Promise.all([loadLessons(), loadDashboard(), loadReviewStatus()]);
   return state.currentLesson;
 }
 
@@ -319,11 +379,20 @@ function renderQuestion(question) {
   $("question-source").textContent = question.source_file;
   $("question-difficulty").textContent = `難度 ${question.difficulty}`;
   $("question-lesson").textContent = state.currentLesson ? state.currentLesson.title : "";
+  $("review-progress").classList.toggle("hidden", !state.review.active);
+  if (state.review.active) {
+    $("review-progress").textContent = `總複習 ${state.review.answered + 1} / ${state.review.size}`;
+    $("question-lesson").textContent = "跨章複習";
+  }
   $("question-stem").textContent = question.stem;
   $("question-code").textContent = question.code || "";
   $("question-code").classList.toggle("hidden", !question.code);
+  if (question.code) highlightPython($("question-code"));
   $("code-input").value = question.code || "print(\"Hello Python\")";
   $("code-output").textContent = "尚未執行";
+  $("submit-answer").disabled = false;
+  $("next-question").disabled = true;
+  $("next-question").textContent = "下一題";
 
   const form = $("answer-form");
   clear(form);
@@ -333,14 +402,19 @@ function renderQuestion(question) {
     label.className = "option";
     label.innerHTML = `
       <input type="${inputType}" name="answer" value="${escapeHtml(option.id)}" />
-      <span><strong>${escapeHtml(option.id)}.</strong> ${escapeHtml(option.text)}</span>
+      <span><strong>${escapeHtml(option.id)}.</strong> <span class="option-text"></span></span>
     `;
+    setRichText(label.querySelector(".option-text"), option.text);
     form.appendChild(label);
   }
 }
 
 async function loadQuestion(lessonId = state.currentLesson?.id) {
-  const suffix = lessonId ? `?lesson_id=${encodeURIComponent(lessonId)}` : "";
+  const suffix = state.review.active
+    ? "?mode=review"
+    : lessonId
+      ? `?lesson_id=${encodeURIComponent(lessonId)}`
+      : "";
   const body = await api(`/api/next-question${suffix}`);
   renderQuestion(body.question);
 }
@@ -399,13 +473,91 @@ async function submitAnswer() {
   $("feedback").innerHTML = `
     <strong>${result.is_correct ? "答對" : "答錯"}</strong>
     <p>正確答案：${escapeHtml(answerText)}</p>
-    <p>${escapeHtml(result.explanation)}</p>
-    <p><strong>常見錯因：</strong>${escapeHtml(result.common_mistake)}</p>
+    <p id="answer-explanation"></p>
+    <p><strong>常見錯因：</strong><span id="answer-common-mistake"></span></p>
     <p><strong>熟練度：</strong>${escapeHtml(updates || "尚無更新")}</p>
     ${renderReviewLessons(result.review_lessons)}
   `;
+  setRichText($("answer-explanation"), result.explanation);
+  setRichText($("answer-common-mistake"), result.common_mistake);
   bindReviewButtons();
-  await loadDashboard();
+  $("submit-answer").disabled = true;
+  $("next-question").disabled = false;
+  if (state.review.active) {
+    state.review.answered += 1;
+    if (result.is_correct) state.review.correct += 1;
+    if (state.review.answered >= state.review.size) {
+      $("next-question").textContent = "查看本輪結果";
+    }
+  }
+  await Promise.all([loadDashboard(), loadReviewStatus()]);
+}
+
+async function loadReviewStatus() {
+  const body = await api("/api/review/status");
+  state.review.status = body;
+  const remaining = Math.max(0, body.total_lessons - body.completed_lessons);
+  $("start-review").disabled = !body.unlocked;
+  $("start-review").textContent = state.review.active ? "重新開始本輪" : "開始總複習";
+  $("review-status-text").textContent = body.unlocked
+    ? `已解鎖。系統會提高 ${body.wrong_questions} 題錯題與薄弱觀念的出現率。`
+    : `尚有 ${remaining} 節課程未完成。`;
+  return body;
+}
+
+async function startReview() {
+  if (!state.review.status?.unlocked) return;
+  state.review.active = true;
+  state.review.answered = 0;
+  state.review.correct = 0;
+  state.currentLesson = null;
+  $("page-title").textContent = "總複習";
+  $("lesson-panel").classList.add("hidden");
+  $("review-summary-panel").classList.add("hidden");
+  $("question-panel").classList.remove("hidden");
+  await loadQuestion(null);
+  await loadReviewStatus();
+}
+
+async function finishReview() {
+  const body = await api("/api/review/summary");
+  state.review.active = false;
+  $("question-panel").classList.add("hidden");
+  $("review-summary-panel").classList.remove("hidden");
+  $("review-progress").classList.add("hidden");
+  $("review-round-correct").textContent = `${state.review.correct} / ${state.review.size}`;
+  $("review-round-accuracy").textContent = `${Math.round((state.review.correct / state.review.size) * 100)}%`;
+  const list = $("review-high-error");
+  clear(list);
+  if (body.high_error_questions.length === 0) {
+    const item = document.createElement("li");
+    item.textContent = "目前沒有錯題紀錄";
+    list.appendChild(item);
+  } else {
+    for (const question of body.high_error_questions) {
+      const item = document.createElement("li");
+      item.textContent = `${question.source_file}｜錯誤指標 ${question.error_rate}%｜${question.stem}`;
+      list.appendChild(item);
+    }
+  }
+  await loadReviewStatus();
+}
+
+async function leaveReview() {
+  state.review.active = false;
+  $("page-title").textContent = "今日課程";
+  $("review-summary-panel").classList.add("hidden");
+  $("lesson-panel").classList.remove("hidden");
+  const lessonInfo = await loadLessons();
+  if (lessonInfo.next_lesson) await loadLesson(lessonInfo.next_lesson.id);
+}
+
+async function nextQuestion() {
+  if (state.review.active && state.review.answered >= state.review.size) {
+    await finishReview();
+    return;
+  }
+  await loadQuestion();
 }
 
 async function loadDashboard() {
@@ -507,9 +659,13 @@ function bindEvents() {
   $("complete-lesson").addEventListener("click", completeCurrentLesson);
   $("practice-lesson").addEventListener("click", startLessonPractice);
   $("submit-answer").addEventListener("click", submitAnswer);
-  $("next-question").addEventListener("click", () => loadQuestion());
+  $("next-question").addEventListener("click", nextQuestion);
+  $("start-review").addEventListener("click", startReview);
+  $("restart-review").addEventListener("click", startReview);
+  $("leave-review").addEventListener("click", leaveReview);
   $("run-code").addEventListener("click", runCode);
 }
 
+configurePythonHighlighting();
 bindEvents();
 loadMe();

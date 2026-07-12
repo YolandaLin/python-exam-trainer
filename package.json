@@ -1,0 +1,15 @@
+{
+  "name": "python-exam-trainer-e2e",
+  "private": true,
+  "scripts": {
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.61.1"
+  },
+  "dependencies": {
+    "prismjs": "^1.30.0"
+  }
+}

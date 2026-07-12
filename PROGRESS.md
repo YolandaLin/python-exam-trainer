@@ -1,10 +1,10 @@
 # 計畫進度
 
-最後更新：2026-07-10
+最後更新：2026-07-12
 
 ## 狀態摘要
 
-- 狀態：已部署到 Render；第 1 到第 10 講課程 + 練習 MVP 可用。32 節課程已重寫成國三升高一可讀的上課講解版，並補到每節課至少 3 題小檢查/練習題，學生可先上課、完成小檢查，再進入對應練習題。
+- 狀態：已部署到 Render；第 1 到第 10 講課程 + 練習 MVP 可用。32 節課程已重寫成國三升高一可讀的上課講解版，並補到每節課至少 3 題小檢查/練習題。2026-07-12 已完成總複習功能，全部課程完成後可進行跨章加權複習。
 - 主要資料來源：`../02-雄女電資班考題整理/`。
 - 目標：把已校對的考題整理逐批轉成可練習、可追蹤弱點、可在網頁執行 Python 的公開網站，供兩位學生在家登入使用。
 - 公開網址：`https://python-exam-trainer.onrender.com/`。
@@ -23,6 +23,8 @@
 | 本機資料庫 | `data/app.db` | 開發用 | 啟動時自動建立，已由 `.gitignore` 排除。 |
 | 部署設定 | `render.yaml` / [DEPLOYMENT.md](DEPLOYMENT.md) | 已上線 | Render Blueprint：FastAPI Web Service + PostgreSQL；正式密碼已由使用者於 Render Environment 設定，不寫入 Git。 |
 | README 帳密處理 | [README.md](README.md) | 已完成 | 已移除密碼欄位，只保留帳號名稱；密碼只放 Render Environment，不寫入 Git。 |
+| 總複習 | `app/main.py` / `app/static/` | 已完成 | 全部 32 節完成後解鎖；每輪 20 題，依觀念熟練度、平滑錯誤率與最近答錯提高重複率，並避開最近 8 題。 |
+| Python 語法上色 | `app/static/vendor/prismjs/` / `app/static/app.js` | 已完成 | 課文行內、範例程式、題目與解析使用 PrismJS，分色顯示關鍵字、內建函式／預設方法、自訂函式、字串與數字。 |
 
 ## 下一步
 
@@ -35,8 +37,9 @@
 
 - `python scripts/check_questions.py`：通過，145 題、104 個觀念；會檢查第 1 到第 10 講每個來源小節至少 3 題，並實際執行輸出預測題比對答案。
 - `python scripts/check_lessons.py`：通過，32 節課程、96 個觀念、96 個小檢查連結；檢查每節課需有生活例子、可執行範例、足夠解說長度與至少 3 題小檢查。
-- `python scripts/check_app_flow.py`：通過，登入、課程列表、課程進度、依課程取下一題、送出正解、dashboard 查詢皆正常。
+- `python scripts/check_app_flow.py`：通過，登入、課程列表、課程進度、總複習鎖定／解鎖、跨章取題、錯題紀錄與摘要查詢皆正常。
 - `node --check app/static/app.js`：通過。
+- `npm run test:e2e`：通過；Chromium 實際驗證總複習鎖定／解鎖、20 題結算、桌面與 390px 手機版無水平溢位，並檢查瀏覽器 console error。
 - `python -m compileall app scripts`：通過。
 - 正式密碼字串掃描：通過，未寫入 Git 工作區。
 - Render 公開站：`/health`、首頁、`/static/app.js` 皆回 200。
