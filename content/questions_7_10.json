@@ -842,7 +842,7 @@
       {"id": "D", "text": "PyPI 是用來查 Python 錯誤行號的工具"}
     ],
     "answer": ["A"],
-    "explanation": "標準函式庫是 Python 內建可用的模組集合；第三方套件通常可在 PyPI 查詢，並透過 pip 管理。",
+    "explanation": "標準函式庫是隨 Python 提供、通常不必另外安裝的模組集合；第三方套件通常可在 PyPI 查詢，並透過 pip 管理。",
     "common_mistake": "把內建模組和第三方套件都當成一定要 pip 安裝。"
   },
   {

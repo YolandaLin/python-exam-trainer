@@ -19,6 +19,137 @@ const state = {
 
 const $ = (id) => document.getElementById(id);
 
+const CONCEPT_LABELS = {
+  "programming-language": "程式語言",
+  "machine-language": "機器語言",
+  "compiler-interpreter": "編譯與直譯",
+  "python-history": "Python 由來",
+  "python-install": "Python 安裝",
+  path: "PATH 路徑",
+  "python-shell": "Python 互動模式",
+  "builtin-functions": "內建函式",
+  round: "round() 捨入",
+  "object-oriented": "物件導向",
+  "data-types": "資料型態",
+  operators: "運算子",
+  string: "字串",
+  ascii: "ASCII",
+  unicode: "Unicode",
+  containers: "資料容器",
+  list: "list 串列",
+  tuple: "tuple 元組",
+  dict: "dict 字典",
+  set: "set 集合",
+  "key-value": "key 與 value",
+  "sort-sorted": "sort() 與 sorted()",
+  "selection-structure": "條件判斷",
+  "loop-structure": "迴圈",
+  function: "函式",
+  "builtin-function": "內建函式",
+  "function-call": "函式呼叫",
+  parameter: "參數",
+  return: "return 回傳",
+  scope: "變數作用域",
+  class: "class 類別",
+  object: "object 物件",
+  method: "方法",
+  inheritance: "繼承",
+  module: "模組",
+  package: "套件",
+  import: "匯入",
+  random: "random 隨機數",
+  accumulator: "累加器",
+  "append-extend": "append() 與 extend()",
+  "args-kwargs": "*args 與 **kwargs",
+  attribute: "物件屬性",
+  bool: "布林值",
+  break: "break 中斷迴圈",
+  "class-methods": "類別方法",
+  "class-variable": "類別變數",
+  comment: "註解",
+  "condition-order": "條件順序",
+  "conditional-expression": "條件表達式",
+  "dict-comprehension": "dict comprehension",
+  dir: "dir() 查詢名稱",
+  elif: "elif",
+  else: "else",
+  "error-reason": "錯誤原因",
+  "f-string": "f-string 格式化",
+  "find-index": "find() 與 index()",
+  "floor-division": "整除 //",
+  for: "for 迴圈",
+  formatting: "字串格式化",
+  def: "def 定義函式",
+  "default-parameter": "預設參數",
+  global: "global 全域變數",
+  idle: "IDLE 編輯器",
+  if: "if 條件判斷",
+  "import-alias": "import 別名",
+  indentation: "縮排",
+  index: "索引",
+  "infinite-loop": "無限迴圈",
+  "init-file": "__init__.py",
+  input: "input() 輸入",
+  "instance-variable": "物件變數",
+  iterable: "可迭代物件",
+  "list-append": "list.append()",
+  "list-comprehension": "list comprehension",
+  "list-functions": "list 相關函式",
+  "list-methods": "list 方法",
+  "list-slice": "list 切片",
+  loop: "迴圈",
+  "loop-else": "迴圈 else",
+  main: "主程式",
+  "main-guard": "主程式保護區",
+  "method-override": "方法覆寫",
+  "method-resolution": "方法解析順序",
+  "module-function": "模組函式",
+  "multiple-inheritance": "多重繼承",
+  "mutable-immutable": "可變與不可變",
+  "name-variable": "__name__",
+  "nested-if": "巢狀 if",
+  "nested-list": "巢狀 list",
+  "nested-loop": "巢狀迴圈",
+  none: "None",
+  ord: "ord()",
+  "ord-chr": "ord() 與 chr()",
+  pass: "pass",
+  pip: "pip 套件工具",
+  print: "print() 輸出",
+  python: "Python",
+  "python-editor": "Python 編輯器",
+  "python-extension": ".py 副檔名",
+  "python-file": "Python 程式檔",
+  range: "range()",
+  "return": "return 回傳",
+  self: "self 物件本身",
+  sep: "sep 分隔符號",
+  "set-comprehension": "set comprehension",
+  slice: "切片",
+  split: "split() 切割",
+  "standard-library": "標準函式庫",
+  "string-index": "字串索引",
+  "string-methods": "字串方法",
+  "string-repeat": "字串重複",
+  "string-slice": "字串切片",
+  "third-party-package": "第三方套件",
+  "tuple-list-conversion": "tuple 與 list 轉換",
+  "type-conversion": "型態轉換",
+  unpacking: "拆包",
+  vscode: "VS Code",
+  while: "while 迴圈",
+  zip: "zip() 配對",
+};
+
+function conceptLabel(name) {
+  return CONCEPT_LABELS[name] || String(name).replaceAll("-", " ");
+}
+
+function sourceLabel(sourceFile) {
+  const lesson = state.lessons.find((item) => item.source_file === sourceFile);
+  return lesson ? `${lesson.unit}｜${lesson.title}` : String(sourceFile).replace(/\.md$/, "");
+}
+
 async function api(path, options = {}) {
   const headers = {
     "Content-Type": "application/json",
@@ -302,7 +433,7 @@ function renderCheckpoints(questions) {
 
 function renderLesson(lesson) {
   $("lesson-unit").textContent = lesson.unit;
-  $("lesson-source").textContent = lesson.source_file;
+  $("lesson-source").textContent = "";
   $("lesson-status").textContent = lesson.status === "completed" ? "已完成" : "閱讀中";
   $("lesson-title").textContent = lesson.title;
   renderList($("lesson-goals"), lesson.goals || []);
@@ -376,7 +507,7 @@ function renderQuestion(question) {
   $("question-panel").classList.remove("hidden");
   $("feedback").className = "feedback hidden";
   $("feedback").textContent = "";
-  $("question-source").textContent = question.source_file;
+  $("question-source").textContent = sourceLabel(question.source_file).split("｜")[0];
   $("question-difficulty").textContent = `難度 ${question.difficulty}`;
   $("question-lesson").textContent = state.currentLesson ? state.currentLesson.title : "";
   $("review-progress").classList.toggle("hidden", !state.review.active);
@@ -536,7 +667,7 @@ async function finishReview() {
   } else {
     for (const question of body.high_error_questions) {
       const item = document.createElement("li");
-      item.textContent = `${question.source_file}｜錯誤指標 ${question.error_rate}%｜${question.stem}`;
+      item.textContent = `${sourceLabel(question.source_file)}｜錯誤指標 ${question.error_rate}%｜${question.stem}`;
       list.appendChild(item);
     }
   }
@@ -575,7 +706,7 @@ async function loadDashboard() {
   for (const concept of body.weak_concepts) {
     const li = document.createElement("li");
     const text = document.createElement("span");
-    text.textContent = `${concept.name}｜${concept.mastery_score} 分｜連錯 ${concept.wrong_streak}`;
+    text.textContent = `${conceptLabel(concept.name)}｜${concept.mastery_score} 分｜連錯 ${concept.wrong_streak}`;
     li.appendChild(text);
     if (concept.review_lesson) {
       const button = document.createElement("button");

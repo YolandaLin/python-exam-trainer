@@ -392,7 +392,7 @@
       {"id": "D", "text": "Unicode"}
     ],
     "answer": ["A"],
-    "explanation": "ord(\"高\") 先取得字元編碼，chr() 再把編碼轉回原字元。",
+    "explanation": "ord(\"高\") 先取得這個字元的 Unicode 碼位，chr() 再把碼位轉回原字元。",
     "common_mistake": "不理解 ord() 和 chr() 是相反方向的轉換。"
   },
   {
