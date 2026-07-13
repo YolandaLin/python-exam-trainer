@@ -59,6 +59,36 @@ button.secondary:hover {
   background: #c8dbd8;
 }
 
+.user-box button.nav-projects {
+  background: #ffedd5;
+  border: 1px solid #fdba74;
+  color: #9a3412;
+}
+
+.user-box button.nav-projects:hover {
+  background: #fed7aa;
+}
+
+.user-box button.nav-lessons {
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
+  color: #1d4ed8;
+}
+
+.user-box button.nav-lessons:hover {
+  background: #bfdbfe;
+}
+
+.user-box button.nav-review {
+  background: #ede9fe;
+  border: 1px solid #c4b5fd;
+  color: #6d28d9;
+}
+
+.user-box button.nav-review:hover {
+  background: #ddd6fe;
+}
+
 .shell {
   max-width: 1180px;
   margin: 0 auto;
@@ -104,6 +134,7 @@ button.secondary:hover {
 .lesson-panel,
 .question-panel,
 .review-summary-panel,
+.projects-panel,
 .side-panel,
 .runner-panel {
   background: var(--surface);
@@ -170,6 +201,7 @@ textarea {
 .lesson-panel,
 .question-panel,
 .review-summary-panel,
+.projects-panel,
 .side-panel,
 .runner-panel {
   padding: 20px;
@@ -580,4 +612,170 @@ textarea {
     overflow-y: auto;
     padding-right: 6px;
   }
+}
+
+.project-list {
+  display: grid;
+  gap: 12px;
+}
+
+.projects-panel {
+  background: #fff8e8;
+  border-color: #efd39d;
+}
+
+.projects-panel .eyebrow {
+  color: #9a5b00;
+}
+
+.projects-panel .project-card {
+  background: #fffdf8;
+  border-color: #ead9bb;
+}
+
+.projects-panel .project-progress {
+  color: #8a5200;
+}
+
+.project-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.project-card.completed {
+  background: #f0f7f1;
+  border-color: #a9cec8;
+}
+
+.project-card.completed button {
+  background: #d9f0df;
+  color: #216e39;
+}
+
+.project-card.completed button:hover {
+  background: #c5e5cd;
+}
+
+.project-card h3,
+.project-card p {
+  margin: 8px 0 0;
+}
+
+.project-card-meta,
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.project-progress {
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.project-card button {
+  margin-top: 12px;
+}
+
+.project-workspace h2 {
+  margin-bottom: 8px;
+}
+
+.project-example {
+  background: #fffdf8;
+  border: 1px solid #ead9bb;
+  border-radius: 8px;
+  margin-top: 18px;
+  padding: 16px;
+}
+
+.project-example h3 {
+  margin: 4px 0 8px;
+}
+
+.project-example p {
+  line-height: 1.65;
+}
+
+.project-example .code-block {
+  margin: 10px 0;
+}
+
+.example-output {
+  background: #f3f7f4;
+  border: 1px solid #cfe0d3;
+  border-radius: 6px;
+  color: #245b32;
+  font-family: "Cascadia Mono", Consolas, monospace;
+  margin: 6px 0 0;
+  padding: 10px 12px;
+  white-space: pre-wrap;
+}
+
+.project-editor-section {
+  margin-top: 18px;
+}
+
+.project-guide-text {
+  border-left: 4px solid #d97706;
+  background: #fff3d6;
+  color: #7c4a03;
+  line-height: 1.6;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+}
+
+#project-code {
+  min-height: 260px;
+  margin-top: 8px;
+  font-family: "Cascadia Mono", Consolas, monospace;
+}
+
+#project-input {
+  min-height: 54px;
+  margin-top: 8px;
+}
+
+#code-input-values {
+  min-height: 76px;
+  margin-bottom: 8px;
+}
+
+.project-tests {
+  display: grid;
+  gap: 6px;
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.project-tests li {
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+
+.project-tests .passed {
+  background: #e9f6ec;
+  color: var(--ok);
+}
+
+.project-tests .failed {
+  background: #fff0ee;
+  color: var(--danger);
+  white-space: pre-wrap;
+}
+
+.project-hint {
+  border-left: 4px solid var(--accent);
+  background: #f0f7f6;
+  margin-top: 18px;
+  padding: 4px 14px;
+}
+
+.project-hint h3 {
+  margin-bottom: 4px;
 }

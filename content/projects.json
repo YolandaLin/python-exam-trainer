@@ -1,0 +1,97 @@
+[
+  {
+    "id": "project-01-introduction",
+    "title": "印出自我介紹",
+    "level": 1,
+    "estimated_minutes": 10,
+    "concepts": ["print", "string"],
+    "description": "讓程式印出一段自己的自我介紹，先熟悉程式的輸出方式。",
+    "instructions": "請讓程式印出三行文字：姓名：小明、年級：國三、興趣：打籃球。完成後可以把內容改成自己的資料。",
+    "example": {
+      "code": "print(\"小明\")",
+      "explanation": "print() 是列印指令，會把括號內的文字顯示在畫面上。",
+      "output": "小明"
+    },
+    "tests": [
+      {"inputs": [], "expected": "姓名：小明\n年級：國三\n興趣：打籃球"}
+    ],
+    "hint": "每一行都可以使用一次 print()。先不要急著使用變數。"
+  },
+  {
+    "id": "project-02-greeting",
+    "title": "讓程式問候你",
+    "level": 1,
+    "estimated_minutes": 10,
+    "concepts": ["input", "string"],
+    "description": "讓程式先詢問名字，再用名字向使用者打招呼。",
+    "instructions": "請使用 input() 讀取名字，最後輸出「你好，名字！」。例如輸入小明，要輸出「你好，小明！」。",
+    "example": {
+      "code": "name = input(\"請輸入名字：\")\nprint(name)",
+      "explanation": "input() 會讀取使用者輸入的文字。假設輸入「小明」，print(name) 就會顯示小明。",
+      "output": "小明"
+    },
+    "tests": [
+      {"inputs": ["小明"], "expected": "你好，小明！"},
+      {"inputs": ["Amy"], "expected": "你好，Amy！"}
+    ],
+    "hint": "input() 讀到的內容會先放進變數，再用 + 把字串接起來。"
+  },
+  {
+    "id": "project-03-addition",
+    "title": "兩數相加",
+    "level": 1,
+    "estimated_minutes": 10,
+    "concepts": ["input", "type-conversion", "operators"],
+    "description": "讓程式讀取兩個數字，計算並印出它們的總和。",
+    "instructions": "請讀取兩個整數並印出相加結果。例如輸入 3 和 5，要輸出 8。",
+    "example": {
+      "code": "a = 3\nb = 5\nprint(a + b)",
+      "explanation": "加號 + 可以把兩個數字相加，print() 再把計算結果顯示出來。",
+      "output": "8"
+    },
+    "tests": [
+      {"inputs": ["3", "5"], "expected": "8"},
+      {"inputs": ["10", "20"], "expected": "30"}
+    ],
+    "hint": "input() 得到的是字串；要做數學加法，先使用 int() 轉成整數。"
+  },
+  {
+    "id": "project-04-passing-score",
+    "title": "判斷是否及格",
+    "level": 1,
+    "estimated_minutes": 15,
+    "concepts": ["input", "if", "else"],
+    "description": "根據輸入分數，判斷學生是否達到 60 分。",
+    "instructions": "請輸入分數。分數大於或等於 60 時輸出「及格」，否則輸出「需要加油」。",
+    "example": {
+      "code": "score = 70\nif score >= 60:\n    print(\"及格\")",
+      "explanation": "if 會檢查條件。當 score 大於或等於 60，就執行縮排內的 print()。",
+      "output": "及格"
+    },
+    "tests": [
+      {"inputs": ["59"], "expected": "需要加油"},
+      {"inputs": ["60"], "expected": "及格"},
+      {"inputs": ["100"], "expected": "及格"}
+    ],
+    "hint": "先把分數轉成整數，再用 if 判斷 score >= 60。"
+  },
+  {
+    "id": "project-05-shopping-total",
+    "title": "簡易購物計算器",
+    "level": 1,
+    "estimated_minutes": 15,
+    "concepts": ["input", "type-conversion", "operators"],
+    "description": "計算商品單價乘上購買數量後的總價。",
+    "instructions": "請讀取商品單價與購買數量，最後輸出總價。例如單價 30、數量 4，要輸出「總價： 120」。",
+    "example": {
+      "code": "price = 30\nquantity = 2\nprint(price * quantity)",
+      "explanation": "星號 * 是乘法運算子，可以用單價乘上數量算出總金額。",
+      "output": "60"
+    },
+    "tests": [
+      {"inputs": ["30", "4"], "expected": "總價： 120"},
+      {"inputs": ["99", "2"], "expected": "總價： 198"}
+    ],
+    "hint": "先分別讀取單價與數量，再用 * 計算 total，最後印出 total。"
+  }
+]

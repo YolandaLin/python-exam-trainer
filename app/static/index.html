@@ -4,10 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>python-exam-trainer</title>
-    <link rel="stylesheet" href="/static/styles.css?v=20260713-2" />
+    <link rel="stylesheet" href="/static/styles.css?v=20260713-10" />
     <script defer src="/static/vendor/prismjs/prism.js?v=20260712-2"></script>
     <script defer src="/static/vendor/prismjs/prism-python.min.js?v=20260712-2"></script>
-    <script defer src="/static/app.js?v=20260713-5"></script>
+    <script defer src="/static/app.js?v=20260713-16"></script>
   </head>
   <body>
     <main class="shell">
@@ -39,6 +39,9 @@
           </div>
           <div class="user-box">
             <span id="user-name"></span>
+            <button id="projects-nav" type="button" class="secondary nav-projects">實作區</button>
+            <button id="lessons-nav" type="button" class="secondary nav-lessons hidden">回到課程</button>
+            <button id="review-nav" type="button" class="secondary nav-review hidden">回到總複習</button>
             <button id="logout-button" type="button">登出</button>
           </div>
         </header>
@@ -105,6 +108,56 @@
                 <button id="leave-review" type="button" class="secondary">回到課程</button>
               </div>
             </article>
+
+            <article id="projects-panel" class="projects-panel hidden">
+              <div id="project-list-view">
+                <span class="eyebrow">從小任務開始</span>
+                <h2>實作區</h2>
+                <p class="muted-text">先完成一個很小的程式，再慢慢把觀念組合起來。</p>
+                <div id="project-list" class="project-list"></div>
+              </div>
+              <div id="project-workspace" class="hidden">
+                <button id="project-back" type="button" class="secondary">回到實作清單</button>
+                <div class="project-meta">
+                  <span id="project-level"></span>
+                  <span id="project-time"></span>
+                </div>
+                <h2 id="project-title"></h2>
+                <p id="project-description"></p>
+                <section class="project-example">
+                  <span class="eyebrow">先看一個簡單範例</span>
+                  <h3>範例</h3>
+                  <p id="project-example-explanation"></p>
+                  <pre id="project-example-code" class="code-block"></pre>
+                  <strong>執行結果</strong>
+                  <pre id="project-example-output" class="example-output"></pre>
+                </section>
+                <section>
+                  <h3>換你試試看</h3>
+                  <p id="project-instructions"></p>
+                </section>
+                <section class="project-editor-section">
+                  <h3>寫程式</h3>
+                  <p id="project-guide-text" class="project-guide-text"></p>
+                  <div id="project-input-panel">
+                    <label for="project-input">程式執行時要輸入的資料（每行一個）</label>
+                    <textarea id="project-input" rows="2" placeholder="例如：\n小明"></textarea>
+                  </div>
+                  <textarea id="project-code" spellcheck="false"></textarea>
+                  <div class="actions">
+                    <button id="project-run" type="button">試跑我的程式</button>
+                    <button id="project-test" type="button" class="secondary">檢查答案</button>
+                    <button id="project-complete" type="button" disabled>完成任務</button>
+                  </div>
+                  <pre id="project-output" class="output-block">尚未執行</pre>
+                  <ul id="project-tests" class="project-tests"></ul>
+                </section>
+                <section class="project-hint">
+                  <h3>提示</h3>
+                  <p id="project-hint"></p>
+                </section>
+              </div>
+            </article>
           </div>
 
           <aside class="side-panel">
@@ -140,13 +193,17 @@
           </aside>
         </section>
 
-        <section class="runner-panel">
+        <section id="runner-panel" class="runner-panel">
           <div class="runner-header">
             <div>
               <span class="eyebrow">Python 執行區</span>
               <h2>試跑程式碼</h2>
             </div>
             <button id="run-code" type="button" class="secondary">執行</button>
+          </div>
+          <div id="runner-input-panel" class="hidden">
+            <label for="code-input-values">執行輸入（每行一個，依序對應一次 input()）</label>
+            <textarea id="code-input-values" rows="3" placeholder="例如：&#10;2&#10;4"></textarea>
           </div>
           <textarea id="code-input" spellcheck="false">print("Hello Python")</textarea>
           <pre id="code-output" class="output-block">尚未執行</pre>

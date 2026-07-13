@@ -3,6 +3,10 @@ const state = {
   user: null,
   lessons: [],
   currentLesson: null,
+  projects: [],
+  currentProject: null,
+  projectAttempts: 0,
+  projectCanCheck: true,
   question: null,
   startedAt: null,
   ranCode: false,
@@ -307,12 +311,228 @@ async function loadLessons() {
   return body;
 }
 
-async function loadLesson(lessonId) {
+async function loadProjects() {
+  const body = await api("/api/projects");
+  state.projects = body.projects;
+  renderProjects();
+  return body;
+}
+
+function projectStatusLabel(status) {
+  return { not_started: "未開始", in_progress: "進行中", completed: "已完成" }[status] || status;
+}
+
+function renderProjects() {
+  const list = $("project-list");
+  clear(list);
+  for (const project of state.projects) {
+    const card = document.createElement("article");
+    card.className = `project-card ${project.status}`;
+    const progress = project.tests_total
+      ? `${project.tests_passed} / ${project.tests_total} 個測試通過`
+      : "尚未測試";
+    card.innerHTML = `
+      <div class="project-card-meta"><span>Level ${project.level}</span><span>${project.estimated_minutes} 分鐘</span></div>
+      <h3>${escapeHtml(project.title)}</h3>
+      <p>${escapeHtml(project.description)}</p>
+      <p class="project-progress">${escapeHtml(projectStatusLabel(project.status))}｜${escapeHtml(progress)}</p>
+      <button type="button" class="project-open">${project.status === "not_started" ? "開始實作" : "繼續實作"}</button>
+    `;
+    card.querySelector(".project-open").addEventListener("click", () => openProject(project.id));
+    list.appendChild(card);
+  }
+}
+
+async function openProjects() {
   state.review.active = false;
+  state.review.returningFromLesson = false;
+  $("page-title").textContent = "實作區";
+  $("lesson-panel").classList.add("hidden");
+  $("question-panel").classList.add("hidden");
+  $("review-summary-panel").classList.add("hidden");
+  $("projects-panel").classList.remove("hidden");
+  $("runner-panel").classList.add("hidden");
+  $("projects-nav").classList.add("hidden");
+  $("lessons-nav").classList.remove("hidden");
+  $("review-nav").classList.add("hidden");
+  $("project-list-view").classList.remove("hidden");
+  $("project-workspace").classList.add("hidden");
+  await loadProjects();
+}
+
+async function backToLessons() {
+  state.review.returningFromLesson = false;
+  $("projects-panel").classList.add("hidden");
+  $("runner-panel").classList.remove("hidden");
+  $("projects-nav").classList.remove("hidden");
+  $("lessons-nav").classList.add("hidden");
+  $("review-nav").classList.add("hidden");
+  $("page-title").textContent = "今日課程";
+  const lessonInfo = await loadLessons();
+  if (lessonInfo.next_lesson) await loadLesson(lessonInfo.next_lesson.id);
+}
+
+async function openProject(projectId) {
+  const body = await api(`/api/projects/${encodeURIComponent(projectId)}/start`, { method: "POST" });
+  state.currentProject = body.project;
+  state.projectAttempts = 0;
+  state.projectCanCheck = false;
+  $("project-list-view").classList.add("hidden");
+  $("project-workspace").classList.remove("hidden");
+  renderProjectWorkspace(state.currentProject);
+}
+
+function renderProjectWorkspace(project) {
+  const allTestsPassed = project.tests_total > 0 && project.tests_passed >= project.tests_total;
+  $("project-level").textContent = `Level ${project.level}`;
+  $("project-time").textContent = `預計 ${project.estimated_minutes} 分鐘`;
+  $("project-title").textContent = project.title;
+  $("project-description").textContent = project.description;
+  $("project-example-explanation").textContent = project.example.explanation;
+  $("project-example-code").textContent = project.example.code;
+  highlightPython($("project-example-code"));
+  $("project-example-output").textContent = project.example.output;
+  $("project-instructions").textContent = project.instructions;
+  $("project-hint").textContent = project.hint;
+  $("project-guide-text").textContent = "步驟 1：依照題目，在空白區輸入自己的程式，再按「試跑我的程式」。";
+  $("project-code").value = "";
+  $("project-code").readOnly = false;
+  const needsInput = project.tests.some((test) => test.inputs.length > 0);
+  $("project-input-panel").classList.toggle("hidden", !needsInput);
+  $("project-input").value = "";
+  $("project-output").textContent = "尚未執行";
+  $("project-run").textContent = "試跑我的程式";
+  $("project-test").textContent = "檢查答案";
+  $("project-test").classList.toggle("hidden", !state.projectCanCheck);
+  $("project-complete").textContent = project.status === "completed" ? "已完成任務" : "完成任務";
+  $("project-complete").classList.toggle("hidden", !allTestsPassed);
+  $("project-complete").disabled = project.status === "completed";
+  clear($("project-tests"));
+}
+
+function projectInputs() {
+  return $("project-input").value.split(/\r?\n/).filter((value) => value.length > 0);
+}
+
+async function executeProjectCode(code, inputs) {
+  const pyodide = await ensurePyodide();
+  const encodedInputs = JSON.stringify(inputs);
+  pyodide.runPython(`
+import sys
+import builtins
+from io import StringIO
+sys.stdout = StringIO()
+sys.stderr = StringIO()
+_project_inputs = iter(${encodedInputs})
+builtins.input = lambda prompt="": next(_project_inputs)
+`);
+  try {
+    await pyodide.runPythonAsync(code);
+    const output = pyodide.runPython("sys.stdout.getvalue()");
+    const error = pyodide.runPython("sys.stderr.getvalue()");
+    return { output: output || "", error: error || "" };
+  } catch (error) {
+    return { output: "", error: String(error) };
+  }
+}
+
+function normalizeProjectOutput(value) {
+  return String(value || "").replaceAll("\r\n", "\n").trim();
+}
+
+async function runProjectCode() {
+  if (!state.currentProject) return;
+  if (!$("project-code").value.trim()) {
+    $("project-output").textContent = "請先在程式碼區輸入自己的程式。";
+    return;
+  }
+  $("project-run").disabled = true;
+  $("project-output").textContent = "載入 Python 執行環境...";
+  try {
+    const result = await executeProjectCode($("project-code").value, projectInputs());
+    $("project-output").textContent = result.output + (result.error ? `\n${result.error}` : "") || "程式執行完成，沒有輸出。";
+    state.projectAttempts += 1;
+    const activity = await api(`/api/projects/${encodeURIComponent(state.currentProject.id)}/activity`, {
+      method: "POST",
+      body: JSON.stringify({
+        attempts: 1,
+        tests_passed: state.currentProject.tests_passed,
+        tests_total: state.currentProject.tests.length,
+      }),
+    });
+    state.currentProject = activity.project;
+    if (!result.error) {
+      state.projectCanCheck = true;
+      $("project-guide-text").textContent = "步驟 2：試跑成功，現在按「檢查答案」，確認執行結果是否符合題目。";
+      $("project-test").classList.remove("hidden");
+    }
+  } catch (error) {
+    $("project-output").textContent = error.message || String(error);
+  } finally {
+    $("project-run").disabled = false;
+  }
+}
+
+async function testProjectCode() {
+  if (!state.currentProject) return;
+  $("project-test").disabled = true;
+  const results = [];
+  try {
+    for (const test of state.currentProject.tests) {
+      const result = await executeProjectCode($("project-code").value, test.inputs);
+      const actual = normalizeProjectOutput(result.error ? `錯誤：${result.error}` : result.output);
+      results.push({ passed: actual === normalizeProjectOutput(test.expected), actual });
+    }
+    const passed = results.filter((result) => result.passed).length;
+    clear($("project-tests"));
+    results.forEach((result, index) => {
+      const item = document.createElement("li");
+      item.className = result.passed ? "passed" : "failed";
+      item.textContent = `測試 ${index + 1}：${result.passed ? "通過" : `未通過（得到：${result.actual || "沒有輸出"}）`}`;
+      $("project-tests").appendChild(item);
+    });
+    $("project-output").textContent = `測試完成：${passed} / ${results.length} 通過`;
+    state.projectAttempts += 1;
+    const activity = await api(`/api/projects/${encodeURIComponent(state.currentProject.id)}/activity`, {
+      method: "POST",
+      body: JSON.stringify({ attempts: 1, tests_passed: passed, tests_total: results.length }),
+    });
+    state.currentProject = activity.project;
+    const allTestsPassed = passed === results.length;
+    $("project-complete").classList.toggle("hidden", !allTestsPassed);
+    $("project-complete").disabled = !allTestsPassed || state.currentProject.status === "completed";
+  } catch (error) {
+    $("project-output").textContent = error.message || String(error);
+  } finally {
+    $("project-test").disabled = false;
+  }
+}
+
+async function completeProject() {
+  if (!state.currentProject) return;
+  const passed = state.currentProject.tests.length;
+  const body = await api(`/api/projects/${encodeURIComponent(state.currentProject.id)}/complete`, {
+    method: "POST",
+    body: JSON.stringify({ attempts: 0, tests_passed: passed, tests_total: passed }),
+  });
+  state.currentProject = body.project;
+  renderProjectWorkspace(state.currentProject);
+  await loadProjects();
+  $("project-list-view").classList.remove("hidden");
+  $("project-workspace").classList.add("hidden");
+}
+
+async function loadLesson(lessonId) {
+  const returningFromReview = state.review.active;
+  state.review.active = false;
+  state.review.returningFromLesson = returningFromReview;
   $("page-title").textContent = "今日課程";
   $("review-summary-panel").classList.add("hidden");
   $("lesson-panel").classList.remove("hidden");
   $("question-panel").classList.add("hidden");
+  $("projects-nav").classList.toggle("hidden", returningFromReview);
+  $("lessons-nav").classList.add("hidden");
+  $("review-nav").classList.toggle("hidden", !returningFromReview);
   const body = await api(`/api/lessons/${lessonId}/start`, { method: "POST" });
   state.currentLesson = body.lesson;
   renderLesson(state.currentLesson);
@@ -383,6 +603,7 @@ function renderLessonBody(blocks) {
       button.textContent = "放到執行區";
       button.addEventListener("click", () => {
         $("code-input").value = block.code;
+        syncRunnerInputVisibility();
         $("code-output").textContent = "尚未執行";
       });
       wrapper.append(pre, button);
@@ -527,6 +748,7 @@ function renderQuestion(question) {
   $("question-code").classList.toggle("hidden", !question.code);
   if (question.code) highlightPython($("question-code"));
   $("code-input").value = question.code || "print(\"Hello Python\")";
+  syncRunnerInputVisibility();
   $("code-output").textContent = "尚未執行";
   $("submit-answer").disabled = false;
   $("next-question").disabled = true;
@@ -655,11 +877,15 @@ async function startReview() {
   state.review.active = true;
   state.review.answered = 0;
   state.review.correct = 0;
+  state.review.returningFromLesson = false;
   state.currentLesson = null;
   $("page-title").textContent = "總複習";
   $("lesson-panel").classList.add("hidden");
   $("review-summary-panel").classList.add("hidden");
   $("question-panel").classList.remove("hidden");
+  $("projects-nav").classList.add("hidden");
+  $("lessons-nav").classList.remove("hidden");
+  $("review-nav").classList.add("hidden");
   await loadQuestion(null);
   await loadReviewStatus();
 }
@@ -667,6 +893,7 @@ async function startReview() {
 async function finishReview() {
   const body = await api("/api/review/summary");
   state.review.active = false;
+  $("lessons-nav").classList.add("hidden");
   $("question-panel").classList.add("hidden");
   $("review-summary-panel").classList.remove("hidden");
   $("review-progress").classList.add("hidden");
@@ -690,11 +917,29 @@ async function finishReview() {
 
 async function leaveReview() {
   state.review.active = false;
+  state.review.returningFromLesson = false;
+  $("projects-nav").classList.remove("hidden");
+  $("lessons-nav").classList.add("hidden");
+  $("review-nav").classList.add("hidden");
   $("page-title").textContent = "今日課程";
   $("review-summary-panel").classList.add("hidden");
   $("lesson-panel").classList.remove("hidden");
   const lessonInfo = await loadLessons();
   if (lessonInfo.next_lesson) await loadLesson(lessonInfo.next_lesson.id);
+}
+
+function returnToReview() {
+  if (!state.review.returningFromLesson || !state.question) return;
+  state.review.active = true;
+  state.review.returningFromLesson = false;
+  $("page-title").textContent = "總複習";
+  $("lesson-panel").classList.add("hidden");
+  $("review-summary-panel").classList.add("hidden");
+  $("question-panel").classList.remove("hidden");
+  $("projects-nav").classList.add("hidden");
+  $("lessons-nav").classList.remove("hidden");
+  $("review-nav").classList.add("hidden");
+  $("review-progress").classList.remove("hidden");
 }
 
 async function nextQuestion() {
@@ -747,7 +992,8 @@ async function loadAdmin() {
         : student.review_status === "completed"
           ? `總複習：已完成 ${student.review_answered} / 20 題（答題率 ${student.review_answer_rate}%）｜最近 ${formatActivityTime(student.review_last_answered_at)}`
           : `總複習：進行中 ${student.review_answered} / 20 題（答題率 ${student.review_answer_rate}%）｜最近 ${formatActivityTime(student.review_last_answered_at)}`;
-      li.textContent = `${student.display_name}｜一般答題 ${student.total_attempts} 題｜正確率 ${student.accuracy}%｜${reviewText}`;
+      const projectText = `實作：${student.project_completed} / ${student.project_total} 完成`;
+      li.textContent = `${student.display_name}｜一般答題 ${student.total_attempts} 題｜正確率 ${student.accuracy}%｜${reviewText}｜${projectText}`;
       list.appendChild(li);
     }
   } catch (_error) {
@@ -777,17 +1023,35 @@ async function ensurePyodide() {
   return state.pyodideLoading;
 }
 
+function runnerInputs() {
+  return $("code-input-values").value.split(/\r?\n/).filter((value) => value.length > 0);
+}
+
+function syncRunnerInputVisibility() {
+  $("runner-input-panel").classList.toggle("hidden", !/\binput\s*\(/.test($("code-input").value));
+}
+
 async function runCode() {
   const output = $("code-output");
   output.textContent = "載入 Python 執行環境...";
   try {
     const pyodide = await ensurePyodide();
     const code = $("code-input").value;
+    syncRunnerInputVisibility();
+    const encodedInputs = JSON.stringify(runnerInputs());
     pyodide.runPython(`
 import sys
+import builtins
 from io import StringIO
 sys.stdout = StringIO()
 sys.stderr = StringIO()
+_runner_inputs = iter(${encodedInputs})
+def _runner_input(prompt=""):
+    try:
+        return next(_runner_inputs)
+    except StopIteration:
+        raise EOFError("請在執行輸入欄填入資料，每行對應一次 input()。")
+builtins.input = _runner_input
 `);
     try {
       await pyodide.runPythonAsync(code);
@@ -814,8 +1078,21 @@ function bindEvents() {
   $("restart-review").addEventListener("click", startReview);
   $("leave-review").addEventListener("click", leaveReview);
   $("run-code").addEventListener("click", runCode);
+  $("code-input").addEventListener("input", syncRunnerInputVisibility);
+  $("projects-nav").addEventListener("click", openProjects);
+  $("lessons-nav").addEventListener("click", backToLessons);
+  $("review-nav").addEventListener("click", returnToReview);
+  $("project-back").addEventListener("click", async () => {
+    $("project-list-view").classList.remove("hidden");
+    $("project-workspace").classList.add("hidden");
+    await loadProjects();
+  });
+  $("project-run").addEventListener("click", runProjectCode);
+  $("project-test").addEventListener("click", testProjectCode);
+  $("project-complete").addEventListener("click", completeProject);
 }
 
 configurePythonHighlighting();
 bindEvents();
+syncRunnerInputVisibility();
 loadMe();

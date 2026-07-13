@@ -44,6 +44,12 @@ class LessonCompleteRequest(BaseModel):
     checkpoint_total_count: int = 0
 
 
+class ProjectActivityRequest(BaseModel):
+    attempts: int = 0
+    tests_passed: int = 0
+    tests_total: int = 0
+
+
 def parse_json(value: str) -> Any:
     return json.loads(value)
 
@@ -127,6 +133,29 @@ def public_lesson(row: Any, include_content: bool = False) -> dict[str, Any]:
     return result
 
 
+def public_project(row: Any) -> dict[str, Any]:
+    example = parse_json(row["starter_code"])
+    return {
+        "id": row["id"],
+        "title": row["title"],
+        "level": row["level"],
+        "estimated_minutes": row["estimated_minutes"],
+        "concepts": parse_json(row["concepts_json"]),
+        "description": row["description"],
+        "instructions": row["instructions"],
+        "example": example,
+        "tests": parse_json(row["tests_json"]),
+        "hint": row["hint"],
+        "status": row["status"] or "not_started",
+        "attempts": row["attempts"] or 0,
+        "tests_passed": row["tests_passed"] or 0,
+        "tests_total": row["tests_total"] or len(parse_json(row["tests_json"])),
+        "started_at": row["started_at"],
+        "last_activity_at": row["last_activity_at"],
+        "completed_at": row["completed_at"],
+    }
+
+
 def checkpoint_questions(db: Any, lesson: dict[str, Any]) -> list[dict[str, Any]]:
     question_ids = lesson.get("checkpoint_question_ids", [])
     if not question_ids:
@@ -201,6 +230,27 @@ def lesson_concepts(db: Any, lesson_id: str) -> set[str]:
         (lesson_id,),
     ).fetchall()
     return {row["concept_id"] for row in rows}
+
+
+def project_row(db: Any, user_id: int, project_id: str) -> Any:
+    row = db.execute(
+        """
+        SELECT p.*,
+               COALESCE(pp.status, 'not_started') AS status,
+               COALESCE(pp.attempts, 0) AS attempts,
+               COALESCE(pp.tests_passed, 0) AS tests_passed,
+               COALESCE(pp.tests_total, 0) AS tests_total,
+               pp.started_at, pp.last_activity_at, pp.completed_at
+        FROM projects p
+        LEFT JOIN project_progress pp
+          ON pp.project_id = p.id AND pp.user_id = ?
+        WHERE p.id = ? AND p.is_active = 1
+        """,
+        (user_id, project_id),
+    ).fetchone()
+    if not row:
+        raise HTTPException(status_code=404, detail="找不到實作任務")
+    return row
 
 
 def suggested_lesson_for_concept(db: Any, user_id: int, concept_id: str) -> dict[str, Any] | None:
@@ -395,6 +445,125 @@ def complete_lesson(
             ),
         )
         return {"lesson": public_lesson(lesson_row(db, user["id"], lesson_id), include_content=True)}
+
+
+@app.get("/api/projects")
+def projects(user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
+    with get_db() as db:
+        rows = db.execute(
+            """
+            SELECT p.*,
+                   COALESCE(pp.status, 'not_started') AS status,
+                   COALESCE(pp.attempts, 0) AS attempts,
+                   COALESCE(pp.tests_passed, 0) AS tests_passed,
+                   COALESCE(pp.tests_total, 0) AS tests_total,
+                   pp.started_at, pp.last_activity_at, pp.completed_at
+            FROM projects p
+            LEFT JOIN project_progress pp
+              ON pp.project_id = p.id AND pp.user_id = ?
+            WHERE p.is_active = 1
+            ORDER BY p.level, p.id
+            """,
+            (user["id"],),
+        ).fetchall()
+    return {"projects": [public_project(row) for row in rows]}
+
+
+@app.post("/api/projects/{project_id}/start")
+def start_project(project_id: str, user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
+    with get_db() as db:
+        project_row(db, user["id"], project_id)
+        now = utcnow()
+        db.execute(
+            """
+            INSERT INTO project_progress (user_id, project_id, status, started_at, last_activity_at)
+            VALUES (?, ?, 'in_progress', ?, ?)
+            ON CONFLICT(user_id, project_id) DO UPDATE SET
+                status=CASE WHEN project_progress.status = 'completed'
+                    THEN project_progress.status ELSE 'in_progress' END,
+                started_at=COALESCE(project_progress.started_at, excluded.started_at),
+                last_activity_at=excluded.last_activity_at
+            """,
+            (user["id"], project_id, now, now),
+        )
+        return {"project": public_project(project_row(db, user["id"], project_id))}
+
+
+@app.post("/api/projects/{project_id}/activity")
+def project_activity(
+    project_id: str,
+    payload: ProjectActivityRequest,
+    user: dict[str, Any] = Depends(auth_user),
+) -> dict[str, Any]:
+    with get_db() as db:
+        project_row(db, user["id"], project_id)
+        now = utcnow()
+        db.execute(
+            """
+            INSERT INTO project_progress (
+                user_id, project_id, status, attempts, tests_passed, tests_total,
+                started_at, last_activity_at
+            )
+            VALUES (?, ?, 'in_progress', ?, ?, ?, ?, ?)
+            ON CONFLICT(user_id, project_id) DO UPDATE SET
+                status=CASE WHEN project_progress.status = 'completed'
+                    THEN project_progress.status ELSE 'in_progress' END,
+                attempts=project_progress.attempts + excluded.attempts,
+                tests_passed=excluded.tests_passed,
+                tests_total=excluded.tests_total,
+                started_at=COALESCE(project_progress.started_at, excluded.started_at),
+                last_activity_at=excluded.last_activity_at
+            """,
+            (
+                user["id"],
+                project_id,
+                max(0, payload.attempts),
+                max(0, payload.tests_passed),
+                max(0, payload.tests_total),
+                now,
+                now,
+            ),
+        )
+        return {"project": public_project(project_row(db, user["id"], project_id))}
+
+
+@app.post("/api/projects/{project_id}/complete")
+def complete_project(
+    project_id: str,
+    payload: ProjectActivityRequest,
+    user: dict[str, Any] = Depends(auth_user),
+) -> dict[str, Any]:
+    with get_db() as db:
+        project_row(db, user["id"], project_id)
+        now = utcnow()
+        db.execute(
+            """
+            INSERT INTO project_progress (
+                user_id, project_id, status, attempts, tests_passed, tests_total,
+                started_at, last_activity_at, completed_at
+            )
+            VALUES (?, ?, 'completed', ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(user_id, project_id) DO UPDATE SET
+                status='completed',
+                attempts=project_progress.attempts + excluded.attempts,
+                tests_passed=excluded.tests_passed,
+                tests_total=excluded.tests_total,
+                started_at=COALESCE(project_progress.started_at, excluded.started_at),
+                last_activity_at=excluded.last_activity_at,
+                completed_at=excluded.completed_at
+            """,
+            (
+                user["id"],
+                project_id,
+                max(0, payload.attempts),
+                max(0, payload.tests_passed),
+                max(0, payload.tests_total),
+                now,
+                now,
+                now,
+            ),
+        )
+        return {"project": public_project(project_row(db, user["id"], project_id))}
 
 
 def question_rows(db: Any) -> list[Any]:
@@ -833,7 +1002,16 @@ def admin_students(_admin: dict[str, Any] = Depends(require_admin)) -> dict[str,
                    (SELECT rs.completed_at FROM review_sessions rs
                     WHERE rs.user_id = u.id ORDER BY rs.id DESC LIMIT 1) AS review_completed_at,
                    (SELECT rs.last_answered_at FROM review_sessions rs
-                    WHERE rs.user_id = u.id ORDER BY rs.id DESC LIMIT 1) AS review_last_answered_at
+                    WHERE rs.user_id = u.id ORDER BY rs.id DESC LIMIT 1) AS review_last_answered_at,
+                   (SELECT COUNT(*) FROM projects p WHERE p.is_active = 1) AS project_total,
+                   (SELECT COUNT(*) FROM project_progress pp
+                    JOIN projects p ON p.id = pp.project_id
+                    WHERE pp.user_id = u.id AND p.is_active = 1 AND pp.status = 'completed') AS project_completed,
+                   (SELECT COUNT(*) FROM project_progress pp
+                    JOIN projects p ON p.id = pp.project_id
+                    WHERE pp.user_id = u.id AND p.is_active = 1 AND pp.status = 'in_progress') AS project_in_progress,
+                   (SELECT pp.last_activity_at FROM project_progress pp
+                    WHERE pp.user_id = u.id ORDER BY pp.last_activity_at DESC LIMIT 1) AS project_last_activity_at
             FROM users u
             LEFT JOIN attempts a ON a.user_id = u.id
             WHERE u.role = 'student'
@@ -857,6 +1035,9 @@ def admin_students(_admin: dict[str, Any] = Depends(require_admin)) -> dict[str,
             item["review_status"] = "completed"
         else:
             item["review_status"] = "in_progress"
+        item["project_total"] = int(item["project_total"] or 0)
+        item["project_completed"] = int(item["project_completed"] or 0)
+        item["project_in_progress"] = int(item["project_in_progress"] or 0)
         students.append(item)
     return {"students": students}
 

@@ -34,6 +34,21 @@ def main() -> None:
 
             headers = {"Authorization": f"Bearer {login.json()['token']}"}
 
+            project_list = client.get("/api/projects", headers=headers)
+            assert project_list.status_code == 200, project_list.text
+            assert len(project_list.json()["projects"]) == 5, project_list.text
+            project_id = project_list.json()["projects"][0]["id"]
+            project_started = client.post(f"/api/projects/{project_id}/start", headers=headers)
+            assert project_started.status_code == 200, project_started.text
+            assert project_started.json()["project"]["status"] == "in_progress", project_started.text
+            project_activity = client.post(
+                f"/api/projects/{project_id}/activity",
+                headers=headers,
+                json={"attempts": 1, "tests_passed": 1, "tests_total": 1},
+            )
+            assert project_activity.status_code == 200, project_activity.text
+            assert project_activity.json()["project"]["tests_passed"] == 1, project_activity.text
+
             lessons = client.get("/api/lessons", headers=headers)
             assert lessons.status_code == 200, lessons.text
             assert lessons.json()["lessons"], lessons.text
@@ -150,6 +165,7 @@ def main() -> None:
             student = next(item for item in admin_students.json()["students"] if item["username"] == "student1")
             assert student["review_status"] == "in_progress", admin_students.text
             assert student["review_answered"] == 1, admin_students.text
+            assert student["project_in_progress"] >= 1, admin_students.text
 
     print("OK: login, lessons, lesson progress, review lock/unlock, attempts, dashboard")
 

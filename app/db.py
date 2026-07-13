@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATABASE_URL = os.environ.get("DATABASE_URL")
 DB_PATH = Path(os.environ.get("DB_PATH", ROOT / "data" / "app.db"))
 LESSONS_PATH = ROOT / "content" / "lessons.json"
+PROJECTS_PATH = ROOT / "content" / "projects.json"
 MISCONCEPTION_QUESTIONS_PATH = ROOT / "content" / "misconception_questions.json"
 
 
@@ -193,6 +194,36 @@ def schema_statements() -> list[str]:
         )
         """,
         """
+        CREATE TABLE IF NOT EXISTS projects (
+            id TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            level INTEGER NOT NULL,
+            estimated_minutes INTEGER NOT NULL,
+            concepts_json TEXT NOT NULL,
+            description TEXT NOT NULL,
+            instructions TEXT NOT NULL,
+            starter_code TEXT NOT NULL,
+            tests_json TEXT NOT NULL,
+            hint TEXT NOT NULL,
+            is_active INTEGER NOT NULL DEFAULT 1
+        )
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS project_progress (
+            user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            project_id TEXT NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+            status TEXT NOT NULL DEFAULT 'not_started'
+                CHECK(status IN ('not_started', 'in_progress', 'completed')),
+            attempts INTEGER NOT NULL DEFAULT 0,
+            tests_passed INTEGER NOT NULL DEFAULT 0,
+            tests_total INTEGER NOT NULL DEFAULT 0,
+            started_at TEXT,
+            last_activity_at TEXT,
+            completed_at TEXT,
+            PRIMARY KEY (user_id, project_id)
+        )
+        """,
+        """
         CREATE TABLE IF NOT EXISTS concept_mastery (
             user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
             concept_id TEXT NOT NULL REFERENCES concepts(id) ON DELETE CASCADE,
@@ -213,6 +244,7 @@ def init_db() -> None:
 
     seed_questions()
     seed_lessons()
+    seed_projects()
     seed_users()
 
 
@@ -365,6 +397,44 @@ def seed_lessons() -> None:
                     "INSERT INTO lesson_concepts (lesson_id, concept_id) VALUES (?, ?)",
                     (lesson["id"], concept_id),
                 )
+
+
+def seed_projects() -> None:
+    projects = json.loads(PROJECTS_PATH.read_text(encoding="utf-8"))
+    with get_db() as db:
+        for project in projects:
+            db.execute(
+                """
+                INSERT INTO projects (
+                    id, title, level, estimated_minutes, concepts_json, description,
+                    instructions, starter_code, tests_json, hint, is_active
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+                ON CONFLICT(id) DO UPDATE SET
+                    title=excluded.title,
+                    level=excluded.level,
+                    estimated_minutes=excluded.estimated_minutes,
+                    concepts_json=excluded.concepts_json,
+                    description=excluded.description,
+                    instructions=excluded.instructions,
+                    starter_code=excluded.starter_code,
+                    tests_json=excluded.tests_json,
+                    hint=excluded.hint,
+                    is_active=1
+                """,
+                (
+                    project["id"],
+                    project["title"],
+                    project["level"],
+                    project["estimated_minutes"],
+                    json.dumps(project["concepts"], ensure_ascii=False),
+                    project["description"],
+                    project["instructions"],
+                    json.dumps(project["example"], ensure_ascii=False),
+                    json.dumps(project["tests"], ensure_ascii=False),
+                    project["hint"],
+                ),
+            )
 
 
 def seed_user_configs() -> list[dict[str, str]]:
