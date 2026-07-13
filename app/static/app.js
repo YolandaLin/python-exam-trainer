@@ -424,7 +424,12 @@ from io import StringIO
 sys.stdout = StringIO()
 sys.stderr = StringIO()
 _project_inputs = iter(${encodedInputs})
-builtins.input = lambda prompt="": next(_project_inputs)
+def _project_input(prompt=""):
+    try:
+        return next(_project_inputs)
+    except StopIteration:
+        raise EOFError("請在「輸入資料」框填入資料，每行對應一次 input()。")
+builtins.input = _project_input
 `);
   try {
     await pyodide.runPythonAsync(code);
@@ -440,17 +445,40 @@ function normalizeProjectOutput(value) {
   return String(value || "").replaceAll("\r\n", "\n").trim();
 }
 
+function explainPythonError(errorText) {
+  const text = String(errorText || "").replace(/^PythonError:\s*/i, "").trim();
+  if (!text) return "程式執行時發生錯誤。";
+  let hint = "";
+  if (/SyntaxError|IndentationError/i.test(text)) {
+    hint = "提示：程式語法有問題。要列印文字時，請把文字放在引號裡，例如：print(\"姓名：小明\")。";
+  } else if (/NameError/i.test(text)) {
+    hint = "提示：Python 找不到這個名稱。請檢查變數名稱是否打對，或確認文字是否有用引號包住。";
+  } else if (/TypeError/i.test(text)) {
+    hint = "提示：資料的種類不符合這個運算。文字和數字運算前，請先確認型別是否正確。";
+  } else if (/ValueError/i.test(text)) {
+    hint = "提示：輸入的內容格式不正確。例如 int() 只能把數字文字轉成整數，請檢查輸入資料。";
+  } else if (/StopIteration|輸入欄填入資料|EOFError/i.test(text)) {
+    hint = "提示：程式需要輸入資料，請在「輸入資料」框每行填入一筆資料，再重新執行。";
+  }
+  return hint ? `${hint}\n\n錯誤詳細資料：\n${text}` : `錯誤詳細資料：\n${text}`;
+}
+
 async function runProjectCode() {
   if (!state.currentProject) return;
   if (!$("project-code").value.trim()) {
     $("project-output").textContent = "請先在程式碼區輸入自己的程式。";
     return;
   }
+  if (/\binput\s*\(/.test($("project-code").value) && projectInputs().length === 0) {
+    $("project-output").textContent = "提示：這段程式需要輸入資料，請先在「輸入資料」框輸入內容，每行填一筆資料。";
+    $("project-input").focus();
+    return;
+  }
   $("project-run").disabled = true;
   $("project-output").textContent = "載入 Python 執行環境...";
   try {
     const result = await executeProjectCode($("project-code").value, projectInputs());
-    $("project-output").textContent = result.output + (result.error ? `\n${result.error}` : "") || "程式執行完成，沒有輸出。";
+    $("project-output").textContent = result.output + (result.error ? `\n${explainPythonError(result.error)}` : "") || "程式執行完成，沒有輸出。";
     state.projectAttempts += 1;
     const activity = await api(`/api/projects/${encodeURIComponent(state.currentProject.id)}/activity`, {
       method: "POST",
@@ -467,7 +495,7 @@ async function runProjectCode() {
       $("project-test").classList.remove("hidden");
     }
   } catch (error) {
-    $("project-output").textContent = error.message || String(error);
+    $("project-output").textContent = explainPythonError(error.message || String(error));
   } finally {
     $("project-run").disabled = false;
   }
@@ -1038,6 +1066,11 @@ async function runCode() {
     const pyodide = await ensurePyodide();
     const code = $("code-input").value;
     syncRunnerInputVisibility();
+    if (/\binput\s*\(/.test(code) && runnerInputs().length === 0) {
+      output.textContent = "提示：這段程式需要輸入資料，請先在「輸入資料」框輸入內容，每行填一筆資料。";
+      $("code-input-values").focus();
+      return;
+    }
     const encodedInputs = JSON.stringify(runnerInputs());
     pyodide.runPython(`
 import sys
@@ -1059,7 +1092,7 @@ builtins.input = _runner_input
       const errText = pyodide.runPython("sys.stderr.getvalue()");
       output.textContent = (resultText || "") + (errText ? `\n${errText}` : "") || "程式執行完成，沒有輸出。";
     } catch (error) {
-      output.textContent = String(error);
+      output.textContent = explainPythonError(error);
     }
     state.ranCode = true;
   } catch (error) {
