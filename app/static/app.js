@@ -14,6 +14,7 @@ const state = {
     answered: 0,
     correct: 0,
     status: null,
+    sessionId: null,
   },
 };
 
@@ -148,6 +149,12 @@ function conceptLabel(name) {
 function sourceLabel(sourceFile) {
   const lesson = state.lessons.find((item) => item.source_file === sourceFile);
   return lesson ? `${lesson.unit}｜${lesson.title}` : String(sourceFile).replace(/\.md$/, "");
+}
+
+function formatActivityTime(value) {
+  if (!value) return "尚未答題";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString("zh-TW", { hour12: false });
 }
 
 async function api(path, options = {}) {
@@ -594,6 +601,8 @@ async function submitAnswer() {
       used_hint: false,
       ran_code: state.ranCode,
       elapsed_seconds: elapsed,
+      mode: state.review.active ? "review" : "lesson",
+      review_session_id: state.review.active ? state.review.sessionId : null,
     }),
   });
   const answerText = result.answer.join(", ");
@@ -630,14 +639,19 @@ async function loadReviewStatus() {
   const remaining = Math.max(0, body.total_lessons - body.completed_lessons);
   $("start-review").disabled = !body.unlocked;
   $("start-review").textContent = state.review.active ? "重新開始本輪" : "開始總複習";
+  const session = body.review_session;
   $("review-status-text").textContent = body.unlocked
-    ? `已解鎖。系統會提高 ${body.wrong_questions} 題錯題與薄弱觀念的出現率。`
+    ? session
+      ? `已解鎖。本輪已答 ${session.answered_count} / ${state.review.size} 題（答題率 ${session.answer_rate}%）。`
+      : `已解鎖。系統會提高 ${body.wrong_questions} 題錯題與薄弱觀念的出現率。`
     : `尚有 ${remaining} 節課程未完成。`;
   return body;
 }
 
 async function startReview() {
   if (!state.review.status?.unlocked) return;
+  const started = await api("/api/review/start", { method: "POST" });
+  state.review.sessionId = started.session.id;
   state.review.active = true;
   state.review.answered = 0;
   state.review.correct = 0;
@@ -728,7 +742,12 @@ async function loadAdmin() {
     clear(list);
     for (const student of body.students) {
       const li = document.createElement("li");
-      li.textContent = `${student.display_name}｜${student.total_attempts} 題｜${student.accuracy}%`;
+      const reviewText = student.review_status === "not_started"
+        ? "總複習：尚未開始"
+        : student.review_status === "completed"
+          ? `總複習：已完成 ${student.review_answered} / 20 題（答題率 ${student.review_answer_rate}%）｜最近 ${formatActivityTime(student.review_last_answered_at)}`
+          : `總複習：進行中 ${student.review_answered} / 20 題（答題率 ${student.review_answer_rate}%）｜最近 ${formatActivityTime(student.review_last_answered_at)}`;
+      li.textContent = `${student.display_name}｜一般答題 ${student.total_attempts} 題｜正確率 ${student.accuracy}%｜${reviewText}`;
       list.appendChild(li);
     }
   } catch (_error) {

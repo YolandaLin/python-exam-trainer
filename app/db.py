@@ -181,6 +181,17 @@ def schema_statements() -> list[str]:
             created_at TEXT NOT NULL
         )
         """,
+        f"""
+        CREATE TABLE IF NOT EXISTS review_sessions (
+            {attempt_id},
+            user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+            started_at TEXT NOT NULL,
+            last_answered_at TEXT,
+            answered_count INTEGER NOT NULL DEFAULT 0,
+            correct_count INTEGER NOT NULL DEFAULT 0,
+            completed_at TEXT
+        )
+        """,
         """
         CREATE TABLE IF NOT EXISTS concept_mastery (
             user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,

@@ -110,6 +110,11 @@ def main() -> None:
             assert review_status.status_code == 200, review_status.text
             assert review_status.json()["unlocked"] is True, review_status.text
 
+            review_start = client.post("/api/review/start", headers=headers)
+            assert review_start.status_code == 200, review_start.text
+            review_session_id = review_start.json()["session"]["id"]
+            assert review_start.json()["session"]["answer_rate"] == 0, review_start.text
+
             review_question = client.get("/api/next-question?mode=review", headers=headers)
             assert review_question.status_code == 200, review_question.text
             assert "answer" not in review_question.json()["question"], review_question.text
@@ -120,6 +125,8 @@ def main() -> None:
                 json={
                     "question_id": review_question.json()["question"]["id"],
                     "selected_answer": ["not-an-answer"],
+                    "mode": "review",
+                    "review_session_id": review_session_id,
                 },
             )
             assert wrong_attempt.status_code == 200, wrong_attempt.text
@@ -136,6 +143,13 @@ def main() -> None:
             assert review_summary.status_code == 200, review_summary.text
             assert review_summary.json()["wrong_questions"] >= 1, review_summary.text
             assert review_summary.json()["high_error_questions"], review_summary.text
+            assert review_summary.json()["review_session"]["answered_count"] == 1, review_summary.text
+
+            admin_students = client.get("/api/admin/students", headers=admin_headers)
+            assert admin_students.status_code == 200, admin_students.text
+            student = next(item for item in admin_students.json()["students"] if item["username"] == "student1")
+            assert student["review_status"] == "in_progress", admin_students.text
+            assert student["review_answered"] == 1, admin_students.text
 
     print("OK: login, lessons, lesson progress, review lock/unlock, attempts, dashboard")
 

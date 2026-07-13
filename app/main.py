@@ -18,6 +18,7 @@ from .security import new_token, verify_password
 ROOT = Path(__file__).resolve().parents[1]
 STATIC_DIR = ROOT / "app" / "static"
 MISCONCEPTION_QUESTION_IDS = load_misconception_question_ids()
+REVIEW_SIZE = 20
 
 app = FastAPI(title="python-exam-trainer")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -34,6 +35,8 @@ class AttemptRequest(BaseModel):
     used_hint: bool = False
     ran_code: bool = False
     elapsed_seconds: int = 0
+    mode: str = "lesson"
+    review_session_id: int | None = None
 
 
 class LessonCompleteRequest(BaseModel):
@@ -43,6 +46,28 @@ class LessonCompleteRequest(BaseModel):
 
 def parse_json(value: str) -> Any:
     return json.loads(value)
+
+
+def review_session_payload(row: Any) -> dict[str, Any] | None:
+    if not row:
+        return None
+    answered = int(row["answered_count"] or 0)
+    return {
+        "id": row["id"],
+        "started_at": row["started_at"],
+        "last_answered_at": row["last_answered_at"],
+        "answered_count": answered,
+        "correct_count": int(row["correct_count"] or 0),
+        "answer_rate": round(answered / REVIEW_SIZE * 100, 1),
+        "completed_at": row["completed_at"],
+    }
+
+
+def latest_review_session(db: Any, user_id: int) -> Any:
+    return db.execute(
+        "SELECT * FROM review_sessions WHERE user_id = ? ORDER BY id DESC LIMIT 1",
+        (user_id,),
+    ).fetchone()
 
 
 QUESTION_GROUP_BY = """
@@ -616,6 +641,8 @@ def update_mastery(db: Any, user_id: int, question_id: str, correct: bool, used_
 
 @app.post("/api/attempts")
 def submit_attempt(payload: AttemptRequest, user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
+    if payload.mode not in {"lesson", "review"}:
+        raise HTTPException(status_code=400, detail="無效的答題模式")
     with get_db() as db:
         row = db.execute("SELECT * FROM questions WHERE id = ?", (payload.question_id,)).fetchone()
         if not row:
@@ -644,6 +671,27 @@ def submit_attempt(payload: AttemptRequest, user: dict[str, Any] = Depends(auth_
         )
         mastery_updates = update_mastery(db, user["id"], payload.question_id, is_correct, payload.used_hint)
         review_lessons = suggested_lessons_for_question(db, user["id"], payload.question_id)
+        if payload.mode == "review":
+            session = db.execute(
+                "SELECT * FROM review_sessions WHERE id = ? AND user_id = ?",
+                (payload.review_session_id, user["id"]),
+            ).fetchone() if payload.review_session_id else latest_review_session(db, user["id"])
+            if not session:
+                raise HTTPException(status_code=400, detail="找不到進行中的總複習紀錄")
+            if session["completed_at"]:
+                raise HTTPException(status_code=400, detail="這一輪總複習已完成")
+            answered = min(REVIEW_SIZE, int(session["answered_count"] or 0) + 1)
+            correct = int(session["correct_count"] or 0) + (1 if is_correct else 0)
+            now = utcnow()
+            db.execute(
+                """
+                UPDATE review_sessions
+                SET answered_count = ?, correct_count = ?, last_answered_at = ?,
+                    completed_at = CASE WHEN ? >= ? THEN ? ELSE completed_at END
+                WHERE id = ? AND user_id = ?
+                """,
+                (answered, correct, now, answered, REVIEW_SIZE, now, session["id"], user["id"]),
+            )
     return {
         "is_correct": is_correct,
         "answer": list(expected),
@@ -681,6 +729,7 @@ def review_summary_data(db: Any, user_id: int, force_unlocked: bool = False) -> 
         item = dict(row)
         item["error_rate"] = round((item["wrong"] + 2) / (item["attempts"] + 4) * 100, 1)
         high_error_questions.append(item)
+    review_session = review_session_payload(latest_review_session(db, user_id))
     return {
         "unlocked": unlocked or force_unlocked,
         "completed_lessons": completed,
@@ -688,6 +737,7 @@ def review_summary_data(db: Any, user_id: int, force_unlocked: bool = False) -> 
         "practiced_questions": practiced,
         "wrong_questions": wrong_questions,
         "high_error_questions": high_error_questions,
+        "review_session": review_session,
     }
 
 
@@ -695,6 +745,21 @@ def review_summary_data(db: Any, user_id: int, force_unlocked: bool = False) -> 
 def review_status(user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
     with get_db() as db:
         return review_summary_data(db, user["id"], force_unlocked=user["role"] == "admin")
+
+
+@app.post("/api/review/start")
+def start_review(user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
+    with get_db() as db:
+        unlocked, _, _ = review_unlocked(db, user["id"])
+        if user["role"] != "admin" and not unlocked:
+            raise HTTPException(status_code=403, detail="請先完成全部課程")
+        now = utcnow()
+        db.execute(
+            "INSERT INTO review_sessions (user_id, started_at) VALUES (?, ?)",
+            (user["id"], now),
+        )
+        session = latest_review_session(db, user["id"])
+        return {"session": review_session_payload(session)}
 
 
 @app.get("/api/review/summary")
@@ -757,7 +822,18 @@ def admin_students(_admin: dict[str, Any] = Depends(require_admin)) -> dict[str,
             """
             SELECT u.id, u.username, u.display_name,
                    COUNT(a.id) AS total_attempts,
-                   SUM(CASE WHEN a.is_correct = 1 THEN 1 ELSE 0 END) AS correct_attempts
+                   SUM(CASE WHEN a.is_correct = 1 THEN 1 ELSE 0 END) AS correct_attempts,
+                   (SELECT COUNT(*) FROM review_sessions rs WHERE rs.user_id = u.id) AS review_rounds,
+                   (SELECT rs.answered_count FROM review_sessions rs
+                    WHERE rs.user_id = u.id ORDER BY rs.id DESC LIMIT 1) AS review_answered,
+                   (SELECT rs.correct_count FROM review_sessions rs
+                    WHERE rs.user_id = u.id ORDER BY rs.id DESC LIMIT 1) AS review_correct,
+                   (SELECT rs.started_at FROM review_sessions rs
+                    WHERE rs.user_id = u.id ORDER BY rs.id DESC LIMIT 1) AS review_started_at,
+                   (SELECT rs.completed_at FROM review_sessions rs
+                    WHERE rs.user_id = u.id ORDER BY rs.id DESC LIMIT 1) AS review_completed_at,
+                   (SELECT rs.last_answered_at FROM review_sessions rs
+                    WHERE rs.user_id = u.id ORDER BY rs.id DESC LIMIT 1) AS review_last_answered_at
             FROM users u
             LEFT JOIN attempts a ON a.user_id = u.id
             WHERE u.role = 'student'
@@ -771,6 +847,16 @@ def admin_students(_admin: dict[str, Any] = Depends(require_admin)) -> dict[str,
         correct = row["correct_attempts"] or 0
         item = dict(row)
         item["accuracy"] = round(correct / total * 100, 1) if total else 0
+        answered = int(item["review_answered"] or 0)
+        item["review_answered"] = answered
+        item["review_correct"] = int(item["review_correct"] or 0)
+        item["review_answer_rate"] = round(answered / REVIEW_SIZE * 100, 1)
+        if not item["review_rounds"]:
+            item["review_status"] = "not_started"
+        elif item["review_completed_at"]:
+            item["review_status"] = "completed"
+        else:
+            item["review_status"] = "in_progress"
         students.append(item)
     return {"students": students}
 
