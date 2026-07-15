@@ -98,6 +98,8 @@ LOGIN_BLOCK_SECONDS = 900
 
 
 def public_question(row: Any, include_answer: bool = False) -> dict[str, Any]:
+    options = parse_json(row["options_json"])
+    random.shuffle(options)
     result = {
         "id": row["id"],
         "source_file": row["source_file"],
@@ -105,7 +107,7 @@ def public_question(row: Any, include_answer: bool = False) -> dict[str, Any]:
         "difficulty": row["difficulty"],
         "stem": row["stem"],
         "code": row["code"],
-        "options": parse_json(row["options_json"]),
+        "options": options,
         "concepts": row["concepts"].split(",") if row["concepts"] else [],
     }
     if include_answer:
@@ -653,16 +655,16 @@ def mastery_map(db: Any, user_id: int) -> dict[str, int]:
     return {row["concept_id"]: row["mastery_score"] for row in rows}
 
 
-def recent_question_ids(db: Any, user_id: int) -> set[str]:
+def recent_question_ids(db: Any, user_id: int, limit: int = 20) -> set[str]:
     rows = db.execute(
         """
         SELECT question_id
         FROM attempts
         WHERE user_id = ?
         ORDER BY id DESC
-        LIMIT 8
+        LIMIT ?
         """,
-        (user_id,),
+        (user_id, limit),
     ).fetchall()
     return {row["question_id"] for row in rows}
 
@@ -751,13 +753,20 @@ def choose_next_question(
         if scoped_questions:
             questions = scoped_questions
 
-    previous_question_id = last_question_id(db, user_id)
-    if previous_question_id and len(questions) > 1:
-        questions = [question for question in questions if question["id"] != previous_question_id]
-
     mastery = mastery_map(db, user_id)
-    recent = recent_question_ids(db, user_id)
+    recent = recent_question_ids(db, user_id, REVIEW_SIZE * 2 if review else 20)
     attempt_stats = question_attempt_stats(db, user_id)
+
+    # Prefer a genuinely different question over repeatedly drilling the same
+    # wording. Small lesson pools fall back only after every variant was seen.
+    not_recent = [question for question in questions if question["id"] not in recent]
+    if not_recent:
+        questions = not_recent
+    else:
+        previous_question_id = last_question_id(db, user_id)
+        if previous_question_id and len(questions) > 1:
+            questions = [question for question in questions if question["id"] != previous_question_id]
+
     scored: list[tuple[float, Any]] = []
 
     for question in questions:
@@ -775,7 +784,7 @@ def choose_next_question(
 
         stats = attempt_stats.get(question["id"])
         seen = stats["attempts"] if stats else 0
-        score = (100 - avg) + (18 if seen == 0 else 0) + gate + random.random() * 12
+        score = (100 - avg) + (30 if seen == 0 else -min(30, seen * 8)) + gate + random.random() * 12
         if review:
             # A 50% prior prevents one early mistake from dominating the review queue.
             wrong_rate = ((stats["wrong"] if stats else 0) + 2) / (seen + 4)
@@ -786,8 +795,6 @@ def choose_next_question(
                 score -= min(18, seen * 3)
             if question["id"] in MISCONCEPTION_QUESTION_IDS:
                 score += 20
-        if question["id"] in recent:
-            score -= 35
         scored.append((score, question))
 
     scored.sort(key=lambda item: item[0], reverse=True)
@@ -882,6 +889,9 @@ def submit_attempt(payload: AttemptRequest, user: dict[str, Any] = Depends(auth_
         if not row:
             raise HTTPException(status_code=404, detail="找不到題目")
         expected = set(parse_json(row["answer_json"]))
+        option_text_by_id = {
+            option["id"]: option["text"] for option in parse_json(row["options_json"])
+        }
         selected = set(payload.selected_answer)
         is_correct = selected == expected
         db.execute(
@@ -929,6 +939,7 @@ def submit_attempt(payload: AttemptRequest, user: dict[str, Any] = Depends(auth_
     return {
         "is_correct": is_correct,
         "answer": list(expected),
+        "answer_text": [option_text_by_id[answer] for answer in expected if answer in option_text_by_id],
         "explanation": row["explanation"],
         "common_mistake": row["common_mistake"],
         "mastery_updates": mastery_updates,

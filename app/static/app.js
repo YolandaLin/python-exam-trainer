@@ -672,16 +672,16 @@ function renderCheckpoints(questions) {
     const inputType = question.type === "multiple_choice" ? "checkbox" : "radio";
     const options = document.createElement("div");
     options.className = "options compact";
-    for (const option of question.options) {
+    question.options.forEach((option, index) => {
       const label = document.createElement("label");
       label.className = "option";
       label.innerHTML = `
         <input type="${inputType}" name="checkpoint-${escapeHtml(question.id)}" value="${escapeHtml(option.id)}" />
-        <span><strong>${escapeHtml(option.id)}.</strong> <span class="option-text"></span></span>
+          <span><strong>${index + 1}.</strong> <span class="option-text"></span></span>
       `;
       setRichText(label.querySelector(".option-text"), option.text);
       options.appendChild(label);
-    }
+    });
     wrapper.appendChild(options);
     container.appendChild(wrapper);
   }
@@ -785,16 +785,16 @@ function renderQuestion(question) {
   const form = $("answer-form");
   clear(form);
   const inputType = question.type === "multiple_choice" ? "checkbox" : "radio";
-  for (const option of question.options) {
+  question.options.forEach((option, index) => {
     const label = document.createElement("label");
     label.className = "option";
     label.innerHTML = `
       <input type="${inputType}" name="answer" value="${escapeHtml(option.id)}" />
-      <span><strong>${escapeHtml(option.id)}.</strong> <span class="option-text"></span></span>
+      <span><strong>${index + 1}.</strong> <span class="option-text"></span></span>
     `;
     setRichText(label.querySelector(".option-text"), option.text);
     form.appendChild(label);
-  }
+  });
 }
 
 async function loadQuestion(lessonId = state.currentLesson?.id) {
@@ -855,7 +855,7 @@ async function submitAnswer() {
       review_session_id: state.review.active ? state.review.sessionId : null,
     }),
   });
-  const answerText = result.answer.join(", ");
+  const answerText = (result.answer_text || result.answer).join("、");
   const updates = result.mastery_updates
     .map((item) => `${item.name}: ${item.mastery_score}`)
     .join("；");

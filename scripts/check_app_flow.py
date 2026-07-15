@@ -53,6 +53,9 @@ def main() -> None:
             assert lessons.status_code == 200, lessons.text
             assert lessons.json()["lessons"], lessons.text
             lesson_id = lessons.json()["next_lesson"]["id"]
+            lesson_detail = client.get(f"/api/lessons/{lesson_id}", headers=headers)
+            assert lesson_detail.status_code == 200, lesson_detail.text
+            checkpoints = lesson_detail.json()["lesson"]["checkpoint_questions"]
 
             review_status = client.get("/api/review/status", headers=headers)
             assert review_status.status_code == 200, review_status.text
@@ -77,10 +80,24 @@ def main() -> None:
             assert started.status_code == 200, started.text
             assert started.json()["lesson"]["status"] == "in_progress", started.text
 
+            for checkpoint in checkpoints:
+                checkpoint_attempt = client.post(
+                    "/api/attempts",
+                    headers=headers,
+                    json={
+                        "question_id": checkpoint["id"],
+                        "selected_answer": answers[checkpoint["id"]],
+                    },
+                )
+                assert checkpoint_attempt.status_code == 200, checkpoint_attempt.text
+
             completed = client.post(
                 f"/api/lessons/{lesson_id}/complete",
                 headers=headers,
-                json={"checkpoint_correct_count": 1, "checkpoint_total_count": 1},
+                json={
+                    "checkpoint_correct_count": len(checkpoints),
+                    "checkpoint_total_count": len(checkpoints),
+                },
             )
             assert completed.status_code == 200, completed.text
             assert completed.json()["lesson"]["status"] == "completed", completed.text
@@ -104,6 +121,7 @@ def main() -> None:
             )
             assert attempt.status_code == 200, attempt.text
             assert attempt.json()["is_correct"] is True, attempt.text
+            assert attempt.json()["answer_text"], attempt.text
 
             following_question = client.get(f"/api/next-question?lesson_id={lesson_id}", headers=headers)
             assert following_question.status_code == 200, following_question.text
@@ -111,13 +129,30 @@ def main() -> None:
 
             dashboard = client.get("/api/dashboard", headers=headers)
             assert dashboard.status_code == 200, dashboard.text
-            assert dashboard.json()["total_attempts"] == 1, dashboard.text
+            assert dashboard.json()["total_attempts"] == len(checkpoints) + 1, dashboard.text
 
             for lesson in lessons.json()["lessons"]:
+                detail = client.get(f"/api/lessons/{lesson['id']}", headers=headers)
+                assert detail.status_code == 200, detail.text
+                lesson_checkpoints = detail.json()["lesson"]["checkpoint_questions"]
+                checkpoint_count = len(lesson_checkpoints)
+                for checkpoint in lesson_checkpoints:
+                    checkpoint_attempt = client.post(
+                        "/api/attempts",
+                        headers=headers,
+                        json={
+                            "question_id": checkpoint["id"],
+                            "selected_answer": answers[checkpoint["id"]],
+                        },
+                    )
+                    assert checkpoint_attempt.status_code == 200, checkpoint_attempt.text
                 completed = client.post(
                     f"/api/lessons/{lesson['id']}/complete",
                     headers=headers,
-                    json={"checkpoint_correct_count": 0, "checkpoint_total_count": 0},
+                    json={
+                        "checkpoint_correct_count": checkpoint_count,
+                        "checkpoint_total_count": checkpoint_count,
+                    },
                 )
                 assert completed.status_code == 200, completed.text
 
@@ -147,27 +182,62 @@ def main() -> None:
             assert wrong_attempt.status_code == 200, wrong_attempt.text
             assert wrong_attempt.json()["is_correct"] is False, wrong_attempt.text
 
-            following_review_question = client.get("/api/next-question?mode=review", headers=headers)
-            assert following_review_question.status_code == 200, following_review_question.text
-            assert (
-                following_review_question.json()["question"]["id"]
-                != review_question.json()["question"]["id"]
-            ), following_review_question.text
+            first_round_ids = {review_question.json()["question"]["id"]}
+            for _ in range(19):
+                round_question = client.get("/api/next-question?mode=review", headers=headers)
+                assert round_question.status_code == 200, round_question.text
+                question_id = round_question.json()["question"]["id"]
+                assert question_id not in first_round_ids, round_question.text
+                first_round_ids.add(question_id)
+                round_attempt = client.post(
+                    "/api/attempts",
+                    headers=headers,
+                    json={
+                        "question_id": question_id,
+                        "selected_answer": ["not-an-answer"],
+                        "mode": "review",
+                        "review_session_id": review_session_id,
+                    },
+                )
+                assert round_attempt.status_code == 200, round_attempt.text
+
+            second_start = client.post("/api/review/start", headers=headers)
+            assert second_start.status_code == 200, second_start.text
+            second_session_id = second_start.json()["session"]["id"]
+            second_round_ids = set()
+            for _ in range(20):
+                round_question = client.get("/api/next-question?mode=review", headers=headers)
+                assert round_question.status_code == 200, round_question.text
+                question_id = round_question.json()["question"]["id"]
+                assert question_id not in first_round_ids, round_question.text
+                assert question_id not in second_round_ids, round_question.text
+                second_round_ids.add(question_id)
+                round_attempt = client.post(
+                    "/api/attempts",
+                    headers=headers,
+                    json={
+                        "question_id": question_id,
+                        "selected_answer": ["not-an-answer"],
+                        "mode": "review",
+                        "review_session_id": second_session_id,
+                    },
+                )
+                assert round_attempt.status_code == 200, round_attempt.text
 
             review_summary = client.get("/api/review/summary", headers=headers)
             assert review_summary.status_code == 200, review_summary.text
             assert review_summary.json()["wrong_questions"] >= 1, review_summary.text
             assert review_summary.json()["high_error_questions"], review_summary.text
-            assert review_summary.json()["review_session"]["answered_count"] == 1, review_summary.text
+            assert review_summary.json()["review_session"]["answered_count"] == 20, review_summary.text
 
             admin_students = client.get("/api/admin/students", headers=admin_headers)
             assert admin_students.status_code == 200, admin_students.text
             student = next(item for item in admin_students.json()["students"] if item["username"] == "student1")
-            assert student["review_status"] == "in_progress", admin_students.text
-            assert student["review_answered"] == 1, admin_students.text
+            assert student["review_status"] == "completed", admin_students.text
+            assert student["review_answered"] == 20, admin_students.text
             assert student["project_in_progress"] >= 1, admin_students.text
 
-    print("OK: login, lessons, lesson progress, review lock/unlock, attempts, dashboard")
+    print("OK: login, lessons, review lock/unlock, two non-repeating review rounds, dashboard")
 
 
 if __name__ == "__main__":
