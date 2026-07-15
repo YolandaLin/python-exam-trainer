@@ -11,10 +11,13 @@
 4. Render 會讀取 repo 根目錄的 `render.yaml`，建立：
    - Web Service：`python-exam-trainer`
    - PostgreSQL：`python-exam-trainer-db`
+   - 此 PostgreSQL 同時提供 04 英文單字學習網站使用；04 的 Blueprint 只引用，不會再建立第二個資料庫。
 5. 初次建立 Blueprint 時，Render 會要求輸入下列 secret：
-   - `ADMIN_PASSWORD`
-   - `STUDENT1_PASSWORD`
-   - `STUDENT2_PASSWORD`
+- `ADMIN_PASSWORD`
+- `STUDENT1_PASSWORD`
+- `STUDENT2_PASSWORD`
+
+若要讓兩個網站登入同一批帳號，03 的 `ADMIN_EMAIL`／`STUDENT1_EMAIL`／`STUDENT2_EMAIL` 與 04 的帳號 Email 要填相同值；兩個 Web Service 的 `ADMIN_PASSWORD` 也必須相同，避免啟動時互相改寫管理者密碼。
 6. 部署完成後，打開 Render 提供的 `https://*.onrender.com` 網址。
 
 ## 正式環境資料庫
@@ -22,6 +25,7 @@
 正式環境使用 PostgreSQL：
 
 - `DATABASE_URL` 由 `render.yaml` 自動從 Render Postgres 連線字串帶入。
+- 04 專案使用相同的 `DATABASE_URL`；兩個網站的帳號資料共用，03 的題庫資料與 04 的單字資料則使用各自的資料表。
 - 本機開發仍可用 SQLite 的 `DB_PATH=data/app.db`。
 - 網站啟動時會自動建立資料表，並匯入課程與題庫。
 

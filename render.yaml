@@ -19,14 +19,20 @@ services:
           property: connectionString
       - key: ADMIN_USERNAME
         value: admin
+      - key: ADMIN_EMAIL
+        sync: false
       - key: ADMIN_PASSWORD
         sync: false
       - key: STUDENT1_USERNAME
         value: student1
+      - key: STUDENT1_EMAIL
+        sync: false
       - key: STUDENT1_PASSWORD
         sync: false
       - key: STUDENT2_USERNAME
         value: student2
+      - key: STUDENT2_EMAIL
+        sync: false
       - key: STUDENT2_PASSWORD
         sync: false
 

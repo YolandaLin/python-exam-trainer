@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import random
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Annotated, Any
 
@@ -91,6 +92,9 @@ LESSON_PROGRESS_GROUP_BY = """
     lp.checkpoint_correct_count, lp.checkpoint_total_count
 """
 PRODUCTION_BLOCKED_PASSWORDS = {"admin123", "student123"}
+LOGIN_WINDOW_SECONDS = 300
+LOGIN_MAX_FAILURES = 8
+LOGIN_BLOCK_SECONDS = 900
 
 
 def public_question(row: Any, include_answer: bool = False) -> dict[str, Any]:
@@ -192,6 +196,8 @@ def auth_user(authorization: Annotated[str | None, Header()] = None) -> dict[str
         ).fetchone()
     if not row:
         raise HTTPException(status_code=401, detail="Invalid token")
+    if row["status"] != "approved":
+        raise HTTPException(status_code=403, detail="帳號目前尚未核准或已被停用")
     return dict(row)
 
 
@@ -313,13 +319,42 @@ def health() -> dict[str, str]:
 
 
 @app.post("/api/login")
-def login(payload: LoginRequest) -> dict[str, Any]:
-    if os.environ.get("APP_ENV") == "production" and payload.password in PRODUCTION_BLOCKED_PASSWORDS:
-        raise HTTPException(status_code=401, detail="帳號或密碼錯誤")
+def login(payload: LoginRequest, request: Request) -> dict[str, Any]:
+    client_key = f"{request.client.host if request.client else 'unknown'}|{payload.username.strip().lower()}"
+    now = datetime.now(UTC)
+    blocked_default_password = os.environ.get("APP_ENV") == "production" and payload.password in PRODUCTION_BLOCKED_PASSWORDS
     with get_db() as db:
-        user = db.execute("SELECT * FROM users WHERE username = ?", (payload.username,)).fetchone()
-        if not user or not verify_password(payload.password, user["password_hash"]):
+        lock = db.execute("SELECT * FROM login_attempts WHERE key = ?", (client_key,)).fetchone()
+        if lock:
+            blocked_until = datetime.fromisoformat(lock["blocked_until"]) if lock["blocked_until"] else None
+            window_started = datetime.fromisoformat(lock["window_started_at"])
+            if blocked_until and blocked_until > now:
+                raise HTTPException(status_code=429, detail="登入嘗試過多，請稍後再試")
+            if (now - window_started).total_seconds() > LOGIN_WINDOW_SECONDS:
+                db.execute("DELETE FROM login_attempts WHERE key = ?", (client_key,))
+        user = db.execute(
+            "SELECT * FROM users WHERE username = ? OR email = ? LIMIT 1",
+            (payload.username, payload.username.strip().lower()),
+        ).fetchone()
+        if blocked_default_password or not user or not verify_password(payload.password, user["password_hash"]):
+            lock = db.execute("SELECT * FROM login_attempts WHERE key = ?", (client_key,)).fetchone()
+            if not lock:
+                db.execute(
+                    "INSERT INTO login_attempts (key, failed_count, window_started_at) VALUES (?, 1, ?)",
+                    (client_key, now.isoformat()),
+                )
+            else:
+                failed_count = int(lock["failed_count"]) + 1
+                blocked_until = (now + timedelta(seconds=LOGIN_BLOCK_SECONDS)).isoformat() if failed_count >= LOGIN_MAX_FAILURES else None
+                db.execute(
+                    "UPDATE login_attempts SET failed_count = ?, blocked_until = ? WHERE key = ?",
+                    (failed_count, blocked_until, client_key),
+                )
+            db.commit()
             raise HTTPException(status_code=401, detail="帳號或密碼錯誤")
+        if user["status"] != "approved":
+            raise HTTPException(status_code=403, detail="帳號目前尚未核准或已被停用")
+        db.execute("DELETE FROM login_attempts WHERE key = ?", (client_key,))
         token = new_token()
         db.execute(
             "INSERT INTO sessions (token, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)",
@@ -419,7 +454,29 @@ def complete_lesson(
     user: dict[str, Any] = Depends(auth_user),
 ) -> dict[str, Any]:
     with get_db() as db:
-        lesson_row(db, user["id"], lesson_id)
+        lesson = lesson_row(db, user["id"], lesson_id)
+        checkpoint_ids = parse_json(lesson["checkpoint_question_ids_json"])
+        if checkpoint_ids:
+            placeholders = ",".join("?" for _ in checkpoint_ids)
+            attempts = db.execute(
+                f"""
+                SELECT question_id, is_correct
+                FROM attempts
+                WHERE user_id = ? AND question_id IN ({placeholders})
+                ORDER BY id DESC
+                """,
+                (user["id"], *checkpoint_ids),
+            ).fetchall()
+            latest = {}
+            for attempt in attempts:
+                latest.setdefault(attempt["question_id"], bool(attempt["is_correct"]))
+            if len(latest) < len(checkpoint_ids):
+                raise HTTPException(status_code=400, detail="請先完成所有課後小檢查")
+            checkpoint_correct_count = sum(latest.values())
+            checkpoint_total_count = len(checkpoint_ids)
+        else:
+            checkpoint_correct_count = 0
+            checkpoint_total_count = 0
         now = utcnow()
         db.execute(
             """
@@ -440,8 +497,8 @@ def complete_lesson(
                 lesson_id,
                 now,
                 now,
-                max(0, payload.checkpoint_correct_count),
-                max(0, payload.checkpoint_total_count),
+                checkpoint_correct_count,
+                checkpoint_total_count,
             ),
         )
         return {"lesson": public_lesson(lesson_row(db, user["id"], lesson_id), include_content=True)}
@@ -496,7 +553,10 @@ def project_activity(
     user: dict[str, Any] = Depends(auth_user),
 ) -> dict[str, Any]:
     with get_db() as db:
-        project_row(db, user["id"], project_id)
+        project = project_row(db, user["id"], project_id)
+        tests_total = len(parse_json(project["tests_json"]))
+        if payload.tests_total not in {0, tests_total}:
+            raise HTTPException(status_code=400, detail="測試數量不正確")
         now = utcnow()
         db.execute(
             """
@@ -518,8 +578,8 @@ def project_activity(
                 user["id"],
                 project_id,
                 max(0, payload.attempts),
-                max(0, payload.tests_passed),
-                max(0, payload.tests_total),
+                min(tests_total, max(0, payload.tests_passed)),
+                tests_total,
                 now,
                 now,
             ),
@@ -534,7 +594,12 @@ def complete_project(
     user: dict[str, Any] = Depends(auth_user),
 ) -> dict[str, Any]:
     with get_db() as db:
-        project_row(db, user["id"], project_id)
+        project = project_row(db, user["id"], project_id)
+        tests_total = len(parse_json(project["tests_json"]))
+        if project["status"] == "not_started":
+            raise HTTPException(status_code=400, detail="請先開始實作任務")
+        if project["tests_passed"] < tests_total:
+            raise HTTPException(status_code=400, detail="請先通過所有測試")
         now = utcnow()
         db.execute(
             """
@@ -556,8 +621,8 @@ def complete_project(
                 user["id"],
                 project_id,
                 max(0, payload.attempts),
-                max(0, payload.tests_passed),
-                max(0, payload.tests_total),
+                tests_total,
+                tests_total,
                 now,
                 now,
                 now,
@@ -1014,7 +1079,7 @@ def admin_students(_admin: dict[str, Any] = Depends(require_admin)) -> dict[str,
                     WHERE pp.user_id = u.id ORDER BY pp.last_activity_at DESC LIMIT 1) AS project_last_activity_at
             FROM users u
             LEFT JOIN attempts a ON a.user_id = u.id
-            WHERE u.role = 'student'
+            WHERE u.role IN ('student', 'learner')
             GROUP BY u.id
             ORDER BY u.id
             """
