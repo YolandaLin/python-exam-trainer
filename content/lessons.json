@@ -924,7 +924,7 @@
       {"type": "paragraph", "text": "__name__ 可以用來分辨檔案是直接執行，還是被別的檔案 import。直接執行時，__name__ 會是 \"__main__\"，所以常見寫法是 if __name__ == \"__main__\": main()。這樣檔案被 import 時，不會自動跑主程式。"},
       {"type": "code", "code": "import math\nprint(dir(math)[:5])"},
       {"type": "paragraph", "text": "dir() 可以查詢模組中有哪些名稱。真正寫程式時，內建模組可查 Python 標準函式庫文件，第三方套件可到 PyPI 查。pip 是套件管理工具，可以安裝、更新、列出或移除第三方套件。"},
-      {"type": "code", "code": "pip list\npip install numpy\npip uninstall numpy"},
+      {"type": "shell", "code": "pip list\npip install numpy\npip uninstall numpy"},
       {"type": "paragraph", "text": "pip 指令通常在命令列執行，不是寫在 Python 程式裡。安裝套件和匯入套件是兩件事：pip install numpy 只是讓環境有 numpy，程式中仍要寫 import numpy as np 才能使用。"},
       {"type": "list", "items": ["模組是一個 .py 檔，套件是整理模組的資料夾。", "import module 後，呼叫函式要寫 module.function()。", "取別名後要用別名呼叫。", "__name__ == \"__main__\" 用來區分直接執行和被 import。", "pip install 和 import 是兩件事。"]}
     ],

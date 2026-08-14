@@ -67,10 +67,15 @@ def main() -> int:
 
         for block_index, block in enumerate(lesson["body"], start=1):
             block_type = block.get("type")
-            if block_type not in {"paragraph", "list", "code"}:
+            if block_type not in {"paragraph", "list", "code", "shell"}:
                 errors.append(f"{lesson_id}: body block #{block_index} has unsupported type {block_type}")
-            if block_type in {"paragraph", "code"} and not block.get("text") and not block.get("code"):
-                errors.append(f"{lesson_id}: body block #{block_index} is missing text/code")
+            if block_type == "paragraph" and not block.get("text"):
+                errors.append(f"{lesson_id}: body block #{block_index} paragraph is missing text")
+            block_code = block.get("code")
+            if block_type in {"code", "shell"} and (
+                not isinstance(block_code, str) or not block_code.strip()
+            ):
+                errors.append(f"{lesson_id}: body block #{block_index} {block_type} is missing code")
             if block_type == "list" and not block.get("items"):
                 errors.append(f"{lesson_id}: body block #{block_index} list must have items")
 

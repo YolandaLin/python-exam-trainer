@@ -51,6 +51,23 @@ class ProjectActivityRequest(BaseModel):
     tests_total: int = 0
 
 
+def validate_project_activity(
+    payload: ProjectActivityRequest,
+    expected_total: int,
+    *,
+    expected_attempts: int,
+    require_all_passed: bool = False,
+) -> None:
+    if payload.attempts != expected_attempts:
+        raise HTTPException(status_code=400, detail="實作次數不正確")
+    if payload.tests_total != expected_total:
+        raise HTTPException(status_code=400, detail="測試數量不正確")
+    if payload.tests_passed < 0 or payload.tests_passed > expected_total:
+        raise HTTPException(status_code=400, detail="測試通過數不正確")
+    if require_all_passed and payload.tests_passed != expected_total:
+        raise HTTPException(status_code=400, detail="請先通過所有測試")
+
+
 def parse_json(value: str) -> Any:
     return json.loads(value)
 
@@ -557,8 +574,7 @@ def project_activity(
     with get_db() as db:
         project = project_row(db, user["id"], project_id)
         tests_total = len(parse_json(project["tests_json"]))
-        if payload.tests_total not in {0, tests_total}:
-            raise HTTPException(status_code=400, detail="測試數量不正確")
+        validate_project_activity(payload, tests_total, expected_attempts=1)
         now = utcnow()
         db.execute(
             """
@@ -579,9 +595,9 @@ def project_activity(
             (
                 user["id"],
                 project_id,
-                max(0, payload.attempts),
-                min(tests_total, max(0, payload.tests_passed)),
-                tests_total,
+                payload.attempts,
+                payload.tests_passed,
+                payload.tests_total,
                 now,
                 now,
             ),
@@ -598,6 +614,12 @@ def complete_project(
     with get_db() as db:
         project = project_row(db, user["id"], project_id)
         tests_total = len(parse_json(project["tests_json"]))
+        validate_project_activity(
+            payload,
+            tests_total,
+            expected_attempts=0,
+            require_all_passed=True,
+        )
         if project["status"] == "not_started":
             raise HTTPException(status_code=400, detail="請先開始實作任務")
         if project["tests_passed"] < tests_total:
@@ -622,7 +644,7 @@ def complete_project(
             (
                 user["id"],
                 project_id,
-                max(0, payload.attempts),
+                payload.attempts,
                 tests_total,
                 tests_total,
                 now,
@@ -885,7 +907,10 @@ def submit_attempt(payload: AttemptRequest, user: dict[str, Any] = Depends(auth_
     if payload.mode not in {"lesson", "review"}:
         raise HTTPException(status_code=400, detail="無效的答題模式")
     with get_db() as db:
-        row = db.execute("SELECT * FROM questions WHERE id = ?", (payload.question_id,)).fetchone()
+        row = db.execute(
+            "SELECT * FROM questions WHERE id = ? AND is_active = 1",
+            (payload.question_id,),
+        ).fetchone()
         if not row:
             raise HTTPException(status_code=404, detail="找不到題目")
         expected = set(parse_json(row["answer_json"]))
@@ -998,13 +1023,16 @@ def start_review(user: dict[str, Any] = Depends(auth_user)) -> dict[str, Any]:
         unlocked, _, _ = review_unlocked(db, user["id"])
         if user["role"] != "admin" and not unlocked:
             raise HTTPException(status_code=403, detail="請先完成全部課程")
+        session = latest_review_session(db, user["id"])
+        if session and not session["completed_at"]:
+            return {"session": review_session_payload(session), "resumed": True}
         now = utcnow()
         db.execute(
             "INSERT INTO review_sessions (user_id, started_at) VALUES (?, ?)",
             (user["id"], now),
         )
         session = latest_review_session(db, user["id"])
-        return {"session": review_session_payload(session)}
+        return {"session": review_session_payload(session), "resumed": False}
 
 
 @app.get("/api/review/summary")

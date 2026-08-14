@@ -21,6 +21,20 @@ async function completeAllLessons(page) {
     const { lessons } = await lessonResponse.json();
 
     for (const lesson of lessons) {
+      const detailResponse = await fetch(`/api/lessons/${lesson.id}`, { headers });
+      if (!detailResponse.ok) throw new Error(`Unable to load lesson ${lesson.id}`);
+      const { lesson: detail } = await detailResponse.json();
+      for (const checkpoint of detail.checkpoint_questions || []) {
+        const attemptResponse = await fetch("/api/attempts", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            question_id: checkpoint.id,
+            selected_answer: [checkpoint.options[0].id],
+          }),
+        });
+        if (!attemptResponse.ok) throw new Error(`Unable to answer checkpoint ${checkpoint.id}`);
+      }
       const response = await fetch(`/api/lessons/${lesson.id}/complete`, {
         method: "POST",
         headers,
@@ -74,6 +88,15 @@ test("總複習可解鎖、完成 20 題並支援手機版", async ({ page, brow
   await expect(page.locator("#lesson-body .inline-code").first()).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath("syntax-highlighting-desktop.png"), fullPage: true });
 
+  await page.locator('[data-lesson-id="lesson-10-modules-packages-programs"]').click();
+  await expect(page.locator("#lesson-title")).toHaveText("模組、套件與獨立程式");
+  const shellExample = page.locator("#lesson-body pre").filter({ hasText: "pip list" });
+  await expect(shellExample).toHaveCount(1);
+  await expect(shellExample).toBeVisible();
+  await expect(
+    shellExample.locator("xpath=following-sibling::button[normalize-space()='放到執行區']"),
+  ).toHaveCount(0);
+
   await completeAllLessons(page);
   await page.reload();
   await expect(page.locator("#app-view")).toBeVisible();
@@ -105,6 +128,47 @@ test("總複習可解鎖、完成 20 題並支援手機版", async ({ page, brow
   }
   await page.screenshot({ path: testInfo.outputPath("review-desktop.png"), fullPage: true });
 
+  const statusBeforeReload = await page.evaluate(async () => {
+    const token = localStorage.getItem("pet_token");
+    const response = await fetch("/api/review/status", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error("Unable to load review status before reload");
+    return response.json();
+  });
+  const reviewSessionId = statusBeforeReload.review_session.id;
+  expect(statusBeforeReload.review_session.answered_count).toBe(1);
+
+  await page.reload();
+  await expect(page.locator("#app-view")).toBeVisible();
+  await expect(page.locator("#start-review")).toHaveText("繼續總複習");
+  await expect(page.locator("#start-review")).toBeEnabled();
+
+  const statusAfterReload = await page.evaluate(async () => {
+    const token = localStorage.getItem("pet_token");
+    const response = await fetch("/api/review/status", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error("Unable to load review status after reload");
+    return response.json();
+  });
+  expect(statusAfterReload.review_session.id).toBe(reviewSessionId);
+  expect(statusAfterReload.review_session.answered_count).toBe(1);
+
+  await page.locator("#start-review").click();
+  await expect(page.locator("#page-title")).toHaveText("總複習");
+  await expect(page.locator("#review-progress")).toHaveText("總複習 2 / 20");
+  const statusAfterResume = await page.evaluate(async () => {
+    const token = localStorage.getItem("pet_token");
+    const response = await fetch("/api/review/status", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error("Unable to load review status after resume");
+    return response.json();
+  });
+  expect(statusAfterResume.review_session.id).toBe(reviewSessionId);
+  expect(statusAfterResume.review_session.answered_count).toBe(1);
+
   const desktopOverflow = await page.evaluate(
     () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
   );
@@ -115,9 +179,10 @@ test("總複習可解鎖、完成 20 題並支援手機版", async ({ page, brow
   collectBrowserErrors(mobilePage, browserErrors);
   await login(mobilePage);
   await expect(mobilePage.locator("#review-status-text")).toContainText("已解鎖");
+  await expect(mobilePage.locator("#start-review")).toHaveText("繼續總複習");
   await mobilePage.locator("#start-review").click();
 
-  for (let number = 1; number <= 20; number += 1) {
+  for (let number = 2; number <= 20; number += 1) {
     await expect(mobilePage.locator("#review-progress")).toHaveText(`總複習 ${number} / 20`);
     await mobilePage.locator("input[name=answer]").first().check();
     await mobilePage.locator("#submit-answer").click();
@@ -141,4 +206,32 @@ test("總複習可解鎖、完成 20 題並支援手機版", async ({ page, brow
   expect(mobileOverflow).toBe(false);
   expect(browserErrors).toEqual([]);
   await mobileContext.close();
+});
+
+test("Python 執行器會隔離狀態並中止無限迴圈", async ({ page }) => {
+  test.setTimeout(240_000);
+  await login(page);
+
+  await page.locator("#code-input").fill('print("worker-ready")');
+  await page.locator("#run-code").click();
+  await expect(page.locator("#code-output")).toHaveText("worker-ready", { timeout: 75_000 });
+
+  await page.locator("#code-input").fill("shared_marker = 42");
+  await page.locator("#run-code").click();
+  await expect(page.locator("#code-output")).toHaveText("程式執行完成，沒有輸出。", {
+    timeout: 75_000,
+  });
+
+  await page.locator("#code-input").fill('print("shared_marker" in globals())');
+  await page.locator("#run-code").click();
+  await expect(page.locator("#code-output")).toHaveText("False", { timeout: 75_000 });
+
+  await page.locator("#code-input").fill("while True:\n    pass");
+  await page.locator("#run-code").click();
+  await expect(page.locator("#code-output")).toContainText("程式執行超過 5 秒", { timeout: 75_000 });
+  await expect(page.locator("#run-code")).toBeEnabled();
+
+  await page.locator("#code-input").fill('print("still-responsive")');
+  await page.locator("#run-code").click();
+  await expect(page.locator("#code-output")).toHaveText("still-responsive", { timeout: 75_000 });
 });

@@ -8,7 +8,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Iterator
 
-from .security import hash_password, verify_password
+from .security import hash_password
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,6 +17,12 @@ DB_PATH = Path(os.environ.get("DB_PATH", ROOT / "data" / "app.db"))
 LESSONS_PATH = ROOT / "content" / "lessons.json"
 PROJECTS_PATH = ROOT / "content" / "projects.json"
 MISCONCEPTION_QUESTIONS_PATH = ROOT / "content" / "misconception_questions.json"
+PRODUCTION_PASSWORD_KEYS = (
+    "ADMIN_PASSWORD",
+    "STUDENT1_PASSWORD",
+    "STUDENT2_PASSWORD",
+)
+BLOCKED_PRODUCTION_PASSWORDS = {"admin123", "student123"}
 
 
 def utcnow() -> str:
@@ -45,7 +51,24 @@ def is_postgres() -> bool:
 
 
 def is_production() -> bool:
-    return os.environ.get("APP_ENV") == "production"
+    return os.environ.get("APP_ENV", "").strip().lower() == "production"
+
+
+def validate_production_config() -> None:
+    """Fail closed when a production account would use an unsafe password."""
+    if not is_production():
+        return
+
+    invalid: list[str] = []
+    for key in PRODUCTION_PASSWORD_KEYS:
+        value = os.environ.get(key)
+        if value is None or not value.strip():
+            invalid.append(f"{key} is missing or empty")
+        elif value in BLOCKED_PRODUCTION_PASSWORDS:
+            invalid.append(f"{key} uses a blocked development password")
+
+    if invalid:
+        raise RuntimeError("Invalid production password configuration: " + "; ".join(invalid))
 
 
 def string_agg_expr(value: str) -> str:
@@ -321,6 +344,7 @@ def schema_statements() -> list[str]:
 
 
 def init_db() -> None:
+    validate_production_config()
     with get_db() as db:
         for statement in schema_statements():
             db.execute(statement)
@@ -380,6 +404,9 @@ def load_misconception_question_ids() -> set[str]:
 def seed_questions() -> None:
     questions = load_questions()
     with get_db() as db:
+        # JSON is the source of truth. Keep historical rows for attempts, but
+        # remove deleted content from all active queries.
+        db.execute("UPDATE questions SET is_active = 0")
         for question in questions:
             db.execute(
                 """
@@ -434,6 +461,7 @@ def seed_questions() -> None:
 def seed_lessons() -> None:
     lessons = json.loads(LESSONS_PATH.read_text(encoding="utf-8"))
     with get_db() as db:
+        db.execute("UPDATE lessons SET is_active = 0")
         for lesson in lessons:
             db.execute(
                 """
@@ -486,6 +514,7 @@ def seed_lessons() -> None:
 def seed_projects() -> None:
     projects = json.loads(PROJECTS_PATH.read_text(encoding="utf-8"))
     with get_db() as db:
+        db.execute("UPDATE projects SET is_active = 0")
         for project in projects:
             db.execute(
                 """
@@ -587,9 +616,6 @@ def seed_users() -> None:
                 (config["username"], config["email"]),
             ).fetchone()
             if exists:
-                password_changed = config["password_key"] in os.environ and not verify_password(
-                    config["password"], exists["password_hash"]
-                )
                 role = (
                     config["role"]
                     if config["role"] == "admin"
@@ -607,17 +633,16 @@ def seed_users() -> None:
                     or exists["username"] != username
                     or exists["email"] != email
                 )
-                if password_changed or profile_changed:
+                if profile_changed:
                     db.execute(
                         """
                         UPDATE users
-                        SET username = ?, email = ?, password_hash = ?, role = ?, display_name = ?
+                        SET username = ?, email = ?, role = ?, display_name = ?
                         WHERE id = ?
                         """,
                         (
                             username,
                             email,
-                            hash_password(config["password"]) if password_changed else exists["password_hash"],
                             role,
                             config["display_name"],
                             exists["id"],

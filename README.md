@@ -54,7 +54,7 @@ npm run test:e2e
 
 ## 帳號
 
-系統預設使用下列帳號名稱；密碼不寫入 README 或 Git，請在環境變數設定：
+系統預設使用下列帳號名稱；初始密碼不寫入 README 或 Git，請在環境變數設定：
 
 | 角色 | 帳號 |
 |---|---|
@@ -62,7 +62,7 @@ npm run test:e2e
 | 學生 | `student1` |
 | 學生 | `student2` |
 
-正式部署前必須用環境變數覆蓋密碼，參考 [.env.example](.env.example)。
+正式部署前必須設定三組非預設初始密碼，參考 [.env.example](.env.example)。環境變數不會在服務重啟時覆寫既有帳號；需輪替時執行 `python scripts/reset_password.py --username 帳號`。
 
 ## 部署
 

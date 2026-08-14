@@ -1,4 +1,5 @@
 const { spawn } = require("node:child_process");
+const fs = require("node:fs/promises");
 const os = require("node:os");
 const path = require("node:path");
 
@@ -28,7 +29,23 @@ async function stopServer(server) {
     new Promise((resolve) => server.once("exit", resolve)),
     new Promise((resolve) => setTimeout(resolve, 3_000)),
   ]);
-  if (server.exitCode === null) server.kill("SIGKILL");
+  if (server.exitCode === null) {
+    server.kill("SIGKILL");
+    await Promise.race([
+      new Promise((resolve) => server.once("exit", resolve)),
+      new Promise((resolve) => setTimeout(resolve, 3_000)),
+    ]);
+  }
+}
+
+async function removeDatabaseFiles(database) {
+  const expectedPrefix = path.join(os.tmpdir(), "python-trainer-e2e-");
+  if (!database.startsWith(expectedPrefix) || !database.endsWith(".db")) {
+    throw new Error(`Refusing to remove unexpected E2E database path: ${database}`);
+  }
+  await Promise.all(
+    [database, `${database}-wal`, `${database}-shm`].map((file) => fs.rm(file, { force: true })),
+  );
 }
 
 module.exports = async () => {
@@ -43,6 +60,19 @@ module.exports = async () => {
     },
   );
 
-  await waitForServer(server);
-  return async () => stopServer(server);
+  try {
+    await waitForServer(server);
+  } catch (error) {
+    await stopServer(server);
+    await removeDatabaseFiles(database);
+    throw error;
+  }
+
+  return async () => {
+    try {
+      await stopServer(server);
+    } finally {
+      await removeDatabaseFiles(database);
+    }
+  };
 };

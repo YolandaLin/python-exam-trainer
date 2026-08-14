@@ -10,8 +10,6 @@ const state = {
   question: null,
   startedAt: null,
   ranCode: false,
-  pyodide: null,
-  pyodideLoading: null,
   review: {
     active: false,
     size: 20,
@@ -23,6 +21,21 @@ const state = {
 };
 
 const $ = (id) => document.getElementById(id);
+const PYTHON_WORKER_URL = "/static/python-worker.js?v=20260814-2";
+const PYTHON_LOAD_TIMEOUT_MS = 60_000;
+const PYTHON_EXECUTION_TIMEOUT_MS = 5_000;
+let pythonWorker = null;
+let pythonWorkerReady = null;
+let pythonRunInProgress = false;
+let pythonRunSequence = 0;
+
+class ApiError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
 
 const CONCEPT_LABELS = {
   "programming-language": "程式語言",
@@ -172,7 +185,7 @@ async function api(path, options = {}) {
   const response = await fetch(path, { ...options, headers });
   const body = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(body.detail || "Request failed");
+    throw new ApiError(body.detail || "Request failed", response.status);
   }
   return body;
 }
@@ -184,6 +197,12 @@ function show(view) {
 
 function setLoginError(message) {
   $("login-error").textContent = message || "";
+}
+
+function setAppError(message) {
+  const alert = $("app-error");
+  alert.textContent = message || "";
+  alert.classList.toggle("hidden", !message);
 }
 
 function escapeHtml(value) {
@@ -248,24 +267,37 @@ function setRichText(element, value) {
 }
 
 async function loadMe() {
+  setLoginError("");
+  setAppError("");
   if (!state.token) {
     show("login");
     return;
   }
   try {
     state.user = await api("/api/me");
-    $("user-name").textContent = `${state.user.display_name} (${state.user.username})`;
-    $("admin-panel").classList.toggle("hidden", state.user.role !== "admin");
-    show("app");
+  } catch (error) {
+    if (error.status === 401 || error.status === 403) {
+      localStorage.removeItem("pet_token");
+      state.token = null;
+      setLoginError("登入狀態已失效，請重新登入。");
+    } else {
+      setLoginError(`暫時無法載入帳號資料：${error.message || String(error)}`);
+    }
+    show("login");
+    return;
+  }
+
+  $("user-name").textContent = `${state.user.display_name} (${state.user.username})`;
+  $("admin-panel").classList.toggle("hidden", state.user.role !== "admin");
+  show("app");
+  try {
     const lessonInfo = await loadLessons();
     if (lessonInfo.next_lesson) {
       await loadLesson(lessonInfo.next_lesson.id);
     }
     await Promise.all([loadDashboard(), loadAdmin(), loadReviewStatus()]);
-  } catch (_error) {
-    localStorage.removeItem("pet_token");
-    state.token = null;
-    show("login");
+  } catch (error) {
+    setAppError(`資料載入失敗：${error.message || String(error)}`);
   }
 }
 
@@ -283,6 +315,7 @@ async function login(event) {
     state.token = body.token;
     state.user = body.user;
     localStorage.setItem("pet_token", state.token);
+    $("password").value = "";
     await loadMe();
   } catch (error) {
     setLoginError(error.message);
@@ -300,6 +333,9 @@ async function logout() {
   state.user = null;
   state.currentLesson = null;
   state.question = null;
+  resetPythonWorker();
+  $("password").value = "";
+  setAppError("");
   show("login");
 }
 
@@ -414,31 +450,110 @@ function projectInputs() {
   return $("project-input").value.split(/\r?\n/).filter((value) => value.length > 0);
 }
 
-async function executeProjectCode(code, inputs) {
-  const pyodide = await ensurePyodide();
-  const encodedInputs = JSON.stringify(inputs);
-  pyodide.runPython(`
-import sys
-import builtins
-from io import StringIO
-sys.stdout = StringIO()
-sys.stderr = StringIO()
-_project_inputs = iter(${encodedInputs})
-def _project_input(prompt=""):
-    try:
-        return next(_project_inputs)
-    except StopIteration:
-        raise EOFError("請在「輸入資料」框填入資料，每行對應一次 input()。")
-builtins.input = _project_input
-`);
-  try {
-    await pyodide.runPythonAsync(code);
-    const output = pyodide.runPython("sys.stdout.getvalue()");
-    const error = pyodide.runPython("sys.stderr.getvalue()");
-    return { output: output || "", error: error || "" };
-  } catch (error) {
-    return { output: "", error: String(error) };
+function resetPythonWorker(worker = pythonWorker) {
+  if (worker) worker.terminate();
+  if (worker === pythonWorker) {
+    pythonWorker = null;
+    pythonWorkerReady = null;
   }
+}
+
+function getPythonWorker() {
+  if (pythonWorker && pythonWorkerReady) return pythonWorkerReady;
+
+  let worker;
+  try {
+    worker = new Worker(PYTHON_WORKER_URL);
+  } catch (error) {
+    return Promise.reject(
+      new Error(`無法啟動 Python 執行環境：${error.message || String(error)}`),
+    );
+  }
+  pythonWorker = worker;
+  pythonWorkerReady = new Promise((resolve, reject) => {
+    const timeoutId = window.setTimeout(() => {
+      cleanup();
+      resetPythonWorker(worker);
+      reject(new Error("Python 執行環境載入超過 60 秒，請確認網路連線後重試。"));
+    }, PYTHON_LOAD_TIMEOUT_MS);
+
+    function cleanup() {
+      window.clearTimeout(timeoutId);
+      worker.removeEventListener("message", handleMessage);
+      worker.removeEventListener("error", handleError);
+    }
+
+    function handleMessage(event) {
+      const message = event.data || {};
+      if (message.type === "ready") {
+        cleanup();
+        resolve(worker);
+      } else if (message.type === "load-error") {
+        cleanup();
+        resetPythonWorker(worker);
+        reject(new Error(`Pyodide 載入失敗：${message.error || "請確認網路連線。"}`));
+      }
+    }
+
+    function handleError(event) {
+      event.preventDefault();
+      cleanup();
+      resetPythonWorker(worker);
+      reject(new Error(event.message || "Python Worker 載入時發生錯誤。"));
+    }
+
+    worker.addEventListener("message", handleMessage);
+    worker.addEventListener("error", handleError);
+  });
+  return pythonWorkerReady;
+}
+
+async function runPythonIsolated(code, inputs = []) {
+  if (pythonRunInProgress) {
+    throw new Error("已有程式正在執行，請稍候再試。");
+  }
+  pythonRunInProgress = true;
+  try {
+    const worker = await getPythonWorker();
+    const runId = ++pythonRunSequence;
+    return await new Promise((resolve, reject) => {
+      const timeoutId = window.setTimeout(() => {
+        cleanup();
+        resetPythonWorker(worker);
+        reject(new Error("程式執行超過 5 秒，已自動停止。請檢查是否有無限迴圈。"));
+      }, PYTHON_EXECUTION_TIMEOUT_MS);
+
+      function cleanup() {
+        window.clearTimeout(timeoutId);
+        worker.removeEventListener("message", handleMessage);
+        worker.removeEventListener("error", handleError);
+      }
+
+      function handleMessage(event) {
+        const message = event.data || {};
+        if (message.type !== "result" || message.runId !== runId) return;
+        cleanup();
+        resolve({ output: message.output || "", error: message.error || "" });
+      }
+
+      function handleError(event) {
+        event.preventDefault();
+        cleanup();
+        resetPythonWorker(worker);
+        reject(new Error(event.message || "Python Worker 發生錯誤。"));
+      }
+
+      worker.addEventListener("message", handleMessage);
+      worker.addEventListener("error", handleError);
+      worker.postMessage({ type: "run", runId, code, inputs });
+    });
+  } finally {
+    pythonRunInProgress = false;
+  }
+}
+
+async function executeProjectCode(code, inputs) {
+  return runPythonIsolated(code, inputs);
 }
 
 function normalizeProjectOutput(value) {
@@ -530,7 +645,7 @@ async function testProjectCode() {
     $("project-complete").classList.toggle("hidden", !allTestsPassed);
     $("project-complete").disabled = !allTestsPassed || state.currentProject.status === "completed";
   } catch (error) {
-    $("project-output").textContent = error.message || String(error);
+    $("project-output").textContent = explainPythonError(error.message || String(error));
   } finally {
     $("project-test").disabled = false;
   }
@@ -636,6 +751,12 @@ function renderLessonBody(blocks) {
       });
       wrapper.append(pre, button);
       container.appendChild(wrapper);
+    }
+    if (block.type === "shell") {
+      const pre = document.createElement("pre");
+      pre.className = "code-block shell-block";
+      pre.textContent = block.code;
+      container.appendChild(pre);
     }
   }
 }
@@ -887,9 +1008,12 @@ async function loadReviewStatus() {
   const body = await api("/api/review/status");
   state.review.status = body;
   const remaining = Math.max(0, body.total_lessons - body.completed_lessons);
-  $("start-review").disabled = !body.unlocked;
-  $("start-review").textContent = state.review.active ? "重新開始本輪" : "開始總複習";
   const session = body.review_session;
+  const canResume = Boolean(
+    session && !session.completed_at && session.answered_count < state.review.size,
+  );
+  $("start-review").disabled = !body.unlocked;
+  $("start-review").textContent = canResume ? "繼續總複習" : "開始總複習";
   $("review-status-text").textContent = body.unlocked
     ? session
       ? `已解鎖。本輪已答 ${session.answered_count} / ${state.review.size} 題（答題率 ${session.answer_rate}%）。`
@@ -901,10 +1025,11 @@ async function loadReviewStatus() {
 async function startReview() {
   if (!state.review.status?.unlocked) return;
   const started = await api("/api/review/start", { method: "POST" });
-  state.review.sessionId = started.session.id;
+  const session = started.session;
+  state.review.sessionId = session.id;
   state.review.active = true;
-  state.review.answered = 0;
-  state.review.correct = 0;
+  state.review.answered = session.answered_count || 0;
+  state.review.correct = session.correct_count || 0;
   state.review.returningFromLesson = false;
   state.currentLesson = null;
   $("page-title").textContent = "總複習";
@@ -1029,28 +1154,6 @@ async function loadAdmin() {
   }
 }
 
-async function ensurePyodide() {
-  if (state.pyodide) return state.pyodide;
-  if (state.pyodideLoading) return state.pyodideLoading;
-
-  state.pyodideLoading = new Promise((resolve, reject) => {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js";
-    script.onload = async () => {
-      try {
-        const pyodide = await window.loadPyodide();
-        state.pyodide = pyodide;
-        resolve(pyodide);
-      } catch (error) {
-        reject(error);
-      }
-    };
-    script.onerror = () => reject(new Error("Pyodide 載入失敗，請確認網路連線。"));
-    document.head.appendChild(script);
-  });
-  return state.pyodideLoading;
-}
-
 function runnerInputs() {
   return $("code-input-values").value.split(/\r?\n/).filter((value) => value.length > 0);
 }
@@ -1061,9 +1164,10 @@ function syncRunnerInputVisibility() {
 
 async function runCode() {
   const output = $("code-output");
+  const runButton = $("run-code");
+  runButton.disabled = true;
   output.textContent = "載入 Python 執行環境...";
   try {
-    const pyodide = await ensurePyodide();
     const code = $("code-input").value;
     syncRunnerInputVisibility();
     if (/\binput\s*\(/.test(code) && runnerInputs().length === 0) {
@@ -1071,32 +1175,15 @@ async function runCode() {
       $("code-input-values").focus();
       return;
     }
-    const encodedInputs = JSON.stringify(runnerInputs());
-    pyodide.runPython(`
-import sys
-import builtins
-from io import StringIO
-sys.stdout = StringIO()
-sys.stderr = StringIO()
-_runner_inputs = iter(${encodedInputs})
-def _runner_input(prompt=""):
-    try:
-        return next(_runner_inputs)
-    except StopIteration:
-        raise EOFError("請在執行輸入欄填入資料，每行對應一次 input()。")
-builtins.input = _runner_input
-`);
-    try {
-      await pyodide.runPythonAsync(code);
-      const resultText = pyodide.runPython("sys.stdout.getvalue()");
-      const errText = pyodide.runPython("sys.stderr.getvalue()");
-      output.textContent = (resultText || "") + (errText ? `\n${errText}` : "") || "程式執行完成，沒有輸出。";
-    } catch (error) {
-      output.textContent = explainPythonError(error);
-    }
+    const result = await runPythonIsolated(code, runnerInputs());
+    output.textContent =
+      result.output + (result.error ? `\n${explainPythonError(result.error)}` : "") ||
+      "程式執行完成，沒有輸出。";
     state.ranCode = true;
   } catch (error) {
     output.textContent = error.message || String(error);
+  } finally {
+    runButton.disabled = false;
   }
 }
 
